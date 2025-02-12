@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Medplay</title>
+  <link rel="shortcut icon" href="{{ url_for('static', filename="img/M.png")}}">
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css'>
+  <script src="https://kit.fontawesome.com/ecaf831147.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename="css/searchBarStyle.css")}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename="css/cards.css")}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename="css/playerContainer.css")}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename="css/notification.css")}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename="css/themeBox.css")}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename="css/queue.css")}}">
+
+
+
+</head>
+<body>
+    <div class="theme-container">
+        <div class="theme-holder">
+            <h2 class="theme-title">Themes</h2>
+            <div id="theme-box" class="theme-box">
+                
+            </div>
+        </div>
+        <div class="theme-open-button" onclick="dropTheme()">Themes<i class="fas fa-paint-brush"></i></div>
+    </div>
+    
+    <h1 class = "title">Medplay</h1>
+    <p class = "tagline">ad-free modern music player</p>
+    <div class = "search-container">
+        <div class="box-search">
+            <input type="text" class="input" name="txt" id="search-query"></input>
+            <i class="fas fa-search icon-search" onclick="searchSongs(true)"></i>
+        
+        </div>
+    </div>
+    <!--cards section start here-->
+    <div class = "song-container">
+        <div class = "cards" id="song-list"> 
+
+        </div>
+
+        <span id="more" class="more" onclick="searchSongs(false)">more...</span>
+    </div>
+
+    <!--player-container starts here-->
+    <div class = "player-container">
+        <div id="player-box" class = "player-box">
+            <img id = "album-art" src ="{{ url_for('static', filename="img/plc.png")}}" class = "album-image-player"></img>
+            <div class = "song-details">
+                <span id = "now-playing" class="song-name">Song Name</span>
+                <span class="artist-name artist-name-vanish" id="artist-name">Artist Name</span>
+            </div>
+            <div class="player-btn-holder">
+                <div class = "player-play-btn" onclick="playPause()">
+                    <i id = "play-icon" class="fa-solid fa-play"></i>
+                </div>
+            </div> 
+            <div class="progress-tracker-holder" onclick="seek(event)">
+                <div class="progress-tracker">
+                    <div id="progress" class="progress-tracker-update">
+                    </div>
+                    <div id="progress-circle" class="progress-circle"></div>
+                </div>
+            </div>
+            <div class="time">
+                <span id="current-time">0:00</span> / <span id="duration">0:00</span>
+            </div>
+        </div>
+    </div>
+<audio id = "audio-player" ontimeupdate="updateProgress()" onloadedmetadata="updateDuration()"></audio>
+<div class="queue-holder" >
+    <div class="q-open-btn" onclick="dropQueue()">Q</div>
+    <div class="queue-container">
+        <h3 class="queue-title">Queue</h3>
+        <div id="queue-list" class="queue-list">
+            <span>No songs in queue</span>
+            <!-- Queue items will be appended here -->
+        </div>
+    </div>
+</div>
+
+
+<!--notification-->
+<div id="notification-holder" class = "notification-holder">
+    
+</div>
+
+<div></div>
+
+</body>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+<script src = "{{ url_for('static', filename="js/themer.js")}}"></script>
+<script src = "{{ url_for('static', filename="js/main.js")}}"></script>
+<script src = "{{ url_for('static', filename="js/searchBarAnimation.js")}}"></script>
+</html>

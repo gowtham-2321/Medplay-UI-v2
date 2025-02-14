@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
 body {
     margin: 0;
     padding: 0px;
+    font-family: "Lexend", serif;
+
 }
 .whole-page {
     display: flex;
@@ -76,8 +79,7 @@ body {
     width: 80px;
     text-align: center;
     color: white;
-    font-size: 18px;
-    font-family: helvetica;
+    font-size: 16px;
 }
 
 .songlist {
@@ -86,19 +88,60 @@ body {
     box-sizing: border-box;
     padding: 10px;
     height: fit-content;
-    background: brown;
+    /*background: brown;*/
 }
 .song-card {
     display: flex;
     align-items: center;
+    justify-content: center;
     box-sizing: border-box;
     padding: 5px;
     width: 100%;
-    height: 50px;
-    background: yellow;
+    height: 60px;
+    color: white;
+    font-weight: 400;
+    margin-bottom: 2px;
+    
 }
 .song-card-art {
-    border-radius: 5px;
-    width: 40px;
-    height: 40px;
+    border-radius: 8px;
+    width: 45px;
+    height: 45px;
+    background: white;
+    display: flex;
+}
+
+.song-card-song-name {
+    font-size: 16px;
+    width: 30%;
+    box-sizing: border-box;
+    padding: 20px;
+}
+
+.song-card-artist-name {
+    font-size: 16px;
+    width: 30%;
+    box-sizing: border-box;
+    padding: 20px;
+    opacity: 50%;
+    
+}
+
+.song-card-timestamp {
+    font-size: 16px;
+    width: 20%;
+    box-sizing: border-box;
+    padding: 20px;
+    display: flex;
+    justify-content: right;
+    opacity: 50%;
+}
+
+.song-card-icons {
+    display: flex;
+    gap: 35px;
+    box-sizing: border-box;
+    color: #ffd52d;
+    width: 15%;
+    justify-content: flex-end;
 }

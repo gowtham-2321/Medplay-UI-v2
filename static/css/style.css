@@ -15,7 +15,8 @@ body {
 .header {
     width: 100vw;
     height: 15vh;
-    background: purple;
+    background: #242424;
+    display: flex;
 }
 
 .menu-bar{
@@ -144,4 +145,31 @@ body {
     color: #ffd52d;
     width: 15%;
     justify-content: flex-end;
+}
+
+.logo-holder {
+    width: 20vw;
+    background: white;
+    height: 100%;
+}
+
+.search-bar-holder {
+    width: 60vw;
+    background: yellow;
+    height: 100%;
+    
+}
+
+.profile-holder {
+    width: 20vw;
+    background: red;
+    height: 100%;
+    
+}
+
+.search-bar {
+    width: 50%;
+    height: 60px;
+    background: #2f2f2f;
+    border-radius: 12px;
 }

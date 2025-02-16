@@ -124,7 +124,7 @@ body {
     width: 30%;
     box-sizing: border-box;
     padding: 20px;
-    opacity: 50%;
+    color: #929292;
     
 }
 
@@ -135,7 +135,7 @@ body {
     padding: 20px;
     display: flex;
     justify-content: right;
-    opacity: 50%;
+    color: #929292;
 }
 
 .song-card-icons {
@@ -149,15 +149,35 @@ body {
 
 .logo-holder {
     width: 20vw;
-    background: white;
+    background: #242424;
     height: 100%;
+    box-sizing: border-box;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.title {
+    color: white;
+    font-weight: 700;
+    font-size: 2.2vw;
+    margin: 0;
+}
+
+.tagline {
+    color: #ffd52d;
+    font-size: .8vw;
 }
 
 .search-bar-holder {
     width: 60vw;
-    background: yellow;
+    background: #242424;
     height: 100%;
-    
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 10px;
 }
 
 .profile-holder {
@@ -169,7 +189,7 @@ body {
 
 .search-bar {
     width: 50%;
-    height: 60px;
-    background: #2f2f2f;
+    height: 50px;
+    background: #303030;
     border-radius: 12px;
 }

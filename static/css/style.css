@@ -6,6 +6,9 @@ body {
     color: white;
 
 }
+i {
+    cursor: pointer;
+}
 .whole-page {
     display: flex;
     width: 100vw;
@@ -31,12 +34,23 @@ body {
 }
 
 .menu-btn {
+    margin-bottom: 10px;
     display: flex;
     align-items: center;
     height: 60px;
     box-sizing: border-box;
     padding: 15px;
     color: white;
+    border-radius: 10px;
+    gap: 20px;
+}
+
+.menu-btn:hover {
+    background: #303030;
+}
+.menu-btn-selected {
+    outline: 3px solid #ffd52d;
+    background: #303030;
 }
 
 .playlist-list {
@@ -128,7 +142,12 @@ body {
     color: #ffd52d;
 }
 
+.list-holder{
+    position: relative;
+}
+
 .songlist {
+    position: absolute;
     width: 100%;
     margin-top: 20px;
     box-sizing: border-box;
@@ -136,7 +155,8 @@ body {
     height: fit-content;
     display: block;
     opacity: 100%;
-    transition: opacity .3s ease-in-out;
+    transition: opacity .3s ease-in-out, display .3s ease-in-out;
+
     /*background: brown;*/
 }
 .song-card {
@@ -144,14 +164,39 @@ body {
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-    padding: 5px;
+    padding: 20px;
     width: 100%;
     height: 60px;
     color: white;
     font-weight: 400;
     margin-bottom: 2px;
-    
+    border-radius: 10px;
+    margin-bottom: 5px;  
 }
+
+.song-card:hover {
+    background: #303030; 
+}
+
+.song-card-selected {
+    background: #303030;
+    outline: 3px solid #ffd52d;
+}
+
+.song-card-no-hover {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 20px;
+    width: 100%;
+    height: 60px;
+    color: white;
+    font-weight: 400;
+    margin-bottom: 2px;
+    border-radius: 10px;
+}
+
 .song-card-art {
     border-radius: 8px;
     width: 45px;
@@ -202,6 +247,46 @@ body {
     justify-content: flex-end;
 }
 
+.artistlist {
+    position: absolute;
+    width: 100%;
+    display: none;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+    margin-top:20px;
+    box-sizing: border-box;
+    padding: 10px;
+    height: fit-content;
+    opacity: 0;
+    transition: opacity .3s ease-in-out, display .3s ease-in-out;
+}
+.artist-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    padding: 30px;
+    border-radius: 20px;
+
+}
+.artist-card:hover {
+    background: #303030;
+    
+}
+
+.artist-card-name {
+    width: 150px;
+}
+.artist-card-img {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+
+}
 
 /*idk if this much is necessary but nvm*/
 

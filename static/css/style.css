@@ -156,8 +156,6 @@ i {
     display: block;
     opacity: 100%;
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
-
-    /*background: brown;*/
 }
 .song-card {
     display: flex;
@@ -287,6 +285,142 @@ i {
     height: 150px;
 
 }
+
+.albumlist {
+    position: absolute;
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 20px;
+    height: fit-content;
+    opacity: 0;
+    transition: opacity .3s ease-in-out, display .3s ease-in-out;
+}
+
+.album-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.album-card-disp {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 30px;
+    border-radius: 20px;
+}
+
+.album-img {
+    border-radius: 20px;
+    width: 150px;
+    height: 150px;
+}
+
+.album-name {
+    text-align: center;
+}
+
+.album-card-songs {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+}
+
+.album-song-card {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 20px;
+    width: 100%;
+    height: 60px;
+    color: white;
+    font-weight: 400;
+    margin-bottom: 2px;
+    border-radius: 10px;
+    margin-bottom: 5px; 
+}
+
+.album-song-selected {
+    background: #303030;
+    outline: 3px solid #ffd52d;
+}
+
+.album-song-card:hover {
+    background: #303030;
+}
+
+.album-song-card-art {
+    border-radius: 8px;
+    width: 45px;
+    height: 45px;
+    background: white;
+    display: flex;
+}
+
+.album-song-card-icons {
+    display: flex;
+    gap: 35px;
+    box-sizing: border-box;
+    color: #ffd52d;
+    width: 20%;
+    justify-content: flex-end;
+}
+
+.album-song-card-timestamp {
+    font-size: 16px;
+    width: 10%;
+    box-sizing: border-box;
+    padding: 20px;
+    display: flex;
+    justify-content: right;
+    color: #929292;
+}
+
+.album-song-card-artist-name {
+    font-size: 16px;
+    width: 30%;
+    box-sizing: border-box;
+    padding: 20px;
+    color: #929292; 
+}
+
+.album-song-card-song-name {
+    font-size: 16px;
+    width: 35%;
+    box-sizing: border-box;
+    padding: 20px;
+}
+
+.album-play {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #ffd52d;
+    display: flex;
+    color: #242424;
+    align-items: center;
+    justify-content: center;
+    display: none;
+}
+
+.album-card-disp:hover {
+    background: #303030;
+}
+
+.album-card-disp:hover .album-play{
+    display: flex;
+    cursor: pointer;
+}
+
 
 /*idk if this much is necessary but nvm*/
 

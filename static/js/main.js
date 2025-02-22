@@ -2,11 +2,12 @@ let song_selected = true;
 let artist_selected = false;
 let album_selected = false;
 let song_class = document.getElementById("class-song");
-    let artist_class = document.getElementById("class-artist");
-    let album_class = document.getElementById("class-album");
-    let update_line = document.getElementById("class-line-change");
-    let song_list = document.getElementById("songlist");
-    let artist_list = document.getElementById("artistlist");
+let artist_class = document.getElementById("class-artist");
+let album_class = document.getElementById("class-album");
+let update_line = document.getElementById("class-line-change");
+let song_list = document.getElementById("songlist");
+let artist_list = document.getElementById("artistlist");
+let album_list = document.getElementById("albumlist");
 
 function songPage() {
     song_list.style.display = "block"; 
@@ -17,6 +18,11 @@ function songPage() {
     artist_list.style.opacity = "0"; 
     setTimeout(() => {
         artist_list.style.display = "none";
+    }, 300);
+
+    album_list.style.opacity = "0"; 
+    setTimeout(() => {
+        album_list.style.display = "none";
     }, 300);
 
     update_line.style.transform = "translateX(0px)";
@@ -34,12 +40,23 @@ function artistPage() {
     setTimeout(() => {
         song_list.style.display = "none";
     }, 300);
+
+    album_list.style.opacity = "0"; 
+    setTimeout(() => {
+        album_list.style.display = "none";
+    }, 300);
+
     update_line.style.transform = "translateX(100px)";
     song_class.classList.remove("active-class");
     artist_class.classList.add("active-class");
     album_class.classList.remove("active-class");
 }
 function albumPage() {
+    album_list.style.display = "flex"; 
+    setTimeout(() => {
+        album_list.style.opacity = "1";
+    }, 300);
+
     song_list.style.opacity = "0"; 
     setTimeout(() => {
         song_list.style.display = "none";
@@ -49,6 +66,7 @@ function albumPage() {
     setTimeout(() => {
         artist_list.style.display = "none";
     }, 300);
+
     update_line.style.transform = "translateX(200px)";
     song_class.classList.remove("active-class");
     artist_class.classList.remove("active-class");
@@ -69,6 +87,14 @@ menu_btns.forEach(menu_btn => {
     menu_btn.addEventListener('click', () => {
         menu_btns.forEach(s => s.classList.remove('menu-btn-selected'));
         menu_btn.classList.add('menu-btn-selected');
+    });
+});
+
+const album_song_cards = document.querySelectorAll('.album-song-card');
+album_song_cards.forEach(card => {
+    card.addEventListener('click', () => {
+        album_song_cards.forEach(c => c.classList.remove('album-song-selected'));
+        card.classList.add('album-song-selected');
     });
 });
     

@@ -8,6 +8,11 @@ let update_line = document.getElementById("class-line-change");
 let song_list = document.getElementById("songlist");
 let artist_list = document.getElementById("artistlist");
 let album_list = document.getElementById("albumlist");
+let artist_page = document.getElementById("artist-page");
+let classification = document.getElementById("classification");
+let list_holder = document.getElementById("list-holder");
+let artist_song_page_back= document.getElementById("artist-song-page-back");
+
 
 function songPage() {
     song_list.style.display = "block"; 
@@ -73,6 +78,51 @@ function albumPage() {
     album_class.classList.add("active-class");
 }
 
+function artistSongPage() {
+    artist_page.style.display = "block";
+    setTimeout(() => {
+        artist_page.style.opacity = "1";
+    }, 300);
+
+    artist_list.style.opacity = "0"; 
+    setTimeout(() => {
+        artist_list.style.display = "none";
+    }, 300);
+
+    classification.style.opacity = "0"; 
+    setTimeout(() => {
+        classification.style.display = "none";
+    }, 300);
+
+    list_holder.style.opacity = "0"; 
+    setTimeout(() => {
+        list_holder.style.display = "none";
+    }, 300);
+
+}
+
+function artistSongPageBack() {
+    
+    artist_list.style.display = "grid"; 
+    setTimeout(() => {
+        artist_list.style.opacity = "1";
+    }, 300);
+     
+    classification.style.display = "block";
+    setTimeout(() => {
+        classification.style.opacity = "1";
+    }, 300);
+
+    list_holder.style.display = "block";
+    setTimeout(() => {
+        list_holder.style.opacity = "1";
+    }, 300);
+
+    artist_page.style.opacity = "0"; 
+    setTimeout(() => {
+        artist_page.style.display = "none";
+    }, 300);
+}
 
 const song_cards = document.querySelectorAll('.song-card');
 song_cards.forEach(song_card => {

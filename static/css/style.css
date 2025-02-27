@@ -83,6 +83,7 @@ i {
     background: #242424;
     box-sizing: border-box;
     padding: 10px;
+    position: relative;
 }
 .right-bar {
     width: 20vw;
@@ -635,4 +636,89 @@ i {
     display: flex;
     gap: 30px;
     color: #ffd52d;
+}
+
+.relative-holder {
+    width: 100%;
+    position: absolute;
+}
+
+.classification {
+    opacity: 1;
+    transition: opacity .3s ease-in-out, display .3s ease-in-out;
+}
+.list-holder {
+    opacity: 1;
+    transition: opacity .3s ease-in-out, display .3s ease-in-out;
+}
+
+.artist-page {
+    position: absolute;
+    width: 100%;
+    display: none;
+    opacity: 0;
+    transition: opacity .3s ease-in-out, display .3s ease-in-out;
+}
+
+.artist-info-card-holder {
+    display: flex;
+    gap: 20px;
+    border-radius: 20px;
+    background: #303030;
+    box-sizing: border-box;
+    padding: 40px;
+}
+
+.artist-info-card-image{
+    border-radius: 20px;
+    width: 200px;
+    height: 200px;
+}
+.artist-info-card{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+
+.artist-name-artist-card {
+    font-size: 40px;
+}
+
+.artist-card-play {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.artist-play-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 3px solid #ffd52d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.artist-song-list {
+    padding-top: 20px;
+}
+
+.back-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 3px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.back-icon-holder {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }

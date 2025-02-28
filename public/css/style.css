@@ -1,4 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+    background-color: #303030;
+    border-radius: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    border-radius: 10px;
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #a88e23;
+    border-radius: 10px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #ffd52d;
+  }
+
 body {
     margin: 0;
     padding: 0px;
@@ -150,13 +174,15 @@ i {
 .songlist {
     position: absolute;
     width: 100%;
-    margin-top: 20px;
     box-sizing: border-box;
     padding: 10px;
+    padding-top: 0;
     height: fit-content;
     display: block;
     opacity: 100%;
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
+    overflow-y: auto;
+    max-height: 60vh;
 }
 .song-card {
     display: flex;
@@ -183,6 +209,8 @@ i {
 }
 
 .song-card-no-hover {
+    margin: 10px;
+    margin-top: 20px;
     display: flex;
     align-items: center;
     justify-content: center;

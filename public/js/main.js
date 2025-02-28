@@ -15,6 +15,7 @@ let classification = document.getElementById("classification");
 let list_holder = document.getElementById("list-holder");
 let artist_song_page_back= document.getElementById("artist-song-page-back");
 let album_song_page_back= document.getElementById("album-song-page-back");
+let song_card_no_hover = document.getElementById("song-card-no-hover")
 
 //jeevan variii
 let pageNo = 1;
@@ -24,6 +25,11 @@ function songPage() {
     song_list.style.display = "block"; 
     setTimeout(() => {
         song_list.style.opacity = "1";
+    }, 300);
+
+    song_card_no_hover.style.display = "flex"; 
+    setTimeout(() => {
+        song_card_no_hover.style.opacity = "1";
     }, 300);
 
     artist_list.style.opacity = "0"; 
@@ -47,6 +53,11 @@ function artistPage() {
         artist_list.style.opacity = "1";
     }, 300);
 
+    song_card_no_hover.style.opacity = "0"; 
+    setTimeout(() => {
+        song_card_no_hover.style.display = "none";
+    }, 300);
+
     song_list.style.opacity = "0"; 
     setTimeout(() => {
         song_list.style.display = "none";
@@ -66,6 +77,11 @@ function albumPage() {
     album_list.style.display = "flex"; 
     setTimeout(() => {
         album_list.style.opacity = "1";
+    }, 300);
+
+    song_card_no_hover.style.opacity = "0"; 
+    setTimeout(() => {
+        song_card_no_hover.style.display = "none";
     }, 300);
 
     song_list.style.opacity = "0"; 

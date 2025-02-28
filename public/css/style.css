@@ -1,5 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
 
+html {
+    overflow: hidden;
+}
 /* width */
 ::-webkit-scrollbar {
     width: 5px;
@@ -176,7 +179,6 @@ i {
     width: 100%;
     box-sizing: border-box;
     padding: 10px;
-    padding-top: 0;
     height: fit-content;
     display: block;
     opacity: 100%;
@@ -222,6 +224,8 @@ i {
     font-weight: 400;
     margin-bottom: 2px;
     border-radius: 10px;
+    opacity: 100%;
+    transition: opacity .3s ease-in-out, display .3s ease-in-out;
 }
 
 .song-card-art {
@@ -279,7 +283,7 @@ i {
     position: absolute;
     width: 100%;
     display: none;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat( auto-fit, minmax(210px, 1fr) );
     gap: 20px;
     margin-top:20px;
     box-sizing: border-box;
@@ -287,6 +291,8 @@ i {
     height: fit-content;
     opacity: 0;
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
+    overflow-y: auto;
+    max-height: 65vh;
 }
 .artist-card {
     display: flex;
@@ -753,7 +759,7 @@ i {
 }
 
 .fa-heart {
-    color: #F05542;
+    color: #f05542;
 }
 
 

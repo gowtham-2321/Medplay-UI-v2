@@ -26,6 +26,7 @@ function songPage() {
         song_list.style.opacity = "1";
     }, 300);
 
+
     artist_list.style.opacity = "0"; 
     setTimeout(() => {
         artist_list.style.display = "none";
@@ -47,6 +48,7 @@ function artistPage() {
         artist_list.style.opacity = "1";
     }, 300);
 
+
     song_list.style.opacity = "0"; 
     setTimeout(() => {
         song_list.style.display = "none";
@@ -67,6 +69,7 @@ function albumPage() {
     setTimeout(() => {
         album_list.style.opacity = "1";
     }, 300);
+
 
     song_list.style.opacity = "0"; 
     setTimeout(() => {
@@ -250,11 +253,14 @@ function createSongCard(song, songList) {
     let new_art_name = song.primaryArtists;
     let new_album_name = song.album.name;
     let new_duration = formatTime(song.duration);
-    if (new_name.length > 35) {
-        new_name = new_name.slice(0,35)+"...";
+    if (new_name.length > 45) {
+        new_name = new_name.slice(0,45)+"...";
     }
-    if (new_art_name.length > 25) {
-        new_art_name = new_art_name.slice(0,25)+"...";
+    if (new_art_name.length > 35) {
+        new_art_name = new_art_name.slice(0,35)+"...";
+    }
+    if (new_album_name.length > 35) {
+        new_album_name = new_art_name.slice(0,35)+"...";
     }
     //slicing end
     card.innerHTML = `
@@ -264,7 +270,7 @@ function createSongCard(song, songList) {
             <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
             <span class="song-card-timestamp">${new_duration || "00:00"}</span>
             <div class="song-card-icons">
-                <i class="fa-solid fa-heart"></i>
+                <i class="fa-regular fa-heart"></i>
                 <i class="fa-solid fa-play"></i>
                 <i class="fa-solid fa-download"></i>
                 <i class="fa-solid fa-plus"></i>
@@ -452,3 +458,15 @@ audioPlayerEvent.onpause = () => {
     const playBtn = document.getElementById("play-icon");
     playBtn.classList.replace("fa-pause", "fa-play");
 };
+let isRepeat = false;
+let repeat_icon = document.getElementById("repeat-icon");
+function repeatSong() {
+    if(isRepeat) {
+        repeat_icon.classList.remove("repeat-active");
+        isRepeat = false;
+    }
+    else {
+        repeat_icon.classList.add("repeat-active");
+        isRepeat = true;
+    }
+}

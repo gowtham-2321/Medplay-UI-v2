@@ -9,9 +9,11 @@ let song_list = document.getElementById("songlist");
 let artist_list = document.getElementById("artistlist");
 let album_list = document.getElementById("albumlist");
 let artist_page = document.getElementById("artist-page");
+let album_page = document.getElementById("album-page");
 let classification = document.getElementById("classification");
 let list_holder = document.getElementById("list-holder");
 let artist_song_page_back= document.getElementById("artist-song-page-back");
+let album_song_page_back= document.getElementById("album-song-page-back");
 
 
 function songPage() {
@@ -101,6 +103,29 @@ function artistSongPage() {
 
 }
 
+function albumSongPage() {
+    album_page.style.display = "block";
+    setTimeout(() => {
+        album_page.style.opacity = "1";
+    }, 300);
+
+    album_list.style.opacity = "0"; 
+    setTimeout(() => {
+        album_list.style.display = "none";
+    }, 300);
+
+    classification.style.opacity = "0"; 
+    setTimeout(() => {
+        classification.style.display = "none";
+    }, 300);
+
+    list_holder.style.opacity = "0"; 
+    setTimeout(() => {
+        list_holder.style.display = "none";
+    }, 300);
+
+}
+
 function artistSongPageBack() {
     
     artist_list.style.display = "grid"; 
@@ -121,6 +146,29 @@ function artistSongPageBack() {
     artist_page.style.opacity = "0"; 
     setTimeout(() => {
         artist_page.style.display = "none";
+    }, 300);
+}
+
+function albumSongPageBack() {
+    
+    album_list.style.display = "flex"; 
+    setTimeout(() => {
+        album_list.style.opacity = "1";
+    }, 300);
+     
+    classification.style.display = "block";
+    setTimeout(() => {
+        classification.style.opacity = "1";
+    }, 300);
+
+    list_holder.style.display = "block";
+    setTimeout(() => {
+        list_holder.style.opacity = "1";
+    }, 300);
+
+    album_page.style.opacity = "0"; 
+    setTimeout(() => {
+        album_page.style.display = "none";
     }, 300);
 }
 

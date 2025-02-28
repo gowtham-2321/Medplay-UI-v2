@@ -161,7 +161,7 @@ i {
 .song-card {
     display: flex;
     align-items: center;
-    justify-content: center;
+    /*justify-content: center;*/
     box-sizing: border-box;
     padding: 20px;
     width: 100%;
@@ -238,6 +238,7 @@ i {
 }
 
 .song-card-icons {
+    margin-left: 20px;
     display: flex;
     gap: 35px;
     box-sizing: border-box;
@@ -567,7 +568,7 @@ i {
 }
 
 .progress-tracker-holder {
-    width: 100%;
+    width: 70%;
     height: 100%;
     display: flex;
     align-items: center;
@@ -652,7 +653,7 @@ i {
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
 }
 
-.artist-page {
+.artist-page, .album-page {
     position: absolute;
     width: 100%;
     display: none;
@@ -660,7 +661,7 @@ i {
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
 }
 
-.artist-info-card-holder {
+.artist-info-card-holder, .album-info-card-holder {
     display: flex;
     gap: 20px;
     border-radius: 20px;
@@ -669,29 +670,29 @@ i {
     padding: 40px;
 }
 
-.artist-info-card-image{
+.artist-info-card-image, .album-info-card-image{
     border-radius: 20px;
     width: 200px;
     height: 200px;
 }
-.artist-info-card{
+.artist-info-card, .album-info-card{
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 10px;
 }
 
-.artist-name-artist-card {
+.artist-name-artist-card, .album-name-album-card {
     font-size: 40px;
 }
 
-.artist-card-play {
+.artist-card-play, .album-card-play {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.artist-play-icon {
+.artist-play-icon, .album-play-icon {
     width: 35px;
     height: 35px;
     border-radius: 50%;
@@ -701,7 +702,7 @@ i {
     justify-content: center;
 }
 
-.artist-song-list {
+.artist-song-list, .album-song-list  {
     padding-top: 20px;
 }
 
@@ -722,3 +723,55 @@ i {
     align-items: center;
     gap: 10px;
 }
+
+.fa-heart {
+    color: #F05542;
+}
+
+
+
+
+
+
+@media only screen and (max-width: 1590px) {
+    .song-card-album-name{
+        display: none;
+    }
+
+    .song-card-song-name{
+        width: 30%;
+    }
+
+    .song-card-artist-name{
+        width: 30%;
+    }
+
+    .song-card-timestamp{
+        width: 15%;
+    }
+  }
+
+
+  @media only screen and (max-width: 1300px) {
+
+    .main-center{
+        width: 85%;
+    }
+    .menu-btn span{
+        display: none;
+    }
+    .menu-btn {
+        width: fit-content;
+    }
+
+    .playlist-card-name {
+        display: none;
+    }
+
+    .playlist-card {
+        width: fit-content;
+    }
+    .menu-bar {
+        width: fit-content;
+    }
+  }

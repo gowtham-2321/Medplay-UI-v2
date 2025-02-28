@@ -1,11 +1,13 @@
 const express = require('express');
 const path = require('path');
 const axios = require('axios');
+const morgan = require('morgan');
 const { Readable } = require('stream');
 
 const app = express();
 const API_URL = "https://jiosaavn-api-privatecvc2.vercel.app/";
 
+app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {

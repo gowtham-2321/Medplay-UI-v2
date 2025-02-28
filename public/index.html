@@ -87,17 +87,7 @@
               <div class="classi" id="class-album" onclick="albumPage()">Albums</div>
             </div>
           </div>
-          <div class="list-holder" id="list-holder">
-
-            <div class="song-card-no-hover" id="song-card-no-hover">
-              <div class="song-card-art-title" ></div>
-              <span class="song-card-title">Song Name</span>
-              <span class="song-card-title">Artist Name</span>
-              <span class="song-card-title">Album Name</span>
-              <span class="song-card-time-title">Time</span>
-              <div class="song-card-icons"></div>
-            </div>
-            
+          <div class="list-holder" id="list-holder">            
             <div class="songlist" id="songlist">
 
               <div class="song-card">
@@ -644,26 +634,26 @@
 <div class="music-player-holder">
 
   <div class="music-player-art-holder">
-    <img src="/img/song art.jpg" class="music-player-art">
+    <img id="player-album-art" src="/img/plc.png" class="music-player-art">
   </div>
 
   <div class="music-player-song-details">
-    <span class="music-player-song-name">Song name can be this long</span>
-    <span class="music-player-artits-name"> Artist name can be</span>
+    <span id="player-song-name" class="music-player-song-name">Song name can be this long</span>
+    <span id="player-artist-name" class="music-player-artits-name"> Artist name can be</span>
   </div>
 
   <div class="music-player-icon">
     <i class="fas fa-backward"></i>
-    <div class="music-player-play-icon">
-      <i class="fa-solid fa-play"></i>
+    <div class="music-player-play-icon" onclick="playPause()">
+      <i id="play-icon" class="fa-solid fa-play"></i>
     </div>
     <i class="fas fa-forward"></i>
   </div>
 
-  <div class="progress-tracker-holder">
+  <div class="progress-tracker-holder" onclick="seek(event)">
     <div class="progress-bar">
-      <div class="update-bar"></div>
-      <div class="progress-circle"></div>
+      <div id="progress" class="update-bar"></div>
+      <div id="progress-circle" class="progress-circle"></div>
     </div>
   </div>
 
@@ -688,6 +678,6 @@
 
 </div>
 
-<div class="music-player"></div>
+<audio id = "audio-player" ontimeupdate="updateProgress()" onloadedmetadata="updateDuration()"></audio>
 <script src = "\js\main.js"></script>
 </html>

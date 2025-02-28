@@ -615,7 +615,7 @@ i {
     position: relative;
 }
 .update-bar {
-    width: 50%;
+    width: 0%;
     height: 4px;
     background: #ffd52d;
     position: relative;

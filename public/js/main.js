@@ -26,6 +26,7 @@ function songPage() {
         song_list.style.opacity = "1";
     }, 300);
 
+
     artist_list.style.opacity = "0"; 
     setTimeout(() => {
         artist_list.style.display = "none";
@@ -47,6 +48,7 @@ function artistPage() {
         artist_list.style.opacity = "1";
     }, 300);
 
+
     song_list.style.opacity = "0"; 
     setTimeout(() => {
         song_list.style.display = "none";
@@ -67,6 +69,7 @@ function albumPage() {
     setTimeout(() => {
         album_list.style.opacity = "1";
     }, 300);
+
 
     song_list.style.opacity = "0"; 
     setTimeout(() => {
@@ -249,11 +252,15 @@ function createSongCard(song, songList) {
     let new_name = song.name;
     let new_art_name = song.primaryArtists;
     let new_album_name = song.album.name;
-    if (new_name.length > 35) {
-        new_name = new_name.slice(0,35)+"...";
+    let new_duration = formatTime(song.duration);
+    if (new_name.length > 45) {
+        new_name = new_name.slice(0,45)+"...";
     }
-    if (new_art_name.length > 25) {
-        new_art_name = new_art_name.slice(0,25)+"...";
+    if (new_art_name.length > 35) {
+        new_art_name = new_art_name.slice(0,35)+"...";
+    }
+    if (new_album_name.length > 35) {
+        new_album_name = new_art_name.slice(0,35)+"...";
     }
     //slicing end
     card.innerHTML = `
@@ -261,9 +268,9 @@ function createSongCard(song, songList) {
             <span class="song-card-song-name">${new_name ||"Unkown Song"}</span>
             <span class="song-card-artist-name">${new_art_name ||"Unkown Artist"}</span>
             <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
-            <span class="song-card-timestamp">00:00</span>
+            <span class="song-card-timestamp">${new_duration || "00:00"}</span>
             <div class="song-card-icons">
-                <i class="fa-solid fa-heart"></i>
+                <i class="fa-regular fa-heart"></i>
                 <i class="fa-solid fa-play"></i>
                 <i class="fa-solid fa-download"></i>
                 <i class="fa-solid fa-plus"></i>
@@ -281,4 +288,128 @@ function createSongCard(song, songList) {
     queueButton.onclick = () => addToQueue(song);
 
     songList.appendChild(card);
+}
+
+function playmySong(song) {
+    currentSong = song;
+    const player = document.getElementById("audio-player");
+    const nowPlaying = document.getElementById("player-song-name");
+    const nowArtist = document.getElementById("player-artist-name");
+    const albumArt = document.getElementById("player-album-art");
+    let icon = document.getElementById("play-icon");
+    icon.classList.replace("fa-play", "fa-pause");
+    const artLink = `/image/?url=${encodeURIComponent(song.image[1].link || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+    let URL = song.downloadUrl.find(link => link.quality === '320kbps').link || song.downloadUrl[0];
+    albumArt.src = artLink;
+    //console.log(URL);
+    const downloadUrl = `/stream/?url=${encodeURIComponent(URL)}`;
+    //console.log(downloadUrl);
+    player.src = downloadUrl || "";
+    player.play();
+    // name slicing
+    let new_name = song.name;
+    let new_art_name = song.primaryArtists;
+    if (new_name.length > 21) {
+        new_name = new_name.slice(0,18)+"...";
+    }
+    if (new_art_name.length > 25) {
+        new_art_name = new_art_name.slice(0,25)+"...";
+    }
+    //slicing end
+    nowPlaying.textContent = `${new_name || "Unknown Song"}`;
+    nowArtist.textContent = `${new_art_name || "Unknown Artist"}`;
+
+}
+
+//progress tracking
+const progressTrackerHolder = document.querySelector('.progress-tracker-holder');
+const progressTracker = document.querySelector('.progress-bar');
+const progress = document.getElementById('progress');
+const progressCircle = document.getElementById('progress-circle');
+const player = document.getElementById('audio-player');
+
+let isDragging = false;
+
+progressCircle.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    document.addEventListener('mousemove', onDrag);
+    document.addEventListener('mouseup', onStopDrag);
+});
+
+progressTrackerHolder.addEventListener('click', (e) => {
+    const rect = progressTracker.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const width = rect.width;
+    const percentage = offsetX / width;
+    player.currentTime = percentage * player.duration;
+});
+
+function onDrag(e) {
+    if (!isDragging) return;
+    const rect = progressTracker.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const width = rect.width;
+    const percentage = Math.min(Math.max(offsetX / width, 0), 1);
+    player.currentTime = percentage * player.duration;
+    updateProgress();
+}
+
+function onStopDrag() {
+    isDragging = false;
+    document.removeEventListener('mousemove', onDrag);
+    document.removeEventListener('mouseup', onStopDrag);
+}
+
+function updateProgress() {
+    const progressPercent = (player.currentTime / player.duration) * 100;
+    progress.style.width = `${progressPercent}%`;
+    progressCircle.style.left = `${progressPercent}%`;
+    document.getElementById('current-time').textContent = formatTime(player.currentTime);
+}
+
+function updateDuration() {
+    const player = document.getElementById("audio-player");
+    const duration = document.getElementById("duration");
+    duration.textContent = formatTime(player.duration);
+}
+
+function seek(event) {
+    const player = document.getElementById("audio-player");
+    const progressBar = document.querySelector(".progress-tracker");
+    const rect = progressBar.getBoundingClientRect();
+    const offsetX = event.clientX - rect.left;
+    const width = rect.width;
+    const seekTime = (offsetX / width) * player.duration;
+    player.currentTime = seekTime;
+}
+
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+}
+
+function playPause() {
+    const audioPlayer = document.getElementById("audio-player");
+    console.log("didoce");
+    let icon = document.getElementById("play-icon");
+    if (icon.classList.contains("fa-play")) {
+        icon.classList.replace("fa-play", "fa-pause");
+        audioPlayer.play();
+    } else {
+        icon.classList.replace("fa-pause", "fa-play");
+        audioPlayer.pause();
+    }
+}
+let isRepeat = false;
+let repeat_icon = document.getElementById("repeat-icon");
+function repeatSong() {
+    if(isRepeat) {
+        repeat_icon.classList.remove("repeat-active");
+        isRepeat = false;
+    }
+    else {
+        repeat_icon.classList.add("repeat-active");
+        isRepeat = true;
+    }
 }

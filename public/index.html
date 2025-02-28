@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Medplay</title>
+  <link rel="shortcut icon" href="/img/M.png">
+  <script src="https://kit.fontawesome.com/ecaf831147.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/css/style.css">
+
+</head>
+<body>
+  <div class="header">
+    <div class="logo-holder">
+      <h1 class="title">Medplay</h1>
+      <span class="tagline">Adfree Modern Music Player</span>
+    </div>
+    <div class="search-bar-holder">
+      <div class="search-bar">
+        <i class="fa fa-search"></i>
+        <input type="text" class="input" name="txt" id="search-query"></input>
+      </div>
+    </div>
+    <div class="profile-holder"></div>
+  </div>
+  <div class="whole-page"> 
+    <div class="menu-bar">
+      <div class="feed-btn menu-btn">
+        <i class="fa-solid fa-music"></i>
+        <span>Feed</span>
+      </div>
+      <div class="queue-btn menu-btn">
+        <i class="fa-solid fa-list"></i>
+        <span>Queue</span>
+      </div>
+      <div class="themes-btn menu-btn">
+        <i class="fa-solid fa-paintbrush"></i>
+        <span>Themes</span>
+      </div>
+      <div class="favourites-btn menu-btn">
+        <i class="fa-solid fa-heart"></i>
+        <span>Favourites</span>
+      </div>
+      <div class="playlists-btn menu-btn">
+        <i class="fa-solid fa-radio"></i>
+        <span>Your Playlists</span>
+      </div>
+      <div class="playlist-list">
+        
+        <div class="playlist-card">
+          <img src="\img\song art.jpg" class="playlist-card-art">
+          <span class="playlist-card-name">Playlist name can be this</span>
+        </div>
+
+        <div class="playlist-card">
+          <img src="\img\song art.jpg" class="playlist-card-art">
+          <span class="playlist-card-name">Playlist name can be this</span>
+        </div>
+
+        <div class="playlist-card">
+          <img src="\img\song art.jpg" class="playlist-card-art">
+          <span class="playlist-card-name">Playlist name can be this</span>
+        </div>
+
+        <div class="playlist-card">
+          <img src="\img\song art.jpg" class="playlist-card-art">
+          <span class="playlist-card-name">Playlist name can be this</span>
+        </div>
+
+        <div class="playlist-card">
+          <img src="\img\song art.jpg" class="playlist-card-art">
+          <span class="playlist-card-name">Playlist name can be this</span>
+        </div>
+
+      </div>
+
+    </div>
+    <div class="main-center">
+      <div class="feed">
+        <div class="relative-holder">
+          <div class="classification" id="classification">
+            <div class="class-line">
+              <div class="class-line-change" id="class-line-change"></div>
+            </div>
+            <div class="classes">
+              <div class="classi active-class" id="class-song" onclick="songPage()">Songs</div>
+              <div class="classi" id="class-artist" onclick="artistPage()">Artists</div>
+              <div class="classi" id="class-album" onclick="albumPage()">Albums</div>
+            </div>
+          </div>
+          <div class="list-holder" id="list-holder">
+            <div class="songlist" id="songlist">
+    
+              <div class="song-card-no-hover">
+                <div class="song-card-art-title" ></div>
+                <span class="song-card-title">Song Name</span>
+                <span class="song-card-title">Artist Name</span>
+                <span class="song-card-title">Album Name</span>
+                <span class="song-card-time-title">Time</span>
+                <div class="song-card-icons"></div>
+              </div>
+    
+              <div class="song-card">
+                <img class="song-card-art" src="\img\song art.jpg" alt="">
+                <span class="song-card-song-name">Song Name will be this long</span>
+                <span class="song-card-artist-name">Artist Name can be this long</span>
+                <span class="song-card-album-name">Album Name can be this long</span>
+                <span class="song-card-timestamp">00:00</span>
+                <div class="song-card-icons">
+                  <i class="fa-solid fa-heart"></i>
+                  <i class="fa-solid fa-play"></i>
+                  <i class="fa-solid fa-download"></i>
+                  <i class="fa-solid fa-plus"></i>
+                </div>
+              </div>
+    
+              <div class="song-card">
+                <img class="song-card-art" src="\img\song art.jpg" alt="">
+                <span class="song-card-song-name">Song Name will be this long</span>
+                <span class="song-card-artist-name">Artist Name can be this long</span>
+                <span class="song-card-album-name">Album Name can be this long</span>
+                <span class="song-card-timestamp">00:00</span>
+                <div class="song-card-icons">
+                  <i class="fa-solid fa-heart"></i>
+                  <i class="fa-solid fa-play"></i>
+                  <i class="fa-solid fa-download"></i>
+                  <i class="fa-solid fa-plus"></i>
+                </div>
+              </div>
+    
+              <div class="song-card">
+                <img class="song-card-art" src="\img\song art.jpg" alt="">
+                <span class="song-card-song-name">Song Name will be this long</span>
+                <span class="song-card-artist-name">Artist Name can be this long</span>
+                <span class="song-card-album-name">Album Name can be this long</span>
+                <span class="song-card-timestamp">00:00</span>
+                <div class="song-card-icons">
+                  <i class="fa-solid fa-heart"></i>
+                  <i class="fa-solid fa-play"></i>
+                  <i class="fa-solid fa-download"></i>
+                  <i class="fa-solid fa-plus"></i>
+                </div>
+              </div>
+    
+              <div class="song-card">
+                <img class="song-card-art" src="\img\song art.jpg" alt="">
+                <span class="song-card-song-name">Song Name will be this long</span>
+                <span class="song-card-artist-name">Artist Name can be this long</span>
+                <span class="song-card-album-name">Album Name can be this long</span>
+                <span class="song-card-timestamp">00:00</span>
+                <div class="song-card-icons">
+                  <i class="fa-solid fa-heart"></i>
+                  <i class="fa-solid fa-play"></i>
+                  <i class="fa-solid fa-download"></i>
+                  <i class="fa-solid fa-plus"></i>
+                </div>
+              </div>
+    
+              <div class="song-card">
+                <img class="song-card-art" src="\img\song art.jpg" alt="">
+                <span class="song-card-song-name">Song Name will be this long</span>
+                <span class="song-card-artist-name">Artist Name can be this long</span>
+                <span class="song-card-album-name">Album Name can be this long</span>
+                <span class="song-card-timestamp">00:00</span>
+                <div class="song-card-icons">
+                  <i class="fa-solid fa-heart"></i>
+                  <i class="fa-solid fa-play"></i>
+                  <i class="fa-solid fa-download"></i>
+                  <i class="fa-solid fa-plus"></i>
+                </div>
+              </div>
+    
+              <div class="song-card">
+                <img class="song-card-art" src="\img\song art.jpg" alt="">
+                <span class="song-card-song-name">Song Name will be this long</span>
+                <span class="song-card-artist-name">Artist Name can be this long</span>
+                <span class="song-card-album-name">Album Name can be this long</span>
+                <span class="song-card-timestamp">00:00</span>
+                <div class="song-card-icons">
+                  <i class="fa-solid fa-heart"></i>
+                  <i class="fa-solid fa-play"></i>
+                  <i class="fa-solid fa-download"></i>
+                  <i class="fa-solid fa-plus"></i>
+                </div>
+              </div>
+              
+            </div>
+            <div class="artistlist" id="artistlist">
+    
+              <div class="artist-card" onclick="artistSongPage()">
+                <img class="artist-card-img" src="/img/song art.jpg">
+                <span class="artist-card-name">Artist Name can be this</span>
+              </div>
+    
+              <div class="artist-card" onclick="artistSongPage()">
+                <img class="artist-card-img" src="/img/song art.jpg">
+                <span class="artist-card-name">Artist Name can be this</span>
+              </div>
+    
+              <div class="artist-card" onclick="artistSongPage()">
+                <img class="artist-card-img" src="/img/song art.jpg">
+                <span class="artist-card-name">Artist Name can be this</span>
+              </div>
+    
+              <div class="artist-card" onclick="artistSongPage()">
+                <img class="artist-card-img" src="/img/song art.jpg">
+                <span class="artist-card-name">Artist Name can be this</span>
+              </div>
+              
+              <div class="artist-card" onclick="artistSongPage()">
+                <img class="artist-card-img" src="/img/song art.jpg">
+                <span class="artist-card-name">Artist Name can be this</span>
+              </div>
+  
+              <div class="artist-card" onclick="artistSongPage()">
+                <img class="artist-card-img" src="/img/song art.jpg">
+                <span class="artist-card-name">Artist Name can be this</span>
+              </div>
+    
+              <div class="artist-card" onclick="artistSongPage()">
+                <img class="artist-card-img" src="/img/song art.jpg">
+                <span class="artist-card-name">Artist Name can be this</span>
+              </div>
+  
+              <div class="artist-card" onclick="artistSongPage()">
+                <img class="artist-card-img" src="/img/song art.jpg">
+                <span class="artist-card-name">Artist Name can be this</span>
+              </div>
+  
+              <div class="artist-card" onclick="artistSongPage()">
+                <img class="artist-card-img" src="/img/song art.jpg">
+                <span class="artist-card-name">Artist Name can be this</span>
+              </div>
+    
+              <div class="artist-card" onclick="artistSongPage()">
+                <img class="artist-card-img" src="/img/song art.jpg">
+                <span class="artist-card-name">Artist Name can be this</span>
+              </div>
+  
+              <div class="artist-card" onclick="artistSongPage()">
+                <img class="artist-card-img" src="/img/song art.jpg">
+                <span class="artist-card-name">Artist Name can be this</span>
+              </div>
+  
+              <div class="artist-card" onclick="artistSongPage()">
+                <img class="artist-card-img" src="/img/song art.jpg">
+                <span class="artist-card-name">Artist Name can be this</span>
+              </div>
+    
+            </div>
+            <div class="albumlist" id="albumlist">
+    
+    
+              <div class="album-card">
+                <div class="album-card-disp" onclick="albumSongPage()">
+                  <img class="album-img" src="/img/song art.jpg">
+                  <span class="album-name">Album can be long</span>
+                  <div class="album-play">
+                    <i class="fa-solid fa-play"></i>
+                  </div>
+                </div>
+                <div class="album-card-songs">
+                  <div class="album-song-card">
+                    <img class="album-song-card-art" src="\img\song art.jpg" alt="">
+                    <span class="album-song-card-song-name">Song Name will be this long</span>
+                    <span class="album-song-card-artist-name">Artist Name can be this long</span>
+                    <span class="album-song-card-timestamp">00:00</span>
+                    <div class="album-song-card-icons">
+                      <i class="fa-solid fa-heart"></i>
+                      <i class="fa-solid fa-play"></i>
+                      <i class="fa-solid fa-download"></i>
+                      <i class="fa-solid fa-plus"></i>
+                    </div>
+                  </div>
+    
+                  <div class="album-song-card">
+                    <img class="album-song-card-art" src="\img\song art.jpg" alt="">
+                    <span class="album-song-card-song-name">Song Name will be this long</span>
+                    <span class="album-song-card-artist-name">Artist Name can be this long</span>
+                    <span class="album-song-card-timestamp">00:00</span>
+                    <div class="album-song-card-icons">
+                      <i class="fa-solid fa-heart"></i>
+                      <i class="fa-solid fa-play"></i>
+                      <i class="fa-solid fa-download"></i>
+                      <i class="fa-solid fa-plus"></i>
+                    </div>
+                  </div>
+    
+                  <div class="album-song-card">
+                    <img class="album-song-card-art" src="\img\song art.jpg" alt="">
+                    <span class="album-song-card-song-name">Song Name will be this long</span>
+                    <span class="album-song-card-artist-name">Artist Name can be this long</span>
+                    <span class="album-song-card-timestamp">00:00</span>
+                    <div class="album-song-card-icons">
+                      <i class="fa-solid fa-heart"></i>
+                      <i class="fa-solid fa-play"></i>
+                      <i class="fa-solid fa-download"></i>
+                      <i class="fa-solid fa-plus"></i>
+                    </div>
+                  </div>
+    
+                </div>
+              </div>
+    
+              <div class="album-card">
+                <div class="album-card-disp" onclick="albumSongPage()">
+                  <img class="album-img" src="/img/song art.jpg">
+                  <span class="album-name">Album can be long</span>
+                  <div class="album-play">
+                    <i class="fa-solid fa-play"></i>
+                  </div>
+                </div>
+                <div class="album-card-songs">
+                  <div class="album-song-card">
+                    <img class="album-song-card-art" src="\img\song art.jpg" alt="">
+                    <span class="album-song-card-song-name">Song Name will be this long</span>
+                    <span class="album-song-card-artist-name">Artist Name can be this long</span>
+                    <span class="album-song-card-timestamp">00:00</span>
+                    <div class="album-song-card-icons">
+                      <i class="fa-solid fa-heart"></i>
+                      <i class="fa-solid fa-play"></i>
+                      <i class="fa-solid fa-download"></i>
+                      <i class="fa-solid fa-plus"></i>
+                    </div>
+                  </div>
+    
+                  <div class="album-song-card">
+                    <img class="album-song-card-art" src="\img\song art.jpg" alt="">
+                    <span class="album-song-card-song-name">Song Name will be this long</span>
+                    <span class="album-song-card-artist-name">Artist Name can be this long</span>
+                    <span class="album-song-card-timestamp">00:00</span>
+                    <div class="album-song-card-icons">
+                      <i class="fa-solid fa-heart"></i>
+                      <i class="fa-solid fa-play"></i>
+                      <i class="fa-solid fa-download"></i>
+                      <i class="fa-solid fa-plus"></i>
+                    </div>
+                  </div>
+    
+                  <div class="album-song-card">
+                    <img class="album-song-card-art" src="\img\song art.jpg" alt="">
+                    <span class="album-song-card-song-name">Song Name will be this long</span>
+                    <span class="album-song-card-artist-name">Artist Name can be this long</span>
+                    <span class="album-song-card-timestamp">00:00</span>
+                    <div class="album-song-card-icons">
+                      <i class="fa-solid fa-heart"></i>
+                      <i class="fa-solid fa-play"></i>
+                      <i class="fa-solid fa-download"></i>
+                      <i class="fa-solid fa-plus"></i>
+                    </div>
+                  </div>
+    
+                </div>
+              </div>
+    
+            </div>
+          
+        </div>
+        
+        </div>
+        <div class="artist-page" id="artist-page">
+          <div class="back-icon-holder">
+            <div class="back-icon" id="artist-song-page-back" onclick="artistSongPageBack()">
+              <i class="fa-solid fa-caret-left"></i>
+            </div>
+            <span>Back</span>
+          </div>
+          <div class="artist-info-card-holder">
+            <img class="artist-info-card-image" src="/img/song art.jpg">
+            <div class="artist-info-card">
+              <span>Artist</span>
+              <span class="artist-name-artist-card">Artist Name can be this long</span>
+              <div class="artist-card-play">
+                <div class="artist-play-icon">
+                  <i class="fa-solid fa-play"></i>
+                </div>
+                <span>Play all songs</span>
+              </div>
+            </div>
+          </div>
+          <div class="artist-song-list">
+  
+            <div class="song-card">
+              <img class="song-card-art" src="\img\song art.jpg" alt="">
+              <span class="song-card-song-name">Song Name will be this long</span>
+              <span class="song-card-artist-name">Artist Name can be this long</span>
+              <span class="song-card-album-name">Album Name can be this long</span>
+              <span class="song-card-timestamp">00:00</span>
+              <div class="song-card-icons">
+                <i class="fa-solid fa-heart"></i>
+                <i class="fa-solid fa-play"></i>
+                <i class="fa-solid fa-download"></i>
+                <i class="fa-solid fa-plus"></i>
+              </div>
+            </div>
+  
+            <div class="song-card">
+              <img class="song-card-art" src="\img\song art.jpg" alt="">
+              <span class="song-card-song-name">Song Name will be this long</span>
+              <span class="song-card-artist-name">Artist Name can be this long</span>
+              <span class="song-card-album-name">Album Name can be this long</span>
+              <span class="song-card-timestamp">00:00</span>
+              <div class="song-card-icons">
+                <i class="fa-solid fa-heart"></i>
+                <i class="fa-solid fa-play"></i>
+                <i class="fa-solid fa-download"></i>
+                <i class="fa-solid fa-plus"></i>
+              </div>
+            </div>
+  
+            <div class="song-card">
+              <img class="song-card-art" src="\img\song art.jpg" alt="">
+              <span class="song-card-song-name">Song Name will be this long</span>
+              <span class="song-card-artist-name">Artist Name can be this long</span>
+              <span class="song-card-album-name">Album Name can be this long</span>
+              <span class="song-card-timestamp">00:00</span>
+              <div class="song-card-icons">
+                <i class="fa-solid fa-heart"></i>
+                <i class="fa-solid fa-play"></i>
+                <i class="fa-solid fa-download"></i>
+                <i class="fa-solid fa-plus"></i>
+              </div>
+            </div>
+  
+            <div class="song-card">
+              <img class="song-card-art" src="\img\song art.jpg" alt="">
+              <span class="song-card-song-name">Song Name will be this long</span>
+              <span class="song-card-artist-name">Artist Name can be this long</span>
+              <span class="song-card-album-name">Album Name can be this long</span>
+              <span class="song-card-timestamp">00:00</span>
+              <div class="song-card-icons">
+                <i class="fa-solid fa-heart"></i>
+                <i class="fa-solid fa-play"></i>
+                <i class="fa-solid fa-download"></i>
+                <i class="fa-solid fa-plus"></i>
+              </div>
+            </div>
+  
+          </div>
+        </div>
+
+        <div class="album-page" id="album-page">
+          <div class="back-icon-holder">
+            <div class="back-icon" id="album-song-page-back" onclick="albumSongPageBack()">
+              <i class="fa-solid fa-caret-left"></i>
+            </div>
+            <span>Back</span>
+          </div>
+          <div class="album-info-card-holder">
+            <img class="album-info-card-image" src="/img/song art.jpg">
+            <div class="album-info-card">
+              <span>Album</span>
+              <span class="album-name-album-card">Album Name can this long</span>
+              <div class="album-card-play">
+                <div class="album-play-icon">
+                  <i class="fa-solid fa-play"></i>
+                </div>
+                <span>Play all songs</span>
+              </div>
+            </div>
+          </div>
+          <div class="album-song-list">
+  
+            <div class="song-card">
+              <img class="song-card-art" src="\img\song art.jpg" alt="">
+              <span class="song-card-song-name">Song Name will be this long</span>
+              <span class="song-card-artist-name">Artist Name can be this long</span>
+              <span class="song-card-album-name">Album Name can be this long</span>
+              <span class="song-card-timestamp">00:00</span>
+              <div class="song-card-icons">
+                <i class="fa-solid fa-heart"></i>
+                <i class="fa-solid fa-play"></i>
+                <i class="fa-solid fa-download"></i>
+                <i class="fa-solid fa-plus"></i>
+              </div>
+            </div>
+  
+            <div class="song-card">
+              <img class="song-card-art" src="\img\song art.jpg" alt="">
+              <span class="song-card-song-name">Song Name will be this long</span>
+              <span class="song-card-artist-name">Artist Name can be this long</span>
+              <span class="song-card-album-name">Album Name can be this long</span>
+              <span class="song-card-timestamp">00:00</span>
+              <div class="song-card-icons">
+                <i class="fa-solid fa-heart"></i>
+                <i class="fa-solid fa-play"></i>
+                <i class="fa-solid fa-download"></i>
+                <i class="fa-solid fa-plus"></i>
+              </div>
+            </div>
+  
+            <div class="song-card">
+              <img class="song-card-art" src="\img\song art.jpg" alt="">
+              <span class="song-card-song-name">Song Name will be this long</span>
+              <span class="song-card-artist-name">Artist Name can be this long</span>
+              <span class="song-card-album-name">Album Name can be this long</span>
+              <span class="song-card-timestamp">00:00</span>
+              <div class="song-card-icons">
+                <i class="fa-solid fa-heart"></i>
+                <i class="fa-solid fa-play"></i>
+                <i class="fa-solid fa-download"></i>
+                <i class="fa-solid fa-plus"></i>
+              </div>
+            </div>
+  
+            <div class="song-card">
+              <img class="song-card-art" src="\img\song art.jpg" alt="">
+              <span class="song-card-song-name">Song Name will be this long</span>
+              <span class="song-card-artist-name">Artist Name can be this long</span>
+              <span class="song-card-album-name">Album Name can be this long</span>
+              <span class="song-card-timestamp">00:00</span>
+              <div class="song-card-icons">
+                <i class="fa-solid fa-heart"></i>
+                <i class="fa-solid fa-play"></i>
+                <i class="fa-solid fa-download"></i>
+                <i class="fa-solid fa-plus"></i>
+              </div>
+            </div>
+  
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="right-bar">
+      <div class="song-details"></div>
+      <div class="queue-holder"></div>
+    </div>
+  </div>
+</body>
+
+<div class="music-player-holder">
+
+  <div class="music-player-art-holder">
+    <img src="/img/song art.jpg" class="music-player-art">
+  </div>
+
+  <div class="music-player-song-details">
+    <span class="music-player-song-name">Song name can be this long</span>
+    <span class="music-player-artits-name"> Artist name can be</span>
+  </div>
+
+  <div class="music-player-icon">
+    <i class="fas fa-backward"></i>
+    <div class="music-player-play-icon">
+      <i class="fa-solid fa-play"></i>
+    </div>
+    <i class="fas fa-forward"></i>
+  </div>
+
+  <div class="progress-tracker-holder">
+    <div class="progress-bar">
+      <div class="update-bar"></div>
+      <div class="progress-circle"></div>
+    </div>
+  </div>
+
+  <div class="music-player-timestamp">
+    <span id="current-time">0:00</span> / <span id="duration">0:00</span>
+  </div>
+
+  <div class="music-player-audio-controller">
+    <i class="fa-solid fa-volume-high"></i>
+    <div class="audio-bar">
+      <div class="audio-update-bar"></div>
+      <div class="audio-progress-circle"></div>
+    </div>
+  </div>
+
+  <div class="music-player-end-icons">
+    <i class="fa-solid fa-heart"></i>
+    <i class="fa-solid fa-repeat"></i>
+    <i class="fa-solid fa-download"></i>
+    <i class="fa-solid fa-plus"></i>
+  </div>
+
+</div>
+
+<div class="music-player"></div>
+<script src = "\js\main.js"></script>
+</html>

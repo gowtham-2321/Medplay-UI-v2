@@ -176,7 +176,6 @@ i {
     width: 100%;
     box-sizing: border-box;
     padding: 10px;
-    padding-top: 0;
     height: fit-content;
     display: block;
     opacity: 100%;
@@ -609,7 +608,7 @@ i {
     position: relative;
 }
 .update-bar {
-    width: 50%;
+    width: 0%;
     height: 4px;
     background: #ffd52d;
     position: relative;

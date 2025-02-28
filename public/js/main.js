@@ -1,3 +1,4 @@
+//gowhthiee variii
 let song_selected = true;
 let artist_selected = false;
 let album_selected = false;
@@ -15,6 +16,9 @@ let list_holder = document.getElementById("list-holder");
 let artist_song_page_back= document.getElementById("artist-song-page-back");
 let album_song_page_back= document.getElementById("album-song-page-back");
 
+//jeevan variii
+let pageNo = 1;
+let pageSize = 20;
 
 function songPage() {
     song_list.style.display = "block"; 
@@ -172,15 +176,7 @@ function albumSongPageBack() {
     }, 300);
 }
 
-const song_cards = document.querySelectorAll('.song-card');
-song_cards.forEach(song_card => {
-    song_card.addEventListener('click', () => {
-        song_cards.forEach(s => s.classList.remove('song-card-selected'));
-        song_card.classList.add('song-card-selected');
-    });
-});
-
-const menu_btns = document.querySelectorAll('.menu-btn');
+var menu_btns = document.querySelectorAll('.menu-btn');
 menu_btns.forEach(menu_btn => {
     menu_btn.addEventListener('click', () => {
         menu_btns.forEach(s => s.classList.remove('menu-btn-selected'));
@@ -188,11 +184,101 @@ menu_btns.forEach(menu_btn => {
     });
 });
 
-const album_song_cards = document.querySelectorAll('.album-song-card');
+var album_song_cards = document.querySelectorAll('.album-song-card');
 album_song_cards.forEach(card => {
     card.addEventListener('click', () => {
         album_song_cards.forEach(c => c.classList.remove('album-song-selected'));
         card.classList.add('album-song-selected');
     });
 });
+
+var inpField = document.getElementById("search-query");
+inpField.addEventListener("keypress", function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        console.log("Enter pressed");
+        searchSongs(true);
+    }
+});
     
+async function searchSongs(isNew) {
+
+    const query = document.getElementById("search-query").value;
+    const songList = document.getElementById("songlist");
+    songList.innerHTML =``;
+    
+    //console.log(isNew);
+    try {
+        if (!isNew) {
+            pageNo= pageNo + 1;
+        }
+        else {
+            pageNo = 1;
+        }
+        const response = await fetch(`https://jiosaavn-api-privatecvc2.vercel.app/search/songs?query=${query}&limit=24&page=${pageNo}`);
+        const data = await response.json();
+        const songs = data.data.results || [];
+        //console.log(songs);
+        
+        if (songs.length === 0) {
+            throw new Error("No songs found");
+        }
+        
+        for (let i = 0; i < 25 && i < songs.length; i++) {
+            createSongCard(songs[i], songList);
+        }
+    } catch (error) {
+        console.error("Error fetching songs", error);
+        songList.innerHTML = "<p>No songs found</p>";
+    }
+
+    var song_cards = document.querySelectorAll('.song-card');
+    song_cards.forEach(song_card => {
+        song_card.addEventListener('click', () => {
+            song_cards.forEach(s => s.classList.remove('song-card-selected'));
+            song_card.classList.add('song-card-selected');
+        });
+    });
+}
+
+function createSongCard(song, songList) {
+    const card = document.createElement("div");
+    card.classList.add("song-card");
+    const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].link || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+    //name slicing
+    let new_name = song.name;
+    let new_art_name = song.primaryArtists;
+    let new_album_name = song.album.name;
+    if (new_name.length > 35) {
+        new_name = new_name.slice(0,35)+"...";
+    }
+    if (new_art_name.length > 25) {
+        new_art_name = new_art_name.slice(0,25)+"...";
+    }
+    //slicing end
+    card.innerHTML = `
+            <img class="song-card-art" src="${imageUrl}" alt="">
+            <span class="song-card-song-name">${new_name ||"Unkown Song"}</span>
+            <span class="song-card-artist-name">${new_art_name ||"Unkown Artist"}</span>
+            <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
+            <span class="song-card-timestamp">00:00</span>
+            <div class="song-card-icons">
+                <i class="fa-solid fa-heart"></i>
+                <i class="fa-solid fa-play"></i>
+                <i class="fa-solid fa-download"></i>
+                <i class="fa-solid fa-plus"></i>
+            </div>
+    `;
+    const play= card.querySelector(".fa-play");
+    play.onclick = () => playmySong(song);
+
+    const down = card.querySelector(".fa-download");
+    down.onclick = () => {
+        downloadSong(song);
+        
+    }
+    const queueButton = card.querySelector(".fa-plus");
+    queueButton.onclick = () => addToQueue(song);
+
+    songList.appendChild(card);
+}

@@ -175,6 +175,7 @@ i {
 }
 
 .songlist {
+    margin-top: 30px;
     position: absolute;
     width: 100%;
     box-sizing: border-box;
@@ -184,7 +185,7 @@ i {
     opacity: 100%;
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
     overflow-y: auto;
-    max-height: 60vh;
+    max-height: 65vh;
 }
 .song-card {
     display: flex;
@@ -564,6 +565,8 @@ i {
     padding: 20px;
     box-sizing: border-box;
     gap: 20px;
+    box-shadow: 0px -65px 161px 200px rgba(3, 3, 3, 0.308);
+    overflow: hidden;
 }
 
 .music-player-art {
@@ -669,8 +672,24 @@ i {
 
 .music-player-end-icons {
     display: flex;
-    gap: 30px;
+    align-items: center;
+    gap: 20px;
     color: #ffd52d;
+}
+
+.music-player-end-icons div {
+    border-radius: 50%;
+    padding: 5px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.repeat-active {
+    outline: 2px solid #ffd52d;
 }
 
 .relative-holder {
@@ -758,12 +777,11 @@ i {
     gap: 10px;
 }
 
+
+
 .fa-heart {
     color: #f05542;
 }
-
-
-
 
 
 

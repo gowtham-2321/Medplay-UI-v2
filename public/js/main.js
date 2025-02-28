@@ -401,6 +401,63 @@ function playPause() {
         audioPlayer.pause();
     }
 }
+
+// Volume adjustment and seeking
+document.addEventListener('DOMContentLoaded', () => {
+    const audioPlayer = document.getElementById('audio-player');
+    const audioBar = document.querySelector('.audio-bar');
+    const audioUpdateBar = document.querySelector('.audio-update-bar');
+    const audioProgressCircle = document.querySelector('.audio-progress-circle');
+
+    audioProgressCircle.addEventListener('mousedown', (event) => {
+        event.preventDefault();
+        document.addEventListener('mousemove', onDragVolume);
+        document.addEventListener('mouseup', onStopDragVolume);
+    });
+
+    function onDragVolume(event) {
+        const barWidth = audioBar.clientWidth;
+        const rect = audioBar.getBoundingClientRect();
+        const offsetX = event.clientX - rect.left;
+        const volume = Math.min(Math.max(offsetX / barWidth, 0), 1);
+        audioPlayer.volume = volume;
+        updateAudioBar(volume);
+    }
+
+    function onStopDragVolume() {
+        document.removeEventListener('mousemove', onDragVolume);
+        document.removeEventListener('mouseup', onStopDragVolume);
+    }
+
+    function updateAudioBar(volume) {
+        const barWidth = audioBar.clientWidth - 6;
+        const updateWidth = volume * barWidth;
+        audioUpdateBar.style.width = `${updateWidth}px`;
+        audioProgressCircle.style.left = `${updateWidth}px`;
+    }
+
+    // Initialize the audio bar with the current volume
+    updateAudioBar(audioPlayer.volume);
+});
+
+document.addEventListener('keydown', function(event) {
+    if (event.code === "Space" && !event.target.matches("input, textarea")) {
+        event.preventDefault();
+        playPause();
+    }
+});
+
+let audioPlayerEvent = document.getElementById("audio-player");
+
+audioPlayerEvent.onplay = () => {
+    const playBtn = document.getElementById("play-icon");
+    playBtn.classList.replace("fa-play", "fa-pause");
+};
+
+audioPlayerEvent.onpause = () => {
+    const playBtn = document.getElementById("play-icon");
+    playBtn.classList.replace("fa-pause", "fa-play");
+};
 let isRepeat = false;
 let repeat_icon = document.getElementById("repeat-icon");
 function repeatSong() {

@@ -2,6 +2,8 @@
 let song_selected = true;
 let artist_selected = false;
 let album_selected = false;
+let currentSong = null;
+let isRepeat = false;
 let song_class = document.getElementById("class-song");
 let artist_class = document.getElementById("class-artist");
 let album_class = document.getElementById("class-album");
@@ -15,6 +17,7 @@ let classification = document.getElementById("classification");
 let list_holder = document.getElementById("list-holder");
 let artist_song_page_back= document.getElementById("artist-song-page-back");
 let album_song_page_back= document.getElementById("album-song-page-back");
+let repeat_icon = document.getElementById("repeat-icon");
 
 //jeevan variii
 let pageNo = 1;
@@ -283,10 +286,15 @@ function createSongCard(song, songList) {
     const down = card.querySelector(".fa-download");
     down.onclick = () => {
         downloadSong(song);
-        
     }
     const queueButton = card.querySelector(".fa-plus");
     queueButton.onclick = () => addToQueue(song);
+
+    const heartButton = card.querySelector(".fa-heart");
+    heartButton.onclick = () => {
+        console.log(heartButton.classList);
+        heartButton.classList.replace("fa-regular", "fa-solid");
+    }
 
     songList.appendChild(card);
 }
@@ -477,8 +485,16 @@ audioPlayerEvent.onpause = () => {
     const playBtn = document.getElementById("play-icon");
     playBtn.classList.replace("fa-pause", "fa-play");
 };
-let isRepeat = false;
-let repeat_icon = document.getElementById("repeat-icon");
+
+audioPlayerEvent.onended = () => {
+    if(isRepeat){
+       playmySong(currentSong);
+    }
+    else {
+        playNextInQueue();
+    }
+};
+
 function repeatSong() {
     if(isRepeat) {
         repeat_icon.classList.remove("repeat-active");

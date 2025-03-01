@@ -15,7 +15,7 @@ Medplay is an ad-free modern music player built using Flask for the backend and 
 
 1. **Clone the repository**:
     ```sh
-    git clone https://github.com/yourusername/Medplay-UI-v2.git
+    git clone https://github.com/gowtham-2321/Medplay-UI-v2.git
     cd Medplay-UI-v2
     ```
 

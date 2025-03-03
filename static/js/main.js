@@ -18,6 +18,11 @@ let list_holder = document.getElementById("list-holder");
 let artist_song_page_back= document.getElementById("artist-song-page-back");
 let album_song_page_back= document.getElementById("album-song-page-back");
 let repeat_icon = document.getElementById("repeat-icon");
+let feed = document.getElementById("feed");
+let queue = document.getElementById("queue");
+let feed_btn = document.getElementById("feed-btn")
+
+
 
 //jeevan variii
 let pageNo = 1;
@@ -204,7 +209,9 @@ inpField.addEventListener("keypress", function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
         console.log("Enter pressed");
+        displayFeed();
         searchSongs(true);
+        
     }
 });
     
@@ -581,4 +588,125 @@ async function downloadSong(song) {
     console.log(filename);
 
     await convertMp4ToMp3(downloadUrl, imageUrl, artist, title, album, year, genre);
+}
+
+function displayFeed() {
+
+    var menu_btns = document.querySelectorAll('.menu-btn');
+        menu_btns.forEach(menu_btn => {
+            menu_btn.classList.remove('menu-btn-selected');
+            feed_btn.classList.add('menu-btn-selected');
+        });
+
+    feed.style.display = "block"; 
+    setTimeout(() => {
+        feed.style.opacity = "1";
+    }, 300);
+
+    queue.style.opacity = "0"; 
+    setTimeout(() => {
+        queue.style.display = "none";
+    }, 300);
+}
+
+function displayQueue() {
+    queue.style.display = "block"; 
+    setTimeout(() => {
+        queue.style.opacity = "1";
+    }, 300);
+
+
+    feed.style.opacity = "0"; 
+    setTimeout(() => {
+        feed.style.display = "none";
+    }, 300);
+}
+
+let songQueue = [];
+
+function addToQueue(song) {
+    songQueue.push(song);
+    updateQueueDisplay();
+}
+
+function removeFromQueue(index) {
+    songQueue.splice(index, 1);
+    updateQueueDisplay();
+    if (songQueue.length === 0) {
+        let bla= document.getElementById("queuelist");
+        bla.innerHTML = `<span>No songs in queue</span>`;
+    }
+}
+
+function playNextInQueue() {
+    if (songQueue.length > 0) {
+        const nextSong = songQueue.shift();
+        playmySong(nextSong);
+        updateQueueDisplay();
+        if (songQueue.length === 0) {
+            let bla= document.getElementById("queue-list");
+            bla.innerHTML = `<span>No songs in queue</span>`;
+    
+        }
+    }
+}
+
+function updateQueueDisplay() {
+    const queueContainer = document.getElementById("queue-list");
+    queueContainer.innerHTML = "";
+    songQueue.forEach((song, index) => {
+
+        const queueItem = document.createElement("div");
+        queueItem.classList.add("song-card");
+
+        const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].link || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+        //name slicing
+        let new_name = song.name;
+        let new_art_name = song.primaryArtists;
+        let new_album_name = song.album.name;
+        let new_duration = formatTime(song.duration);
+        if (new_name.length > 45) {
+            new_name = new_name.slice(0,45)+"...";
+        }
+        if (new_art_name.length > 35) {
+            new_art_name = new_art_name.slice(0,35)+"...";
+        }
+        if (new_album_name.length > 35) {
+            new_album_name = new_art_name.slice(0,35)+"...";
+        }
+
+        queueItem.innerHTML = `
+        <img class="song-card-art" src="${imageUrl}" alt="">
+            <span class="song-card-song-name">${new_name ||"Unkown Song"}</span>
+            <span class="song-card-artist-name">${new_art_name ||"Unkown Artist"}</span>
+            <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
+            <span class="song-card-timestamp">${new_duration || "00:00"}</span>
+            <div class="song-card-icons">
+                <i class="fa-regular fa-heart"></i>
+                <i class="fa-solid fa-play"></i>
+                <i class="fa-solid fa-download"></i>
+                <i class="fa-solid fa-trash"></i>
+            </div>
+
+        `
+
+        const play= queueItem.querySelector(".fa-play");
+        play.onclick = () => playmySong(song);
+
+        const down = queueItem.querySelector(".fa-download");
+        down.onclick = () => {
+            downloadSong(song);
+        }
+        const queueButton = queueItem.querySelector(".fa-trash");
+        queueButton.onclick = () => removeFromQueue(index);
+
+        const heartButton = queueItem.querySelector(".fa-heart");
+        heartButton.onclick = () => {
+            console.log(heartButton.classList);
+            heartButton.classList.replace("fa-regular", "fa-solid");
+        }
+
+        queueItem.setAttribute("draggable", true);
+        queueContainer.appendChild(queueItem);
+    });
 }

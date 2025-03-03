@@ -24,23 +24,23 @@
   </div>
   <div class="whole-page"> 
     <div class="menu-bar">
-      <div class="feed-btn menu-btn menu-btn-selected">
+      <div class="feed-btn menu-btn menu-btn-selected" id="feed-btn" onclick="displayFeed()">
         <i class="fa-solid fa-music"></i>
         <span>Feed</span>
       </div>
-      <div class="queue-btn menu-btn">
+      <div class="queue-btn menu-btn" id="queue-btn" onclick="displayQueue()">
         <i class="fa-solid fa-list"></i>
         <span>Queue</span>
       </div>
-      <div class="themes-btn menu-btn">
+      <div class="themes-btn menu-btn" id="themes-btn" onclick="displayThemes()">
         <i class="fa-solid fa-paintbrush"></i>
         <span>Themes</span>
       </div>
-      <div class="favourites-btn menu-btn">
+      <div class="favourites-btn menu-btn" id="favourites-btn" onclick="displayFavourites()">
         <i class="fa-regular fa-heart"></i>
         <span>Favourites</span>
       </div>
-      <div class="playlists-btn menu-btn">
+      <div class="playlists-btn menu-btn" id="playlists-btn" onclick="displayPlaylists()">
         <i class="fa-solid fa-radio"></i>
         <span>Your Playlists</span>
       </div>
@@ -75,7 +75,7 @@
 
     </div>
     <div class="main-center">
-      <div class="feed">
+      <div class="feed" id="feed">
         <div class="relative-holder">
           <div class="classification" id="classification">
             <div class="class-line">
@@ -426,6 +426,17 @@
           </div>
         </div>
 
+      </div>
+      <div class="queue" id="queue">
+        <div class="big-box">
+          <div class="songs-left"></div>
+          <div class="minutes-left"></div>
+          <div class="download-queue"></div>
+        </div>
+        <div class="queuelist" id="queue-list">
+
+          <span>No songs in queue</span>
+        </div>
       </div>
     </div>
     <div class="right-bar">

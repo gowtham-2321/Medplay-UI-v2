@@ -777,12 +777,47 @@ i {
     gap: 10px;
 }
 
-
-
 .fa-heart {
     color: #f05542;
 }
 
+
+.feed {
+    opacity: 1;
+    transition: opacity .3s ease-in-out, display .3s ease-in-out;
+}
+
+.queue {
+    display: none;
+    opacity: 0;
+    transition: opacity .3s ease-in-out, display .3s ease-in-out;
+    height: 100%;
+}
+
+.big-box {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    margin-bottom: 50px;
+}
+
+.songs-left , .download-queue , .minutes-left{
+    width: 250px;
+    height: 160px;
+    border-radius: 20px;
+    background: #303030;
+}
+
+.queuelist {
+    position: relative;
+    display: block;
+    padding: 20px;
+    height: fit-content;
+    overflow-y: auto;
+    max-height: 47vh;
+}
 
 
 @media only screen and (max-width: 1590px) {

@@ -1,4 +1,6 @@
 //gowhthiee variii
+let noOfSongs = 0;
+let duration = 0;
 let song_selected = true;
 let artist_selected = false;
 let album_selected = false;
@@ -20,8 +22,9 @@ let album_song_page_back= document.getElementById("album-song-page-back");
 let repeat_icon = document.getElementById("repeat-icon");
 let feed = document.getElementById("feed");
 let queue = document.getElementById("queue");
-let feed_btn = document.getElementById("feed-btn")
-
+let feed_btn = document.getElementById("feed-btn");
+let song_count = document.getElementById("song-count");
+let minute_count = document.getElementById("minute-count");
 
 
 //jeevan variii
@@ -312,6 +315,7 @@ function playmySong(song) {
     const nowPlaying = document.getElementById("player-song-name");
     const nowArtist = document.getElementById("player-artist-name");
     const albumArt = document.getElementById("player-album-art");
+    const playerDownloadIcon = document.getElementById("player-download-icon")
     let icon = document.getElementById("play-icon");
     icon.classList.replace("fa-play", "fa-pause");
     const artLink = `/image/?url=${encodeURIComponent(song.image[1].link || `{{ url_for('static', filename="img/plc.png")}}`)}`;
@@ -335,6 +339,7 @@ function playmySong(song) {
     nowPlaying.textContent = `${new_name || "Unknown Song"}`;
     nowArtist.textContent = `${new_art_name || "Unknown Artist"}`;
 
+    playerDownloadIcon.onclick = () => downloadSong(song);
 }
 
 //progress tracking
@@ -624,19 +629,58 @@ function displayQueue() {
 
 let songQueue = [];
 
+function songCountTime()
+{
+    noOfSongs = songQueue.length;
+    duration = 0;
+    if (noOfSongs === 0) {
+        minute_count.innerHTML = "00:00:00";
+    }
+    else {
+        songQueue.forEach(song => {
+            duration = +duration + +song.duration;
+        })
+        console.log(duration);
+        minute_count.innerHTML = formatTimeHours(duration);
+    }
+    song_count.innerHTML = `${noOfSongs}`;
+}
+
+function formatTimeHours(seconds) {
+    const hoursQ = Math.floor(seconds / 3600);
+    console.log(hoursQ);
+    const minutesQ = Math.floor((seconds % 3600) / 60);
+    const secsQ = Math.floor(seconds % 60);
+
+    return `${hoursQ > 0 ? hoursQ + ':' : ''}${hoursQ > 0 ? String(minutesQ).padStart(2, '0') : minutesQ}:${String(secsQ).padStart(2, '0')}`;
+}
+
+
 function addToQueue(song) {
     songQueue.push(song);
+    songCountTime();
     updateQueueDisplay();
+
+    var song_cards = document.querySelectorAll('.song-card');
+    song_cards.forEach(song_card => {
+        song_card.addEventListener('click', () => {
+            song_cards.forEach(s => s.classList.remove('song-card-selected'));
+            song_card.classList.add('song-card-selected');
+        });
+    });
+
 }
 
 function removeFromQueue(index) {
     songQueue.splice(index, 1);
     updateQueueDisplay();
     if (songQueue.length === 0) {
-        let bla= document.getElementById("queuelist");
+        let bla= document.getElementById("queue-list");
         bla.innerHTML = `<span>No songs in queue</span>`;
     }
+    songCountTime();
 }
+
 
 function playNextInQueue() {
     if (songQueue.length > 0) {
@@ -649,6 +693,7 @@ function playNextInQueue() {
     
         }
     }
+    songCountTime();
 }
 
 function updateQueueDisplay() {
@@ -658,6 +703,7 @@ function updateQueueDisplay() {
 
         const queueItem = document.createElement("div");
         queueItem.classList.add("song-card");
+        queueItem.classList.add("queue-Item");
 
         const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].link || `{{ url_for('static', filename="img/plc.png")}}`)}`;
         //name slicing
@@ -676,7 +722,7 @@ function updateQueueDisplay() {
         }
 
         queueItem.innerHTML = `
-        <img class="song-card-art" src="${imageUrl}" alt="">
+            <img class="song-card-art" src="${imageUrl}" alt="">
             <span class="song-card-song-name">${new_name ||"Unkown Song"}</span>
             <span class="song-card-artist-name">${new_art_name ||"Unkown Artist"}</span>
             <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
@@ -709,4 +755,28 @@ function updateQueueDisplay() {
         queueItem.setAttribute("draggable", true);
         queueContainer.appendChild(queueItem);
     });
+    songCountTime();
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const queueList = document.getElementById("queue-list");
+    new Sortable(queueList, {
+        animation: 150,
+        onEnd: function(evt) {
+            const oldIndex = evt.oldIndex;
+            const newIndex = evt.newIndex;
+            moveQueueItem(oldIndex, newIndex);
+        }
+    });
+});
+
+function moveQueueItem(oldIndex, newIndex) {
+    if (newIndex >= songQueue.length) {
+        let k = newIndex - songQueue.length + 1;
+        while (k--) {
+            songQueue.push(undefined);
+        }
+    }
+    songQueue.splice(newIndex, 0, songQueue.splice(oldIndex, 1)[0]);
+    updateQueueDisplay();
 }

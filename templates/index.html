@@ -429,9 +429,24 @@
       </div>
       <div class="queue" id="queue">
         <div class="big-box">
-          <div class="songs-left"></div>
-          <div class="minutes-left"></div>
-          <div class="download-queue"></div>
+          <div class="songs-left">
+            <span id="song-count">0</span>
+            <span>Songs</span>
+          </div>
+          <div class="minutes-left">
+            <span id="minute-count">00:00</span>
+            <span>Duration</span>
+          </div>
+          <div class="icon-queue">
+            <div class="download-queue">
+              <i class="fa-solid fa-download"></i>
+              <span>Download Queue</span>
+            </div>
+            <div class="play-queue" onclick="playNextInQueue()">
+              <i class="fa-solid fa-play"></i>
+              <span>Play Queue</span>
+            </div>
+          </div>
         </div>
         <div class="queuelist" id="queue-list">
 
@@ -487,11 +502,12 @@
   <div class="music-player-end-icons">
     <div><i class="fa-regular fa-heart"></i></div>
     <div id="repeat-icon"><i class="fa-solid fa-repeat" onclick="repeatSong()"></i></div>
-    <div><i class="fa-solid fa-download"></i></div>
+    <div><i class="fa-solid fa-download" id="player-download-icon"></i></div>
   </div>
 
 </div>
 
 <audio id = "audio-player" ontimeupdate="updateProgress()" onloadedmetadata="updateDuration()"></audio>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 <script src = "{{ url_for('static', filename="js/main.js")}}"></script>
 </html>

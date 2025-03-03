@@ -803,22 +803,62 @@ i {
     margin-bottom: 50px;
 }
 
-.songs-left , .download-queue , .minutes-left{
-    width: 250px;
+.songs-left , .minutes-left{
+    width: 300px;
     height: 160px;
     border-radius: 20px;
     background: #303030;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #ffd52d;
+}
+
+#song-count, #minute-count {
+    font-size: 50px;
+    color: white;
+}
+
+.icon-queue {
+    height: 160px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.download-queue , .play-queue{
+    
+    width: 300px;
+    height: 70px;
+    border-radius: 10px;
+    background: #303030;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    cursor: pointer;
+}
+
+.download-queue > i , .play-queue > i {
+    color:#ffd52d;
 }
 
 .queuelist {
     position: relative;
     display: block;
-    padding: 20px;
+    padding: 10px;
     height: fit-content;
     overflow-y: auto;
     max-height: 47vh;
 }
 
+.queue-Item:hover {
+    cursor: move;
+}
 
 @media only screen and (max-width: 1590px) {
     .song-card-album-name{

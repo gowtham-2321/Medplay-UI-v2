@@ -251,7 +251,7 @@ async function searchSongs(isNew, q) {
 function createSongCard(song, songList) {
     const card = document.createElement("div");
     card.classList.add("song-card");
-    const imageUrl = `/image/?url=${encodeURIComponent(song.image[0].link || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+    const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].link || `{{ url_for('static', filename="img/plc.png")}}`)}`;
     //name slicing
     let new_name = song.name;
     let new_art_name = song.primaryArtists;

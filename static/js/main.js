@@ -1,4 +1,6 @@
 //gowhthiee variii
+let noOfSongs = 0;
+let duration = 0;
 let song_selected = true;
 let artist_selected = false;
 let album_selected = false;
@@ -18,6 +20,13 @@ let list_holder = document.getElementById("list-holder");
 let artist_song_page_back= document.getElementById("artist-song-page-back");
 let album_song_page_back= document.getElementById("album-song-page-back");
 let repeat_icon = document.getElementById("repeat-icon");
+let feed = document.getElementById("feed");
+let queue = document.getElementById("queue");
+let themes = document.getElementById("themes");
+let feed_btn = document.getElementById("feed-btn");
+let song_count = document.getElementById("song-count");
+let minute_count = document.getElementById("minute-count");
+
 
 //jeevan variii
 let pageNo = 1;
@@ -204,7 +213,9 @@ inpField.addEventListener("keypress", function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
         console.log("Enter pressed");
+        displayFeed();
         searchSongs(true);
+        
     }
 });
     
@@ -241,7 +252,8 @@ async function searchSongs(isNew, q) {
 
     var song_cards = document.querySelectorAll('.song-card');
     song_cards.forEach(song_card => {
-        song_card.addEventListener('click', () => {
+        let play_icon = song_card.querySelector(".fa-play");
+        play_icon.addEventListener('click', () => {
             song_cards.forEach(s => s.classList.remove('song-card-selected'));
             song_card.classList.add('song-card-selected');
         });
@@ -280,6 +292,8 @@ function createSongCard(song, songList) {
                 <i class="fa-solid fa-plus"></i>
             </div>
     `;
+    //card.onclick = () => playmySong(song);
+    
     const play= card.querySelector(".fa-play");
     play.onclick = () => playmySong(song);
 
@@ -305,6 +319,7 @@ function playmySong(song) {
     const nowPlaying = document.getElementById("player-song-name");
     const nowArtist = document.getElementById("player-artist-name");
     const albumArt = document.getElementById("player-album-art");
+    const playerDownloadIcon = document.getElementById("player-download-icon")
     let icon = document.getElementById("play-icon");
     icon.classList.replace("fa-play", "fa-pause");
     const artLink = `/image/?url=${encodeURIComponent(song.image[1].link || `{{ url_for('static', filename="img/plc.png")}}`)}`;
@@ -328,6 +343,7 @@ function playmySong(song) {
     nowPlaying.textContent = `${new_name || "Unknown Song"}`;
     nowArtist.textContent = `${new_art_name || "Unknown Artist"}`;
 
+    playerDownloadIcon.onclick = () => downloadSong(song);
 }
 
 //progress tracking
@@ -582,3 +598,336 @@ async function downloadSong(song) {
 
     await convertMp4ToMp3(downloadUrl, imageUrl, artist, title, album, year, genre);
 }
+
+function displayFeed() {
+
+    var menu_btns = document.querySelectorAll('.menu-btn');
+        menu_btns.forEach(menu_btn => {
+            menu_btn.classList.remove('menu-btn-selected');
+            feed_btn.classList.add('menu-btn-selected');
+        });
+
+    feed.style.display = "block"; 
+    setTimeout(() => {
+        feed.style.opacity = "1";
+    }, 300);
+
+    queue.style.opacity = "0"; 
+    setTimeout(() => {
+        queue.style.display = "none";
+    }, 300);
+
+    themes.style.opacity = "0"; 
+    setTimeout(() => {
+        themes.style.display = "none";
+    }, 300);
+}
+
+function displayQueue() {
+
+    queue.style.display = "block"; 
+    setTimeout(() => {
+        queue.style.opacity = "1";
+    }, 300);
+
+    feed.style.opacity = "0"; 
+    setTimeout(() => {
+        feed.style.display = "none";
+    }, 300);
+
+    themes.style.opacity = "0"; 
+    setTimeout(() => {
+        themes.style.display = "none";
+    }, 300);
+    
+}
+
+function displayThemes() {
+    themes.style.display = "grid"; 
+    setTimeout(() => {
+        themes.style.opacity = "1";
+    }, 300);
+
+    feed.style.opacity = "0"; 
+    setTimeout(() => {
+        feed.style.display = "none";
+    }, 300);
+
+    queue.style.opacity = "0"; 
+    setTimeout(() => {
+        queue.style.display = "none";
+    }, 300);
+}
+
+
+
+let songQueue = [];
+
+function songCountTime()
+{
+    noOfSongs = songQueue.length;
+    duration = 0;
+    if (noOfSongs === 0) {
+        minute_count.innerHTML = "00:00";
+    }
+    else {
+        songQueue.forEach(song => {
+            duration = +duration + +song.duration;
+        })
+        console.log(duration);
+        minute_count.innerHTML = formatTimeHours(duration);
+    }
+    song_count.innerHTML = `${noOfSongs}`;
+}
+
+function formatTimeHours(seconds) {
+    const hoursQ = Math.floor(seconds / 3600);
+    console.log(hoursQ);
+    const minutesQ = Math.floor((seconds % 3600) / 60);
+    const secsQ = Math.floor(seconds % 60);
+
+    return `${hoursQ > 0 ? hoursQ + ':' : ''}${hoursQ > 0 ? String(minutesQ).padStart(2, '0') : minutesQ}:${String(secsQ).padStart(2, '0')}`;
+}
+
+
+function addToQueue(song) {
+    songQueue.push(song);
+    songCountTime();
+    updateQueueDisplay();
+
+
+}
+
+function removeFromQueue(index) {
+    songQueue.splice(index, 1);
+    updateQueueDisplay();
+    if (songQueue.length === 0) {
+        let bla= document.getElementById("queue-list");
+        bla.innerHTML = `<span>No songs in queue</span>`;
+    }
+    songCountTime();
+}
+
+
+function playNextInQueue() {
+    if (songQueue.length > 0) {
+        const nextSong = songQueue.shift();
+        playmySong(nextSong);
+        updateQueueDisplay();
+        if (songQueue.length === 0) {
+            let bla= document.getElementById("queue-list");
+            bla.innerHTML = `<span>No songs in queue</span>`;
+    
+        }
+    }
+    songCountTime();
+}
+
+function updateQueueDisplay() {
+    const queueContainer = document.getElementById("queue-list");
+    queueContainer.innerHTML = "";
+    songQueue.forEach((song, index) => {
+
+        const queueItem = document.createElement("div");
+        queueItem.classList.add("song-card");
+        queueItem.classList.add("queue-Item");
+
+        const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].link || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+        //name slicing
+        let new_name = song.name;
+        let new_art_name = song.primaryArtists;
+        let new_album_name = song.album.name;
+        let new_duration = formatTime(song.duration);
+        if (new_name.length > 45) {
+            new_name = new_name.slice(0,45)+"...";
+        }
+        if (new_art_name.length > 35) {
+            new_art_name = new_art_name.slice(0,35)+"...";
+        }
+        if (new_album_name.length > 35) {
+            new_album_name = new_art_name.slice(0,35)+"...";
+        }
+
+        queueItem.innerHTML = `
+            <img class="song-card-art" src="${imageUrl}" alt="">
+            <span class="song-card-song-name">${new_name ||"Unkown Song"}</span>
+            <span class="song-card-artist-name">${new_art_name ||"Unkown Artist"}</span>
+            <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
+            <span class="song-card-timestamp">${new_duration || "00:00"}</span>
+            <div class="song-card-icons">
+                <i class="fa-regular fa-heart"></i>
+                <i class="fa-solid fa-play"></i>
+                <i class="fa-solid fa-download"></i>
+                <i class="fa-solid fa-trash"></i>
+            </div>
+
+        `
+
+        const play= queueItem.querySelector(".fa-play");
+        play.onclick = () => playmySong(song);
+
+        const down = queueItem.querySelector(".fa-download");
+        down.onclick = () => {
+            downloadSong(song);
+        }
+        const queueButton = queueItem.querySelector(".fa-trash");
+        queueButton.onclick = () => removeFromQueue(index);
+
+        const heartButton = queueItem.querySelector(".fa-heart");
+        heartButton.onclick = () => {
+            console.log(heartButton.classList);
+            heartButton.classList.replace("fa-regular", "fa-solid");
+        }
+
+        queueItem.setAttribute("draggable", true);
+        queueContainer.appendChild(queueItem);
+    });
+    songCountTime();
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const queueList = document.getElementById("queue-list");
+    new Sortable(queueList, {
+        animation: 150,
+        onEnd: function(evt) {
+            const oldIndex = evt.oldIndex;
+            const newIndex = evt.newIndex;
+            moveQueueItem(oldIndex, newIndex);
+        }
+    });
+});
+
+function moveQueueItem(oldIndex, newIndex) {
+    if (newIndex >= songQueue.length) {
+        let k = newIndex - songQueue.length + 1;
+        while (k--) {
+            songQueue.push(undefined);
+        }
+    }
+    songQueue.splice(newIndex, 0, songQueue.splice(oldIndex, 1)[0]);
+    updateQueueDisplay();
+}
+
+
+fetch(`/static/json/themes.json`)
+            .then(response => response.json())
+            .then(themes => {
+                const themeList = document.getElementById("themes");
+                themes.forEach(theme => {
+                    const themeChoice = document.createElement("div");
+                    themeChoice.classList.add("theme-choice");
+                    themeChoice.style.background = theme.colors.secondaryBg;
+                    
+                    const themeName = document.createElement("span");
+                    themeName.classList.add("theme-name");
+                    themeName.textContent = theme.name;
+                    themeName.style.color = theme.colors.primaryText;
+                    
+                    const secondaryTextColor = document.createElement("div");
+                    secondaryTextColor.classList.add("theme-color");
+                    secondaryTextColor.style.background = theme.colors.secondaryText;
+                    
+                    const accentColor = document.createElement("div");
+                    accentColor.classList.add("theme-color");
+                    accentColor.style.background = theme.colors.accent;
+                    
+                    /*const primaryBgColor = document.createElement("div");
+                    primaryBgColor.classList.add("theme-color");
+                    primaryBgColor.style.background = theme.colors.primaryBg;*/
+                    
+                    const heartColor = document.createElement("div");
+                    heartColor.classList.add("theme-color");
+                    heartColor.style.background = theme.colors.heart;
+                    
+                    themeChoice.appendChild(themeName);
+                    themeChoice.appendChild(secondaryTextColor);
+                    themeChoice.appendChild(accentColor);
+                    //themeChoice.appendChild(primaryBgColor);
+                    themeChoice.appendChild(heartColor);
+                    
+                    themeChoice.addEventListener("click", () => applyTheme(theme));
+                    
+                    themeList.appendChild(themeChoice);
+                });
+
+                const randomChoice = document.createElement("div");
+                randomChoice.classList.add("theme-choice");
+                randomChoice.style.background = "#333";
+                
+                const randomName = document.createElement("span");
+                randomName.classList.add("theme-name");
+                randomName.textContent = "Random";
+                randomName.style.color = "#fff";
+                
+                randomChoice.appendChild(randomName);
+                randomChoice.addEventListener("click", () => {
+                    const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+                    applyTheme(randomTheme);
+                });
+                
+                themeList.appendChild(randomChoice);
+
+                /* complete random trial */
+
+                // Add Completely Random Color Scheme Choice
+                const randomColorChoice = document.createElement("div");
+                randomColorChoice.classList.add("theme-choice");
+                randomColorChoice.style.background = "#111";
+                
+                const randomColorName = document.createElement("span");
+                randomColorName.classList.add("theme-name");
+                randomColorName.textContent = "Random Colors";
+                randomColorName.style.color = "#fff";
+                
+                randomColorChoice.appendChild(randomColorName);
+                randomColorChoice.addEventListener("click", () => {
+                    const randomColor = () => `#${Math.floor(Math.random()*16777215).toString(16)}`;
+                    /*const randomColor = () => {
+                        const r = Math.floor(Math.random() * 156) + 100; // 100-255 (avoid too dark)
+                        const g = Math.floor(Math.random() * 156) + 100; 
+                        const b = Math.floor(Math.random() * 156) + 100;
+                        return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+                    };*/
+                    const newTheme = {
+                        "name": "random",
+                        "className": "completeRandom",
+                        "colors": {
+                            "primaryText": randomColor(),
+                            "secondaryText": randomColor(),
+                            "accent": randomColor(),
+                            "primaryBg": randomColor(),
+                            "secondaryBg": randomColor(),
+                            "heart": randomColor()
+                        }
+                    };
+                    applyTheme(newTheme);
+                });
+                
+                themeList.appendChild(randomColorChoice);
+
+                /* trial ends */
+
+            });
+
+function applyTheme(theme) {
+    localStorage.setItem("class-name",`${theme.className}`);
+    const root = document.documentElement;
+    root.style.setProperty('--primary-text-color', theme.colors.primaryText);
+    root.style.setProperty('--secondary-text-color', theme.colors.secondaryText);
+    root.style.setProperty('--accent-color', theme.colors.accent);
+    root.style.setProperty('--accent-color-dark', theme.colors.accentDark);
+    root.style.setProperty('--primary-bg-color', theme.colors.primaryBg);
+    root.style.setProperty('--secondary-bg-color', theme.colors.secondaryBg);
+    root.style.setProperty('--heart', theme.colors.heart);
+}
+
+function retrieve() {
+    let currentTheme = localStorage.getItem("class-name");
+    fetch(`/static/json/themes.json`)
+    .then(response => response.json())
+    .then(themes => {
+        let nameee = themes.find(temp => temp.className === currentTheme);
+        applyTheme(nameee);
+        });
+}
+document.onload = retrieve();

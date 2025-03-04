@@ -24,27 +24,27 @@
   </div>
   <div class="whole-page"> 
     <div class="menu-bar">
-      <div class="feed-btn menu-btn menu-btn-selected">
+      <div class="feed-btn menu-btn menu-btn-selected" id="feed-btn" onclick="displayFeed()">
         <i class="fa-solid fa-music"></i>
         <span>Feed</span>
       </div>
-      <div class="queue-btn menu-btn">
+      <div class="queue-btn menu-btn" id="queue-btn" onclick="displayQueue()">
         <i class="fa-solid fa-list"></i>
         <span>Queue</span>
       </div>
-      <div class="themes-btn menu-btn">
+      <div class="themes-btn menu-btn" id="themes-btn" onclick="displayThemes()">
         <i class="fa-solid fa-paintbrush"></i>
         <span>Themes</span>
       </div>
-      <div class="favourites-btn menu-btn">
+      <div class="favourites-btn menu-btn no-for-now" id="favourites-btn" onclick="displayFavourites()">
         <i class="fa-regular fa-heart"></i>
         <span>Favourites</span>
       </div>
-      <div class="playlists-btn menu-btn">
+      <div class="playlists-btn menu-btn no-for-now" id="playlists-btn" onclick="displayPlaylists()">
         <i class="fa-solid fa-radio"></i>
         <span>Your Playlists</span>
       </div>
-      <div class="playlist-list">
+      <div class="playlist-list no-for-now">
         
         <div class="playlist-card">
           <img src="{{ url_for('static', filename="img/song art.jpg")}}" class="playlist-card-art">
@@ -75,7 +75,7 @@
 
     </div>
     <div class="main-center">
-      <div class="feed">
+      <div class="feed" id="feed">
         <div class="relative-holder">
           <div class="classification" id="classification">
             <div class="class-line">
@@ -427,10 +427,33 @@
         </div>
 
       </div>
-    </div>
-    <div class="right-bar">
-      <div class="song-details"></div>
-      <div class="queue-holder"></div>
+      <div class="queue" id="queue">
+        <div class="big-box">
+          <div class="songs-left">
+            <span id="song-count">0</span>
+            <span>Songs</span>
+          </div>
+          <div class="minutes-left">
+            <span id="minute-count">00:00</span>
+            <span>Duration</span>
+          </div>
+          <div class="icon-queue">
+            <div class="download-queue">
+              <i class="fa-solid fa-download"></i>
+              <span>Download Queue</span>
+            </div>
+            <div class="play-queue" onclick="playNextInQueue()">
+              <i class="fa-solid fa-play"></i>
+              <span>Play Queue</span>
+            </div>
+          </div>
+        </div>
+        <div class="queuelist" id="queue-list">
+
+          <span>No songs in queue</span>
+        </div>
+      </div>
+      <div class="themes" id="themes"></div>
     </div>
   </div>
 </body>
@@ -443,7 +466,7 @@
 
   <div class="music-player-song-details">
     <span id="player-song-name" class="music-player-song-name">Song name can be this long</span>
-    <span id="player-artist-name" class="music-player-artits-name"> Artist name can be</span>
+    <span id="player-artist-name" class="music-player-artist-name"> Artist name can be</span>
   </div>
 
   <div class="music-player-icon">
@@ -476,11 +499,12 @@
   <div class="music-player-end-icons">
     <div><i class="fa-regular fa-heart"></i></div>
     <div id="repeat-icon"><i class="fa-solid fa-repeat" onclick="repeatSong()"></i></div>
-    <div><i class="fa-solid fa-download"></i></div>
+    <div><i class="fa-solid fa-download" id="player-download-icon"></i></div>
   </div>
 
 </div>
 
 <audio id = "audio-player" ontimeupdate="updateProgress()" onloadedmetadata="updateDuration()"></audio>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 <script src = "{{ url_for('static', filename="js/main.js")}}"></script>
 </html>

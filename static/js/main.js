@@ -22,6 +22,7 @@ let album_song_page_back= document.getElementById("album-song-page-back");
 let repeat_icon = document.getElementById("repeat-icon");
 let feed = document.getElementById("feed");
 let queue = document.getElementById("queue");
+let themes = document.getElementById("themes");
 let feed_btn = document.getElementById("feed-btn");
 let song_count = document.getElementById("song-count");
 let minute_count = document.getElementById("minute-count");
@@ -251,7 +252,8 @@ async function searchSongs(isNew, q) {
 
     var song_cards = document.querySelectorAll('.song-card');
     song_cards.forEach(song_card => {
-        song_card.addEventListener('click', () => {
+        let play_icon = song_card.querySelector(".fa-play");
+        play_icon.addEventListener('click', () => {
             song_cards.forEach(s => s.classList.remove('song-card-selected'));
             song_card.classList.add('song-card-selected');
         });
@@ -290,6 +292,8 @@ function createSongCard(song, songList) {
                 <i class="fa-solid fa-plus"></i>
             </div>
     `;
+    //card.onclick = () => playmySong(song);
+    
     const play= card.querySelector(".fa-play");
     play.onclick = () => playmySong(song);
 
@@ -612,20 +616,50 @@ function displayFeed() {
     setTimeout(() => {
         queue.style.display = "none";
     }, 300);
+
+    themes.style.opacity = "0"; 
+    setTimeout(() => {
+        themes.style.display = "none";
+    }, 300);
 }
 
 function displayQueue() {
+
     queue.style.display = "block"; 
     setTimeout(() => {
         queue.style.opacity = "1";
     }, 300);
 
+    feed.style.opacity = "0"; 
+    setTimeout(() => {
+        feed.style.display = "none";
+    }, 300);
+
+    themes.style.opacity = "0"; 
+    setTimeout(() => {
+        themes.style.display = "none";
+    }, 300);
+    
+}
+
+function displayThemes() {
+    themes.style.display = "grid"; 
+    setTimeout(() => {
+        themes.style.opacity = "1";
+    }, 300);
 
     feed.style.opacity = "0"; 
     setTimeout(() => {
         feed.style.display = "none";
     }, 300);
+
+    queue.style.opacity = "0"; 
+    setTimeout(() => {
+        queue.style.display = "none";
+    }, 300);
 }
+
+
 
 let songQueue = [];
 
@@ -634,7 +668,7 @@ function songCountTime()
     noOfSongs = songQueue.length;
     duration = 0;
     if (noOfSongs === 0) {
-        minute_count.innerHTML = "00:00:00";
+        minute_count.innerHTML = "00:00";
     }
     else {
         songQueue.forEach(song => {
@@ -661,13 +695,6 @@ function addToQueue(song) {
     songCountTime();
     updateQueueDisplay();
 
-    var song_cards = document.querySelectorAll('.song-card');
-    song_cards.forEach(song_card => {
-        song_card.addEventListener('click', () => {
-            song_cards.forEach(s => s.classList.remove('song-card-selected'));
-            song_card.classList.add('song-card-selected');
-        });
-    });
 
 }
 
@@ -780,3 +807,127 @@ function moveQueueItem(oldIndex, newIndex) {
     songQueue.splice(newIndex, 0, songQueue.splice(oldIndex, 1)[0]);
     updateQueueDisplay();
 }
+
+
+fetch(`/static/json/themes.json`)
+            .then(response => response.json())
+            .then(themes => {
+                const themeList = document.getElementById("themes");
+                themes.forEach(theme => {
+                    const themeChoice = document.createElement("div");
+                    themeChoice.classList.add("theme-choice");
+                    themeChoice.style.background = theme.colors.secondaryBg;
+                    
+                    const themeName = document.createElement("span");
+                    themeName.classList.add("theme-name");
+                    themeName.textContent = theme.name;
+                    themeName.style.color = theme.colors.primaryText;
+                    
+                    const secondaryTextColor = document.createElement("div");
+                    secondaryTextColor.classList.add("theme-color");
+                    secondaryTextColor.style.background = theme.colors.secondaryText;
+                    
+                    const accentColor = document.createElement("div");
+                    accentColor.classList.add("theme-color");
+                    accentColor.style.background = theme.colors.accent;
+                    
+                    /*const primaryBgColor = document.createElement("div");
+                    primaryBgColor.classList.add("theme-color");
+                    primaryBgColor.style.background = theme.colors.primaryBg;*/
+                    
+                    const heartColor = document.createElement("div");
+                    heartColor.classList.add("theme-color");
+                    heartColor.style.background = theme.colors.heart;
+                    
+                    themeChoice.appendChild(themeName);
+                    themeChoice.appendChild(secondaryTextColor);
+                    themeChoice.appendChild(accentColor);
+                    //themeChoice.appendChild(primaryBgColor);
+                    themeChoice.appendChild(heartColor);
+                    
+                    themeChoice.addEventListener("click", () => applyTheme(theme));
+                    
+                    themeList.appendChild(themeChoice);
+                });
+
+                const randomChoice = document.createElement("div");
+                randomChoice.classList.add("theme-choice");
+                randomChoice.style.background = "#333";
+                
+                const randomName = document.createElement("span");
+                randomName.classList.add("theme-name");
+                randomName.textContent = "Random";
+                randomName.style.color = "#fff";
+                
+                randomChoice.appendChild(randomName);
+                randomChoice.addEventListener("click", () => {
+                    const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+                    applyTheme(randomTheme);
+                });
+                
+                themeList.appendChild(randomChoice);
+
+                /* complete random trial */
+
+                // Add Completely Random Color Scheme Choice
+                const randomColorChoice = document.createElement("div");
+                randomColorChoice.classList.add("theme-choice");
+                randomColorChoice.style.background = "#111";
+                
+                const randomColorName = document.createElement("span");
+                randomColorName.classList.add("theme-name");
+                randomColorName.textContent = "Random Colors";
+                randomColorName.style.color = "#fff";
+                
+                randomColorChoice.appendChild(randomColorName);
+                randomColorChoice.addEventListener("click", () => {
+                    const randomColor = () => `#${Math.floor(Math.random()*16777215).toString(16)}`;
+                    /*const randomColor = () => {
+                        const r = Math.floor(Math.random() * 156) + 100; // 100-255 (avoid too dark)
+                        const g = Math.floor(Math.random() * 156) + 100; 
+                        const b = Math.floor(Math.random() * 156) + 100;
+                        return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+                    };*/
+                    const newTheme = {
+                        "name": "random",
+                        "className": "completeRandom",
+                        "colors": {
+                            "primaryText": randomColor(),
+                            "secondaryText": randomColor(),
+                            "accent": randomColor(),
+                            "primaryBg": randomColor(),
+                            "secondaryBg": randomColor(),
+                            "heart": randomColor()
+                        }
+                    };
+                    applyTheme(newTheme);
+                });
+                
+                themeList.appendChild(randomColorChoice);
+
+                /* trial ends */
+
+            });
+
+function applyTheme(theme) {
+    localStorage.setItem("class-name",`${theme.className}`);
+    const root = document.documentElement;
+    root.style.setProperty('--primary-text-color', theme.colors.primaryText);
+    root.style.setProperty('--secondary-text-color', theme.colors.secondaryText);
+    root.style.setProperty('--accent-color', theme.colors.accent);
+    root.style.setProperty('--accent-color-dark', theme.colors.accentDark);
+    root.style.setProperty('--primary-bg-color', theme.colors.primaryBg);
+    root.style.setProperty('--secondary-bg-color', theme.colors.secondaryBg);
+    root.style.setProperty('--heart', theme.colors.heart);
+}
+
+function retrieve() {
+    let currentTheme = localStorage.getItem("class-name");
+    fetch(`/static/json/themes.json`)
+    .then(response => response.json())
+    .then(themes => {
+        let nameee = themes.find(temp => temp.className === currentTheme);
+        applyTheme(nameee);
+        });
+}
+document.onload = retrieve();

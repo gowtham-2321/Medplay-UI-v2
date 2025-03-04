@@ -12,6 +12,7 @@
   <div class="header">
     <div class="logo-holder">
       <h1 class="title">Medplay</h1>
+      <h1 class="title title-small">M</h1>
       <span class="tagline">Adfree Modern Music Player</span>
     </div>
     <div class="search-bar-holder">
@@ -465,8 +466,8 @@
   </div>
 
   <div class="music-player-song-details">
-    <span id="player-song-name" class="music-player-song-name">Song name can be this long</span>
-    <span id="player-artist-name" class="music-player-artist-name"> Artist name can be</span>
+    <span id="player-song-name" class="music-player-song-name">Song name</span>
+    <span id="player-artist-name" class="music-player-artist-name"> Artist name</span>
   </div>
 
   <div class="music-player-icon">
@@ -500,9 +501,12 @@
     <div><i class="fa-regular fa-heart"></i></div>
     <div id="repeat-icon"><i class="fa-solid fa-repeat" onclick="repeatSong()"></i></div>
     <div><i class="fa-solid fa-download" id="player-download-icon"></i></div>
+    <div><i class="fa-solid fa-sliders"></i></div>
   </div>
 
 </div>
+
+
 
 <audio id = "audio-player" ontimeupdate="updateProgress()" onloadedmetadata="updateDuration()"></audio>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>

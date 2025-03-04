@@ -179,7 +179,7 @@ i {
 }
 
 .songlist {
-    margin-top: 30px;
+    /*margin-top: 30px;*/
     position: absolute;
     width: 100%;
     box-sizing: border-box;
@@ -189,7 +189,7 @@ i {
     opacity: 100%;
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
     overflow-y: auto;
-    max-height: 65vh;
+    max-height: 70vh;
 }
 .song-card {
     display: flex;
@@ -505,6 +505,10 @@ i {
     font-weight: 700;
     font-size: 2.2vw;
     margin: 0;
+}
+
+.title-small{
+    display: none;
 }
 
 .tagline {
@@ -936,6 +940,19 @@ i {
     }
     .menu-btn {
         width: fit-content;
+    }
+
+    .title{
+        display: none;
+    }
+    .tagline{
+        display: none;
+    }
+    .title-small {
+        display: block;
+    }
+    .logo-holder{
+        width: 90px;
     }
 
     .playlist-card-name {

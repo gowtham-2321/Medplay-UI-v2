@@ -10,7 +10,7 @@ def add_security_headers(response):
     response.headers['Cross-Origin-Embedder-Policy'] = 'require-corp'
     return response
 
-API_URL = "https://jiosaavn-api-privatecvc2.vercel.app/"
+API_URL = "https://api-medplay.vercel.app"
 
 @app.route('/')
 def home():
@@ -18,15 +18,20 @@ def home():
     
     return render_template('index.html', songs=[])
 
-@app.route('/search', methods=['GET'])
+@app.route('/search/songs', methods=['GET'])
 def search():
-    query = request.args.get('q', '')
-    print(query)
+    query = request.args.get('query', '')
+    limit = request.args.get('limit', '')
+    page = request.args.get('page', '')
+
+
+    print(query,limit,page)
     if not query:
         return render_template('index.html', songs=None)
     
     try:
-        response = requests.get(f"{API_URL}/search/songs?query={query}")
+        response = requests.get(f"{API_URL}/api/search/songs?query={query}&limit={limit}&page={page}", verify=False)
+        print(response.status_code, response.text)
         songs = response.json().get('data', [])
         songs = songs["results"]
 
@@ -34,7 +39,8 @@ def search():
         print("Error fetching search results:", e)
         songs = []
     
-    return render_template('index.html', songs=songs)
+    return songs
+    
 
 @app.route('/stream/')
 def stream():

@@ -1083,7 +1083,7 @@ input[type="range"] {
     appearance: none;
     width: 8px; 
     height: 125px;
-    background: var(--primary-text-color); 
+    background: var(--primary-bg-color); 
     outline: none;
     opacity: 1;
     transition: opacity .2s;

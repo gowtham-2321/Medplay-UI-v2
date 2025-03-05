@@ -33,13 +33,13 @@
         <i class="fa-solid fa-list"></i>
         <span>Queue</span>
       </div>
+      <div class="favourites-btn menu-btn" id="favourites-btn" onclick="displayFavourites()">
+        <i class="fa-regular fa-heart"></i>
+        <span>Favourites</span>
+      </div>
       <div class="themes-btn menu-btn" id="themes-btn" onclick="displayThemes()">
         <i class="fa-solid fa-paintbrush"></i>
         <span>Themes</span>
-      </div>
-      <div class="favourites-btn menu-btn no-for-now" id="favourites-btn" onclick="displayFavourites()">
-        <i class="fa-regular fa-heart"></i>
-        <span>Favourites</span>
       </div>
       <div class="playlists-btn menu-btn no-for-now" id="playlists-btn" onclick="displayPlaylists()">
         <i class="fa-solid fa-radio"></i>
@@ -454,6 +454,32 @@
           <span>No songs in queue</span>
         </div>
       </div>
+      <div class="favourites" id="favourites">
+        <div class="big-box-fav">
+          <div class="songs-left-fav">
+            <span id="song-count-fav">0</span>
+            <span>Songs</span>
+          </div>
+          <div class="minutes-left-fav">
+            <span id="minute-count">00:00</span>
+            <span>Duration</span>
+          </div>
+          <div class="icon-fav">
+            <div class="download-fav">
+              <i class="fa-solid fa-download"></i>
+              <span>Download favourites</span>
+            </div>
+            <div class="play-fav" onclick="">
+              <i class="fa-solid fa-play"></i>
+              <span>Play favourites</span>
+            </div>
+          </div>
+        </div>
+        <div class="favlist" id="fav-list">
+
+          <span>No songs in favourites</span>
+        </div>
+      </div>
       <div class="themes" id="themes"></div>
     </div>
   </div>
@@ -476,7 +502,7 @@
     <div class="music-player-play-icon" onclick="playPause()">
       <i id="play-icon" class="fa-solid fa-play"></i>
     </div>
-    <i class="fas fa-forward"></i>
+    <i class="fas fa-forward" onclick="playNextInQueue()"></i>
   </div>
 
   <div class="progress-tracker-holder" onclick="seek(event)">
@@ -499,7 +525,7 @@
   </div>
 
   <div class="music-player-end-icons">
-    <div><i class="fa-regular fa-heart"></i></div>
+    <div><i class="fa-regular fa-heart" id="player-heart" ></i></div>
     <div id="repeat-icon"><i class="fa-solid fa-repeat" onclick="repeatSong()"></i></div>
     <div><i class="fa-solid fa-download" id="player-download-icon"></i></div>
     <div><i class="fa-solid fa-sliders" onclick="eqbtn()"></i></div>
@@ -523,6 +549,10 @@
           <label>62 Hz</label>
           <input type="range" id="bass" class="slider" min="-20" max="20" value="0">
       </div>
+      <div class="slider-container">
+        <label>125 Hz</label>
+        <input type="range" id="bass2" class="slider" min="-20" max="20" value="0">
+    </div>
       <div class="slider-container">
           <label>250 Hz</label>
           <input type="range" id="lowMid" class="slider" min="-20" max="20" value="0">

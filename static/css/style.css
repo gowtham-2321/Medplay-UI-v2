@@ -668,7 +668,7 @@ i {
 }
 
 .audio-update-bar {
-    width: 50%;
+    width: 0%;
     height: 4px;
     background: var(--accent-color);
     position: relative;
@@ -877,6 +877,87 @@ i {
     cursor: move;
 }
 
+/*favourites*/
+
+
+.favourites {
+    position: absolute;
+    display: none;
+    opacity: 0;
+    transition: opacity .3s ease-in-out, display .3s ease-in-out;
+    overflow-y: auto;
+    height: 100%;
+    width: 100%;
+}
+
+.big-box-fav {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    margin-bottom: 50px;
+}
+
+.songs-left-fav , .minutes-left-fav{
+    width: 300px;
+    height: 160px;
+    border-radius: 20px;
+    background: var(--secondary-bg-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-color);
+}
+
+#song-count-fav, #minute-count-fav {
+    font-size: 50px;
+    color: var(--primary-text-color);
+}
+
+.icon-fav {
+    height: 160px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.download-fav , .play-fav{
+    
+    width: 300px;
+    height: 70px;
+    border-radius: 10px;
+    background: var(--secondary-bg-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    cursor: pointer;
+}
+
+.download-fav > i , .play-fav > i {
+    color:var(--accent-color);
+}
+
+.favlist {
+    position: relative;
+    display: block;
+    padding: 10px;
+    height: fit-content;
+    overflow-y: auto;
+    max-height: 47vh;
+}
+
+.fav-Item:hover {
+    cursor: move;
+}
+
+/*favourite ends*/
+
 .themes {
     position: absolute;
     height: 100%;
@@ -934,7 +1015,7 @@ i {
     right: 50%;
     transform: translate(50%, -50%);
     background: var(--secondary-bg-color);
-    width: 650px;
+    width: 700px;
     height: 350px;
     border-radius: 20px;
     display: none;
@@ -1142,12 +1223,16 @@ input[type="range"]::-moz-range-thumb {
         width: 20%;
     }
 
-    .icon-queue, .download-queue, .play-queue{
+    .icon-queue, .download-queue, .play-queue,.icon-fav, .download-fav, .play-fav{
         width: 70px;
     }
-    .download-queue span, .play-queue span{
+    .download-queue span, .play-queue span, .download-fav span, .play-fav span{
         display: none;
-     }
+    }
+
+    .audio-bar{
+        width: 70px;
+    }
 
 }
 @media only screen and (max-width: 900px) {
@@ -1167,8 +1252,13 @@ input[type="range"]::-moz-range-thumb {
     .big-box {
         gap: 20px;
     }
-    #song-count, #minute-count {
+    #song-count, #minute-count, #song-count-fav, #minute-count-fav{
         font-size: 40px;
+    }
+
+    .audio-bar {
+        position: fixed;
+        transform: translate(-25px, -45px);
     }
 }
 
@@ -1195,17 +1285,17 @@ input[type="range"]::-moz-range-thumb {
         width: 45%;
     }
 
-    .big-box{
+    .big-box, .big-box-fav{
         flex-direction: column;
     }
-    .download-queue > span, .play-queue > span{
+    .download-queue > span, .play-queue > span, .download-fav > span, .play-fav > span{
         display: block;
     }
-    .download-queue, .play-queue, .icon-queue {
+    .download-queue, .play-queue, .icon-queue, .download-fav, .play-fav, .icon-fav{
         width: 300px;
     }
 
-    .queuelist{
+    .queuelist, .favlist{
         height: 30vh;
         margin-bottom: 100px;
     }

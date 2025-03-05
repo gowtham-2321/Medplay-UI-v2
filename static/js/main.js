@@ -1,4 +1,7 @@
 //gowhthiee variii
+let songs = [];
+const songList = document.getElementById("songlist");
+let favourites = JSON.parse(localStorage.getItem("favourites")) || [];
 let noOfSongs = 0;
 let duration = 0;
 let song_selected = true;
@@ -22,6 +25,7 @@ let album_song_page_back= document.getElementById("album-song-page-back");
 let repeat_icon = document.getElementById("repeat-icon");
 let feed = document.getElementById("feed");
 let queue = document.getElementById("queue");
+let fav = document.getElementById("favourites");
 let themes = document.getElementById("themes");
 let feed_btn = document.getElementById("feed-btn");
 let song_count = document.getElementById("song-count");
@@ -222,7 +226,6 @@ inpField.addEventListener("keypress", function(event) {
 async function searchSongs(isNew, q) {
 
     const query = document.getElementById("search-query").value || q;
-    const songList = document.getElementById("songlist");
     songList.innerHTML =``;
     
     //console.log(isNew);
@@ -235,7 +238,7 @@ async function searchSongs(isNew, q) {
         }
         const response = await fetch(`https://jiosaavn-api-privatecvc2.vercel.app/search/songs?query=${query}&limit=24&page=${pageNo}`);
         const data = await response.json();
-        const songs = data.data.results || [];
+        songs = data.data.results || [];
         //console.log(songs);
         
         if (songs.length === 0) {
@@ -292,7 +295,6 @@ function createSongCard(song, songList) {
                 <i class="fa-solid fa-plus"></i>
             </div>
     `;
-    //card.onclick = () => playmySong(song);
     
     const play= card.querySelector(".fa-play");
     play.onclick = () => playmySong(song);
@@ -303,12 +305,33 @@ function createSongCard(song, songList) {
     }
     const queueButton = card.querySelector(".fa-plus");
     queueButton.onclick = () => addToQueue(song);
-
+    
+    /* favourites checker */
     const heartButton = card.querySelector(".fa-heart");
-    heartButton.onclick = () => {
-        console.log(heartButton.classList);
+    favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
+    let isPresentFav = favourites.some(item => item.id === song.id);
+    if(isPresentFav){
         heartButton.classList.replace("fa-regular", "fa-solid");
     }
+    heartButton.onclick = () => {
+        let heartClassList = Array.from(heartButton.classList);
+        isLiked = heartClassList.some(className => className === "fa-solid");
+        if(isLiked){
+            favourites = favourites.filter(item => item.id !== song.id);
+            localStorage.setItem("favourites", JSON.stringify(favourites));
+            heartButton.classList.replace("fa-solid", "fa-regular");
+            console.log(favourites);
+        }
+        else {
+            heartButton.classList.replace("fa-regular", "fa-solid");
+            favourites.push(song);
+            localStorage.setItem("favourites", JSON.stringify(favourites));
+            console.log(favourites);
+        }
+        updateQueueDisplay();
+        playerHeart();
+    }
+    /*favourites checker ends*/
 
     songList.appendChild(card);
 }
@@ -344,6 +367,54 @@ function playmySong(song) {
     nowArtist.textContent = `${new_art_name || "Unknown Artist"}`;
 
     playerDownloadIcon.onclick = () => downloadSong(song);
+    playerHeart();
+
+    let heartt = document.getElementById("player-heart");
+    heartt.addEventListener("click", () => {
+        let hearttClassList = Array.from(heartt.classList);
+        isLiked = hearttClassList.some(className => className === "fa-solid");
+        if(isLiked){
+            favourites = favourites.filter(item => item.id !== song.id);
+            localStorage.setItem("favourites", JSON.stringify(favourites));
+            heartt.classList.replace("fa-solid", "fa-regular");
+            playerHeart();
+        }
+        else{
+            heartt.classList.replace('fa-regular', 'fa-solid');
+            favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
+            isPresentFavCheck = favourites.some(item => item.id === song.id);
+            if (!isPresentFavCheck)
+            {
+                favourites.push(song);
+                localStorage.setItem("favourites", JSON.stringify(favourites));
+            }
+            console.log(song.id);
+            console.log(favourites);
+        }
+        songList.innerHTML = "";
+        for (let i = 0; i < 25 && i < songs.length; i++) {
+            createSongCard(songs[i], songList);
+        }
+        updateQueueDisplay();
+        
+    })
+}
+
+
+function playerHeart() {
+    if (currentSong === null){
+        return;
+    }
+    console.log(currentSong);
+    let heartt = document.getElementById("player-heart");
+    favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
+    let isPresentFav = favourites.some(item => item.id === currentSong.id);
+    if(isPresentFav){
+        heartt.classList.replace('fa-regular', 'fa-solid');
+    }
+    else{
+        heartt.classList.replace('fa-solid', 'fa-regular');
+    }
 }
 
 //progress tracking
@@ -621,6 +692,11 @@ function displayFeed() {
     setTimeout(() => {
         themes.style.display = "none";
     }, 300);
+
+    fav.style.opacity = "0"; 
+    setTimeout(() => {
+        fav.style.display = "none";
+    }, 300);
 }
 
 function displayQueue() {
@@ -639,6 +715,11 @@ function displayQueue() {
     setTimeout(() => {
         themes.style.display = "none";
     }, 300);
+
+    fav.style.opacity = "0"; 
+    setTimeout(() => {
+        fav.style.display = "none";
+    }, 300);
     
 }
 
@@ -656,6 +737,33 @@ function displayThemes() {
     queue.style.opacity = "0"; 
     setTimeout(() => {
         queue.style.display = "none";
+    }, 300);
+
+    fav.style.opacity = "0"; 
+    setTimeout(() => {
+        fav.style.display = "none";
+    }, 300);
+}
+
+function displayFavourites() {
+    fav.style.display = "block"; 
+    setTimeout(() => {
+        fav.style.opacity = "1";
+    }, 300);
+
+    feed.style.opacity = "0"; 
+    setTimeout(() => {
+        feed.style.display = "none";
+    }, 300);
+
+    queue.style.opacity = "0"; 
+    setTimeout(() => {
+        queue.style.display = "none";
+    }, 300);
+
+    themes.style.opacity = "0"; 
+    setTimeout(() => {
+        themes.style.display = "none";
     }, 300);
 }
 
@@ -756,7 +864,7 @@ function updateQueueDisplay() {
             <span class="song-card-timestamp">${new_duration || "00:00"}</span>
             <div class="song-card-icons">
                 <i class="fa-regular fa-heart"></i>
-                <i class="fa-solid fa-play"></i>
+                <i class="fa-solid fa-play no-for-now"></i>
                 <i class="fa-solid fa-download"></i>
                 <i class="fa-solid fa-trash"></i>
             </div>
@@ -774,9 +882,33 @@ function updateQueueDisplay() {
         queueButton.onclick = () => removeFromQueue(index);
 
         const heartButton = queueItem.querySelector(".fa-heart");
-        heartButton.onclick = () => {
-            console.log(heartButton.classList);
+
+        favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
+        let isPresentFav = favourites.some(item => item.id === song.id);
+        if(isPresentFav){
             heartButton.classList.replace("fa-regular", "fa-solid");
+        }
+        heartButton.onclick = () => {
+            let heartClassList = Array.from(heartButton.classList);
+            isLiked = heartClassList.some(className => className === "fa-solid");
+            if(isLiked){
+                favourites = favourites.filter(item => item.id !== song.id);
+                localStorage.setItem("favourites", JSON.stringify(favourites));
+                heartButton.classList.replace("fa-solid", "fa-regular");
+                console.log(favourites);
+            }
+            else {
+                heartButton.classList.replace("fa-regular", "fa-solid");
+                favourites.push(song);
+                localStorage.setItem("favourites", JSON.stringify(favourites));
+                console.log(favourites);
+            }
+            songList.innerHTML = "";
+            for (let i = 0; i < 25 && i < songs.length; i++) {
+                createSongCard(songs[i], songList);
+            }
+            updateQueueDisplay();
+            
         }
 
         queueItem.setAttribute("draggable", true);
@@ -951,6 +1083,10 @@ const bass = context.createBiquadFilter();
 bass.type = 'lowshelf';
 bass.frequency.value = 60; // Adjust for bass
 
+const bass2 = context.createBiquadFilter();
+bass2.type = 'lowshelf';
+bass2.frequency.value = 125; // Adjust for bass
+
 const lowMid = context.createBiquadFilter();
 lowMid.type = 'peaking';
 lowMid.frequency.value = 250; // Low mid frequencies
@@ -981,7 +1117,8 @@ air.frequency.value = 16000; // Air
 
 // Connect nodes
 source.connect(bass);
-bass.connect(lowMid);
+bass.connect(bass2);
+bass2.connect(lowMid);
 lowMid.connect(mid);
 mid.connect(highMid);
 highMid.connect(treble);
@@ -993,6 +1130,7 @@ air.connect(context.destination);
 // Reset EQ
 function reset() {
     document.getElementById('bass').value = 0;
+    document.getElementById('bass2').value = 0;
     document.getElementById('lowMid').value = 0;
     document.getElementById('mid').value = 0;
     document.getElementById('highMid').value = 0;
@@ -1001,6 +1139,7 @@ function reset() {
     document.getElementById('brilliance').value = 0;
     document.getElementById('air').value = 0;
     bass.gain.value = 0;
+    bass2.gain.value = 0;
     lowMid.gain.value = 0;
     mid.gain.value = 0;
     highMid.gain.value = 0;
@@ -1013,6 +1152,10 @@ function reset() {
 // EQ Controls
 document.getElementById('bass').addEventListener('input', (e) => {
     bass.gain.value = e.target.value;
+});
+
+document.getElementById('bass2').addEventListener('input', (e) => {
+    bass2.gain.value = e.target.value;
 });
 
 document.getElementById('lowMid').addEventListener('input', (e) => {

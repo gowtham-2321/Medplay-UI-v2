@@ -1,2 +1,3 @@
-Flask==2.1.1
+flask
 requests==2.27.1
+urllib3==1.26.7

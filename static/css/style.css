@@ -1246,7 +1246,7 @@ input[type="range"]::-moz-range-thumb {
     .song-card-icons {
         width: 25%;
     }
-    .big-box {
+    .big-box, .big-box-fav{
         gap: 20px;
     }
     #song-count, #minute-count, #song-count-fav, #minute-count-fav{

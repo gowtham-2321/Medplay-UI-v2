@@ -459,6 +459,7 @@
   </div>
 </body>
 
+
 <div class="music-player-holder">
 
   <div class="music-player-art-holder">
@@ -501,10 +502,60 @@
     <div><i class="fa-regular fa-heart"></i></div>
     <div id="repeat-icon"><i class="fa-solid fa-repeat" onclick="repeatSong()"></i></div>
     <div><i class="fa-solid fa-download" id="player-download-icon"></i></div>
-    <div><i class="fa-solid fa-sliders"></i></div>
+    <div><i class="fa-solid fa-sliders" onclick="eqbtn()"></i></div>
   </div>
 
 </div>
+
+
+<!--eq starts here-->
+<div class="eq-holder" id="eq-holder">
+  <span class="eq-title">Equalizer</span>
+  <div class="slider-holders">
+      <div class="slider-container db">
+          <span>20 dB</span>
+          <span>10 dB</span>
+          <span>0 dB</span>
+          <span>-10 dB</span>
+          <span>-20 dB</span>
+      </div>
+      <div class="slider-container">
+          <label>62 Hz</label>
+          <input type="range" id="bass" class="slider" min="-20" max="20" value="0">
+      </div>
+      <div class="slider-container">
+          <label>250 Hz</label>
+          <input type="range" id="lowMid" class="slider" min="-20" max="20" value="0">
+      </div>
+      <div class="slider-container">
+          <label>500 Hz</label>
+          <input type="range" id="mid" class="slider" min="-20" max="20" value="0">
+      </div>
+      <div class="slider-container">
+          <label>1 kHz</label>
+          <input type="range" id="highMid" class="slider" min="-20" max="20" value="0">
+      </div>
+      <div class="slider-container">
+          <label>2 kHz</label>
+          <input type="range" id="treble" class="slider" min="-20" max="20" value="0">
+      </div>
+      <div class="slider-container">
+          <label>4 kHz</label>
+          <input type="range" id="presence" class="slider" min="-20" max="20" value="0">
+      </div>
+      <div class="slider-container">
+          <label>8 kHz</label>
+          <input type="range" id="brilliance" class="slider" min="-20" max="20" value="0">
+      </div>
+      <div class="slider-container">
+          <label>16 kHz</label>
+          <input type="range" id="air" class="slider" min="-20" max="20" value="0">
+      </div>
+  </div>
+  <div class="reset-btn-eq" onclick="reset()"><span>Reset</span></div>
+</div>
+<div class="blur" id="blur" onclick="eqbtn()"></div>
+<!--eq ends here-->
 
 
 

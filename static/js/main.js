@@ -98,7 +98,7 @@ function albumPage() {
         artist_list.style.display = "none";
     }, 300);
 
-    update_line.style.transform = "translateX(200px)";
+    update_line.style.transform = "translateX(100px)";
     song_class.classList.remove("active-class");
     artist_class.classList.remove("active-class");
     album_class.classList.add("active-class");

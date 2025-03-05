@@ -238,7 +238,7 @@ async function searchSongs(isNew, q) {
         }
         const response = await fetch(`/search/songs?query=${query}&limit=24&page=${pageNo}`);
         const data = await response.json();
-        const songs = data;
+        songs = data;
         console.log(songs);
 
         
@@ -912,6 +912,7 @@ function updateQueueDisplay() {
             for (let i = 0; i < 25 && i < songs.length; i++) {
                 createSongCard(songs[i], songList);
             }
+            playerHeart();
             updateQueueDisplay();
             
         }

@@ -1,6 +1,10 @@
 from flask import Flask, render_template, request, jsonify, Response, stream_with_context
 import requests
 from io import BytesIO
+import urllib3
+
+# Suppress only the single InsecureRequestWarning from urllib3 needed for development
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 app = Flask(__name__)
 
@@ -40,7 +44,40 @@ def search():
         songs = []
     
     return songs
+
+@app.route('/search/song', methods=['GET'])
+def searchsong():
+    id = request.args.get('id', '')
+
+    if not id:
+        return None
     
+    try:
+        response = requests.get(f"{API_URL}/api/songs/{id}", verify=False)
+        print(response.status_code, response.text)
+        song = response.json().get('data', [])
+
+    except Exception as e:
+        print("Error fetching search results:", e)
+        song = []
+    
+    return song
+
+@app.route('/search/albums', methods=['GET'])
+def searchAlbum():
+    alQ = request.args.get('q', '')
+    limit = request.args.get('limit', '')
+    page = request.args.get('page', '')
+    
+    try:
+        response = requests.get(f"{API_URL}/api/search/albums?query={alQ}&limit={limit}&page={page}")
+        albums= response.json().get('data',[])
+        albums = albums["results"]
+    except Exception as e:
+        print("Error Fetching albums search", e)
+        albums=[]
+    
+    return albums
 
 @app.route('/stream/')
 def stream():

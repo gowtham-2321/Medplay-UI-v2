@@ -37,6 +37,7 @@ let wholePage = document.getElementById("whole-page");
 //jeevan variii
 let songPageNo = 1;
 let albumPageNo = 1;
+let artistPageNo = 1;
 let currentViewingAlbum = null;
 let currentViewingAlbumSongs = [];
 let q= "love";
@@ -119,7 +120,8 @@ function albumPage() {
     album_class.classList.add("active-class");
 }
 
-function artistSongPage() {
+function artistSongPage(id) {
+    artistSongPager(id);
     artist_page.style.display = "block";
     setTimeout(() => {
         artist_page.style.opacity = "1";
@@ -233,6 +235,7 @@ inpField.addEventListener("keypress", function(event) {
         displayFeed();
         searchSongs(true);
         searchAlbums(true);
+        searchArtists(true);
     }
 });
     
@@ -372,7 +375,7 @@ async function albumSongPager(albumId) {
     const playAll = albumInfo.querySelector(".album-card-play");
     playAll.onclick = () => {
         let temp = songQueue;
-        songQueue = []
+        songQueue = [];
         data.songs.forEach(song => songQueue.push(song));
         temp.forEach(song => songQueue.push(song));
         playNextInQueue();
@@ -547,6 +550,98 @@ function createSongCard(song, songList) {
     /*favourites checker ends*/
 
     songList.appendChild(card);
+}
+
+async function searchArtists(isNew, q) {
+    const query = document.getElementById("search-query").value || q;
+    artist_list.innerHTML =``;
+
+    try {
+        if(!isNew)
+        {
+            artistPageNo = artistPageNo + 1;
+        } else {
+            artistPageNo = 1;
+        }
+        const response = await fetch(`/search/artists?q=${query}&limit=10&page=${artistPageNo}`);
+        const data = await response.json();
+        artists = data;
+        console.log("artists");
+        console.log(artists);
+
+        if (artists.length === 0) {
+            throw new Error("No artists found");
+        }
+
+        for (let i = 0; i < 10 && i < artists.length; i++) {
+            createArtistCard(artists[i], artist_list);
+        }
+    }  catch (error) {
+        console.error("Error fetching artists", error);
+        artist_list.innerHTML = "<p>No artists found</p>";
+    }
+}
+
+function createArtistCard(artist, artistList) {
+    const thsArtist = document.createElement("div");
+    thsArtist.classList.add("artist-card");
+    const imageUrl = `/image/?url=${encodeURIComponent(artist.image[2].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+
+    let new_name = artist.name;
+    if (new_name.length > 30) {
+        new_name = new_name.slice(0,30)+"...";
+    }
+
+    thsArtist.innerHTML = `
+        <img class="artist-card-img" src="${imageUrl}">
+        <span class="artist-card-name">${new_name}</span>
+    `;
+    thsArtist.addEventListener('click', () => {
+        artistSongPage(artist.id);
+    });
+    artistList.appendChild(thsArtist);
+}
+
+async function artistSongPager(artistId) {
+    artist_page.innerHTML = `
+    <div class="back-icon-holder">
+        <div class="back-icon" id="album-song-page-back" onclick="artistSongPageBack()">
+        <i class="fa-solid fa-caret-left"></i>
+        </div>
+        <span>Back</span>
+    </div>
+    `;
+    const artistInfo = document.createElement("div");
+    artistInfo.classList.add("artist-info-card-holder");
+    const response = await fetch(`/artists?id=${artistId}`);
+    const data = await response.json();
+    const imageUrl = `/image/?url=${encodeURIComponent(data.image[2].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+    console.log(data);
+    artistInfo.innerHTML = `
+    <img class="artist-info-card-image" src="${imageUrl}">
+    <div class="artist-info-card">
+        <span>Artist</span>
+        <span class="artist-name-artist-card">${data.name}</span>
+        <div class="artist-card-play">
+        <div class="artist-play-icon">
+            <i class="fa-solid fa-play"></i>
+        </div>
+        <span>Play all songs</span>
+        </div>
+    </div>
+    `;
+
+    const playAll = artistInfo.querySelector(".artist-card-play");
+    playAll.onclick = () => {
+        let temp = songQueue;
+        songQueue = [];
+        data.songs.forEach(song => songQueue.push(song));
+        temp.forEach(song => songQueue.push(song));
+        playNextInQueue();
+        updateQueueDisplay();
+    }
+
+    artist_page.appendChild(artistInfo);
 }
 
 function updater() {

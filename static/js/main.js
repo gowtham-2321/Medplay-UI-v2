@@ -580,6 +580,17 @@ function playerHeart() {
     }
 }
 
+function playFavourites() {
+    if(favourites.length === 0){
+        return;
+    }
+    let temp = songQueue;
+    songQueue = favourites;
+    temp.forEach(song => songQueue.push(song));
+    playNextInQueue();
+    updateQueueDisplay();
+}
+
 //progress tracking
 const progressTrackerHolder = document.querySelector('.progress-tracker-holder');
 const progressTracker = document.querySelector('.progress-bar');
@@ -779,10 +790,15 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
             await ffmpeg.load();
         }
 
-        const mp4Buffer = await fetchAsArrayBuffer(mp4Url);
+        const mp4Buffer = await fetchAsArrayBufferWithProgress(mp4Url, (percentage) => {
+            console.log(`Download progress: ${percentage}%`);
+        });
         const imageBuffer = await fetchAsArrayBuffer(imageUrl);
 
         ffmpeg.FS("writeFile", "input.mp4", new Uint8Array(mp4Buffer));
+        ffmpeg.setProgress(({ ratio }) => {
+            console.log(`Processing progress: ${(ratio * 100).toFixed(2)}%`);
+        });
         await ffmpeg.run("-i", "input.mp4", "-vn", "-b:a", "192k", "output.mp3");
 
         const mp3Data = ffmpeg.FS("readFile", "output.mp3");
@@ -834,6 +850,41 @@ async function downloadSong(song) {
     console.log(filename);
 
     await convertMp4ToMp3(downloadUrl, imageUrl, artist, title, album, year, genre);
+}
+
+async function fetchAsArrayBufferWithProgress(url, progressCallback) {
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const reader = response.body.getReader();
+    const contentLength = +response.headers.get('Content-Length');
+    let receivedLength = 0;
+    const chunks = [];
+
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+            break;
+        }
+        chunks.push(value);
+        receivedLength += value.length;
+
+        if (contentLength) {
+            const percentage = (receivedLength / contentLength) * 100;
+            progressCallback(percentage.toFixed(2));
+        }
+    }
+
+    const chunksAll = new Uint8Array(receivedLength);
+    let position = 0;
+    for (let chunk of chunks) {
+        chunksAll.set(chunk, position);
+        position += chunk.length;
+    }
+
+    return chunksAll.buffer;
 }
 
 function displayFeed() {

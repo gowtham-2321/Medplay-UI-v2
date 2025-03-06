@@ -83,7 +83,7 @@ function artistPage() {
     album_class.classList.remove("active-class");
 }
 function albumPage() {
-    album_list.style.display = "flex"; 
+    album_list.style.display = "grid"; 
     setTimeout(() => {
         album_list.style.opacity = "1";
     }, 300);
@@ -99,7 +99,7 @@ function albumPage() {
         artist_list.style.display = "none";
     }, 300);
 
-    update_line.style.transform = "translateX(100px)";
+    update_line.style.transform = "translateX(200px)";
     song_class.classList.remove("active-class");
     artist_class.classList.remove("active-class");
     album_class.classList.add("active-class");
@@ -176,7 +176,7 @@ function artistSongPageBack() {
 
 function albumSongPageBack() {
     
-    album_list.style.display = "flex"; 
+    album_list.style.display = "grid"; 
     setTimeout(() => {
         album_list.style.opacity = "1";
     }, 300);
@@ -202,14 +202,6 @@ menu_btns.forEach(menu_btn => {
     menu_btn.addEventListener('click', () => {
         menu_btns.forEach(s => s.classList.remove('menu-btn-selected'));
         menu_btn.classList.add('menu-btn-selected');
-    });
-});
-
-var album_song_cards = document.querySelectorAll('.album-song-card');
-album_song_cards.forEach(card => {
-    card.addEventListener('click', () => {
-        album_song_cards.forEach(c => c.classList.remove('album-song-selected'));
-        card.classList.add('album-song-selected');
     });
 });
 
@@ -277,7 +269,7 @@ async function searchAlbums(isNew, q) {
         else {
             albumPageNo = 1;
         }
-        const response = await fetch(`/search/albums?q=${query}&limit=5&page=${albumPageNo}`);
+        const response = await fetch(`/search/albums?q=${query}&limit=10&page=${albumPageNo}`);
         const data = await response.json();
         albums = data;
         console.log(albums);
@@ -286,7 +278,7 @@ async function searchAlbums(isNew, q) {
             throw new Error("No albums found");
         }
 
-        for (let i = 0; i < 5 && i < albums.length; i++) {
+        for (let i = 0; i < 10 && i < albums.length; i++) {
             createAlbumCard(albums[i], album_list);
         }
 

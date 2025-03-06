@@ -86,6 +86,7 @@ i {
     color: var(--primary-text-color);
     border-radius: 10px;
     gap: 20px;
+    cursor: pointer;
 }
 
 .menu-btn i{
@@ -329,19 +330,29 @@ i {
     position: absolute;
     width: 100%;
     display: none;
-    flex-direction: column;
+    margin: auto;
+    grid-template-columns: repeat( auto-fit, minmax(220px, 1fr) );
+    gap: 20px;
+    margin-top: 20px;
     box-sizing: border-box;
-    padding: 20px;
-    height: 69vh;
-    overflow-x: auto;
+    padding: 10px;
+    max-height: 65vh;
+    overflow-y: auto;
+    overflow-x: hidden;
     opacity: 0;
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
 }
 
 .album-card {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 10px;
+    width: 160px;
+    height: 230px;
+    cursor: pointer;
+    border-radius: 20px;
+    padding: 30px;
+    gap: 5px;
 }
 
 .album-card-disp {
@@ -367,98 +378,9 @@ i {
     text-align: center;
 }
 
-.album-card-songs {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
-}
 
-.album-song-card {
-    display: flex;
-    align-items: center;
-    box-sizing: border-box;
-    padding: 20px;
-    width: 100%;
-    height: 60px;
-    color: var(--primary-text-color);
-    font-weight: 400;
-    margin-bottom: 2px;
-    border-radius: 10px;
-    margin-bottom: 5px; 
-}
-
-.album-song-selected {
+.album-card:hover {
     background: var(--secondary-bg-color);
-    outline: 3px solid var(--accent-color);
-}
-
-.album-song-card:hover {
-    background: var(--secondary-bg-color);
-}
-
-.album-song-card-art {
-    border-radius: 8px;
-    width: 45px;
-    height: 45px;
-    background: var(--primary-text-color);
-    display: flex;
-}
-
-.album-song-card-icons {
-    display: flex;
-    gap: 35px;
-    box-sizing: border-box;
-    color: var(--accent-color);
-    width: 20%;
-    justify-content: flex-end;
-}
-
-.album-song-card-timestamp {
-    font-size: 16px;
-    width: 10%;
-    box-sizing: border-box;
-    padding: 20px;
-    display: flex;
-    justify-content: right;
-    color: var(--secondary-text-color);
-}
-
-.album-song-card-artist-name {
-    font-size: 16px;
-    width: 30%;
-    box-sizing: border-box;
-    padding: 20px;
-    color: var(--secondary-text-color); 
-}
-
-.album-song-card-song-name {
-    font-size: 16px;
-    width: 35%;
-    box-sizing: border-box;
-    padding: 20px;
-}
-
-.album-play {
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: var(--accent-color);
-    display: flex;
-    color: var(--primary-bg-color);
-    align-items: center;
-    justify-content: center;
-    display: none;
-}
-
-.album-card-disp:hover {
-    background: var(--secondary-bg-color);
-}
-
-.album-card-disp:hover .album-play{
-    display: flex;
-    cursor: pointer;
 }
 
 
@@ -503,15 +425,18 @@ i {
     font-weight: 700;
     font-size: 2.2vw;
     margin: 0;
+    cursor: pointer;
 }
 
 .title-small{
     display: none;
+    cursor: pointer;
 }
 
 .tagline {
     color: var(--accent-color);
     font-size: .8vw;
+    cursor: pointer;
 }
 
 .search-bar-holder {
@@ -950,10 +875,6 @@ i {
     max-height: 47vh;
 }
 
-.fav-Item:hover {
-    cursor: move;
-}
-
 /*favourite ends*/
 
 .themes {
@@ -1202,6 +1123,7 @@ input[type="range"]::-moz-range-thumb {
     }
     .title-small {
         display: block;
+        font-size: 30px;
     }
     .logo-holder{
         width: 90px;

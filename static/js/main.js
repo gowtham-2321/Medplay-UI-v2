@@ -297,10 +297,8 @@ async function searchAlbums(isNew, q) {
 }
 
 function createAlbumCard(album, albumList) {
-    const card = document.createElement("div");
     const thsAlbum = document.createElement("div");
     thsAlbum.classList.add("album-card");
-    card.classList.add("album-card-disp");
     const imageUrl = `/image/?url=${encodeURIComponent(album.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
     //name slicing
     let new_name = album.name;
@@ -308,20 +306,14 @@ function createAlbumCard(album, albumList) {
         new_name = new_name.slice(0,45)+"...";
     }
     //slicing end
-    card.innerHTML = `
+    thsAlbum.innerHTML = `
             <img class="album-img" src="${imageUrl}" alt="">
             <span class="album-name">${new_name ||"Unkown Album"}</span>
             
     `;
-    card.addEventListener('click', () => {
-        albumSongPage();
-        searchAlbumSongs(album.id);
+    thsAlbum.addEventListener('click', () => {
+        albumSongPage(album.id);
     });
-    const albumSongs = document.createElement("div");
-    albumSongs.classList.add("album-card-songs");
-    getAlbumSongs(albumSongs, album.id, 3);
-    thsAlbum.appendChild(card);
-    thsAlbum.appendChild(albumSongs);
     albumList.appendChild(thsAlbum);
 }
 
@@ -400,6 +392,11 @@ function getAlbumSongs(albumSongs, albumId, limit) {
                 for (let i = 0; i < 5 && i < albums.length; i++) {
                 createAlbumCard(albums[i], album_list);
                 }
+                getFavourites();
+                songList.innerHTML = "";
+                for (let i = 0; i < 25 && i < songs.length; i++) {
+                    createSongCard(songs[i], songList);
+                }           
             }
             /*favourites checker ends*/
             albumSongs.appendChild(songCard);

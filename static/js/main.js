@@ -33,8 +33,8 @@ let minute_count = document.getElementById("minute-count");
 
 
 //jeevan variii
-let pageNo = 1;
-let pageSize = 20;
+let songPageNo = 1;
+let albumPageNo = 1;
 let q= "love";
 
 function songPage() {
@@ -219,6 +219,7 @@ inpField.addEventListener("keypress", function(event) {
         console.log("Enter pressed");
         displayFeed();
         searchSongs(true);
+        searchAlbums(true);
         
     }
 });
@@ -231,12 +232,12 @@ async function searchSongs(isNew, q) {
     //console.log(isNew);
     try {
         if (!isNew) {
-            pageNo= pageNo + 1;
+            songPageNo= songPageNo + 1;
         }
         else {
-            pageNo = 1;
+            songPageNo = 1;
         }
-        const response = await fetch(`/search/songs?query=${query}&limit=24&page=${pageNo}`);
+        const response = await fetch(`/search/songs?query=${query}&limit=24&page=${songPageNo}`);
         const data = await response.json();
         songs = data;
         console.log(songs);
@@ -263,6 +264,142 @@ async function searchSongs(isNew, q) {
         });
     });
 }
+
+async function searchAlbums(isNew, q) {
+    const query = document.getElementById("search-query").value || q;
+    album_list.innerHTML =``;
+
+    try {
+        if (!isNew) {
+            albumPageNo= albumPageNo + 1;
+        }
+        else {
+            albumPageNo = 1;
+        }
+        const response = await fetch(`/search/albums?q=${query}&limit=5&page=${albumPageNo}`);
+        const data = await response.json();
+        albums = data;
+        console.log(albums);
+
+        if (albums.length === 0) {
+            throw new Error("No albums found");
+        }
+
+        for (let i = 0; i < 5 && i < albums.length; i++) {
+            createAlbumCard(albums[i], album_list);
+        }
+
+    }   catch (error) {
+        console.error("Error fetching albums", error);
+        album_list.innerHTML = "<p>No albums found</p>";
+    }
+}
+
+function createAlbumCard(album, albumList) {
+    const card = document.createElement("div");
+    const thsAlbum = document.createElement("div");
+    thsAlbum.classList.add("album-card");
+    card.classList.add("album-card-disp");
+    const imageUrl = `/image/?url=${encodeURIComponent(album.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+    //name slicing
+    let new_name = album.name;
+    if (new_name.length > 45) {
+        new_name = new_name.slice(0,45)+"...";
+    }
+    //slicing end
+    card.innerHTML = `
+            <img class="album-img" src="${imageUrl}" alt="">
+            <span class="album-name">${new_name ||"Unkown Album"}</span>
+            
+    `;
+    card.addEventListener('click', () => {
+        albumSongPage();
+        searchAlbumSongs(album.id);
+    });
+    const albumSongs = document.createElement("div");
+    albumSongs.classList.add("album-card-songs");
+    getAlbumSongs(albumSongs, album.id, 3);
+    thsAlbum.appendChild(card);
+    thsAlbum.appendChild(albumSongs);
+    albumList.appendChild(thsAlbum);
+}
+
+function getAlbumSongs(albumSongs, albumId, limit) {
+    fetch(`/albums/songs?id=${albumId}&limit=${limit}`).then(response => response.json()).then(data => {
+        data = data;
+        console.log(data);
+
+        albumSongs.innerHTML = "";
+        data.forEach(song => {
+            const songCard = document.createElement("div");
+            songCard.classList.add("album-song-card");
+            const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+            //name slicing
+            let new_name = song.name;
+            let new_art_name = song.artists.primary[0].name;
+            let new_duration = formatTime(song.duration);
+            if (new_name.length > 45) {
+                new_name = new_name.slice(0,45)+"...";
+            }
+            if (new_art_name.length > 35) {
+                new_art_name = new_art_name.slice(0,35)+"...";
+            }
+            
+            songCard.innerHTML = `
+                <div class="album-song-card">
+                    <img class="album-song-card-art" src="${imageUrl}")}}" alt="">
+                    <span class="album-song-card-song-name">${new_name}</span>
+                    <span class="album-song-card-artist-name">${new_art_name}</span>
+                    <span class="album-song-card-timestamp">${new_duration}</span>
+                    <div class="album-song-card-icons">
+                      <i class="fa-regular fa-heart"></i>
+                      <i class="fa-solid fa-play"></i>
+                      <i class="fa-solid fa-download"></i>
+                      <i class="fa-solid fa-plus"></i>
+                    </div>
+                  </div>
+            `;
+            const play= songCard.querySelector(".fa-play");
+            play.onclick = () => playmySong(song);
+
+            const down = songCard.querySelector(".fa-download");
+            down.onclick = () => {
+                downloadSong(song);
+            }
+            const queueButton = songCard.querySelector(".fa-plus");
+            queueButton.onclick = () => addToQueue(song);
+            
+            /* favourites checker */
+            const heartButton = songCard.querySelector(".fa-heart");
+            favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
+            let isPresentFav = favourites.some(item => item.id === song.id);
+            if(isPresentFav){
+                heartButton.classList.replace("fa-regular", "fa-solid");
+            }
+            heartButton.onclick = () => {
+                let heartClassList = Array.from(heartButton.classList);
+                isLiked = heartClassList.some(className => className === "fa-solid");
+                if(isLiked){
+                    favourites = favourites.filter(item => item.id !== song.id);
+                    localStorage.setItem("favourites", JSON.stringify(favourites));
+                    heartButton.classList.replace("fa-solid", "fa-regular");
+                    console.log(favourites);
+                }
+                else {
+                    heartButton.classList.replace("fa-regular", "fa-solid");
+                    favourites.push(song);
+                    localStorage.setItem("favourites", JSON.stringify(favourites));
+                    console.log(favourites);
+                }
+                updateQueueDisplay();
+                playerHeart();
+            }
+            /*favourites checker ends*/
+            albumSongs.appendChild(songCard);
+        });
+    });    
+}
+
 
 function createSongCard(song, songList) {
     const card = document.createElement("div");
@@ -311,7 +448,7 @@ function createSongCard(song, songList) {
     /* favourites checker */
     const heartButton = card.querySelector(".fa-heart");
     favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
-    let isPresentFav = favourites.some(item => item === song.id);
+    let isPresentFav = favourites.some(item => item.id === song.id);
     if(isPresentFav){
         heartButton.classList.replace("fa-regular", "fa-solid");
     }
@@ -319,20 +456,19 @@ function createSongCard(song, songList) {
         let heartClassList = Array.from(heartButton.classList);
         isLiked = heartClassList.some(className => className === "fa-solid");
         if(isLiked){
-            favourites = favourites.filter(item => item !== song.id);
+            favourites = favourites.filter(item => item.id !== song.id);
             localStorage.setItem("favourites", JSON.stringify(favourites));
             heartButton.classList.replace("fa-solid", "fa-regular");
             console.log(favourites);
         }
         else {
             heartButton.classList.replace("fa-regular", "fa-solid");
-            favourites.push(song.id);
+            favourites.push(song);
             localStorage.setItem("favourites", JSON.stringify(favourites));
             console.log(favourites);
         }
         updateQueueDisplay();
         playerHeart();
-        getFavourites();
     }
     /*favourites checker ends*/
 
@@ -377,7 +513,7 @@ function playmySong(song) {
         let hearttClassList = Array.from(heartt.classList);
         isLiked = hearttClassList.some(className => className === "fa-solid");
         if(isLiked){
-            favourites = favourites.filter(item => item !== song.id);
+            favourites = favourites.filter(item => item.id !== song.id);
             localStorage.setItem("favourites", JSON.stringify(favourites));
             heartt.classList.replace("fa-solid", "fa-regular");
             playerHeart();
@@ -385,10 +521,10 @@ function playmySong(song) {
         else{
             heartt.classList.replace('fa-regular', 'fa-solid');
             favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
-            isPresentFavCheck = favourites.some(item => item === song.id);
+            isPresentFavCheck = favourites.some(item => item.id === song.id);
             if (!isPresentFavCheck)
             {
-                favourites.push(song.id);
+                favourites.push(song);
                 localStorage.setItem("favourites", JSON.stringify(favourites));
             }
             console.log(song.id);
@@ -399,7 +535,6 @@ function playmySong(song) {
             createSongCard(songs[i], songList);
         }
         updateQueueDisplay();
-        getFavourites();
         
     })
 }
@@ -412,7 +547,7 @@ function playerHeart() {
     console.log(currentSong);
     let heartt = document.getElementById("player-heart");
     favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
-    let isPresentFav = favourites.some(item => item === currentSong.id);
+    let isPresentFav = favourites.some(item => item.id === currentSong.id);
     if(isPresentFav){
         heartt.classList.replace('fa-regular', 'fa-solid');
     }
@@ -891,7 +1026,7 @@ function updateQueueDisplay() {
         const heartButton = queueItem.querySelector(".fa-heart");
 
         favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
-        let isPresentFav = favourites.some(item => item === song.id);
+        let isPresentFav = favourites.some(item => item.id === song.id);
         if(isPresentFav){
             heartButton.classList.replace("fa-regular", "fa-solid");
         }
@@ -899,14 +1034,14 @@ function updateQueueDisplay() {
             let heartClassList = Array.from(heartButton.classList);
             isLiked = heartClassList.some(className => className === "fa-solid");
             if(isLiked){
-                favourites = favourites.filter(item => item !== song.id);
+                favourites = favourites.filter(item => item.id !== song.id);
                 localStorage.setItem("favourites", JSON.stringify(favourites));
                 heartButton.classList.replace("fa-solid", "fa-regular");
                 console.log(favourites);
             }
             else {
                 heartButton.classList.replace("fa-regular", "fa-solid");
-                favourites.push(song.id);
+                favourites.push(song);
                 localStorage.setItem("favourites", JSON.stringify(favourites));
                 console.log(favourites);
             }
@@ -916,7 +1051,6 @@ function updateQueueDisplay() {
             }
             playerHeart();
             updateQueueDisplay();
-            getFavourites();
             
         }
 
@@ -925,119 +1059,6 @@ function updateQueueDisplay() {
     });
     songCountTime();
 }
-let favDuration = 0;
-let songCountFav = 0;
-async function getFavourites(){    
-    let minute_count_fav = document.getElementById("minute-count-fav");
-    let song_count_fav = document.getElementById("song-count-fav");
-    let favDuration = 0; 
-    let songCountFav = 0;
-    favourites = JSON.parse(localStorage.getItem("favourites")) || [];
-    const favContainer = document.getElementById("fav-list");
-    favContainer.innerHTML = "";
-    if(favourites.length>0){
-        favourites.forEach(async fav => {
-            try {
-                const response = await fetch(`/search/song?id=${fav}`);
-                const resp = await response.json();
-                let song = resp[0];
-                const favItem = document.createElement("div");
-                favItem.classList.add("song-card");
-                favItem.classList.add("fav-Item");
-    
-                favDuration = +favDuration + +song.duration;
-                songCountFav = +songCountFav + +1;
-    
-                console.log(favDuration);
-                const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
-                //name slicing
-                let new_name = song.name;
-                let new_art_name = song.artists.primary[0].name;
-                let new_album_name = song.album.name;
-                let new_duration = formatTime(song.duration);
-                if (new_name.length > 45) {
-                    new_name = new_name.slice(0,45)+"...";
-                }
-                if (new_art_name.length > 35) {
-                    new_art_name = new_art_name.slice(0,35)+"...";
-                }
-                if (new_album_name.length > 35) {
-                    new_album_name = new_art_name.slice(0,35)+"...";
-                }
-    
-                favItem.innerHTML = `
-                    <img class="song-card-art" src="${imageUrl}" alt="">
-                    <span class="song-card-song-name">${new_name ||"Unkown Song"}</span>
-                    <span class="song-card-artist-name">${new_art_name ||"Unkown Artist"}</span>
-                    <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
-                    <span class="song-card-timestamp">${new_duration || "00:00"}</span>
-                    <div class="song-card-icons">
-                        <i class="fa-regular fa-heart"></i>
-                        <i class="fa-solid fa-play no-for-now"></i>
-                        <i class="fa-solid fa-download"></i>
-                        <i class="fa-solid fa-plus"></i>
-                    </div>
-    
-                `
-                const play= favItem.querySelector(".fa-play");
-                play.onclick = () => playmySong(song);
-    
-                const down = favItem.querySelector(".fa-download");
-                down.onclick = () => {
-                    downloadSong(song);
-                }
-                const favButton = favItem.querySelector(".fa-plus");
-                favButton.onclick = () => addToQueue(song);            
-    
-                const heartButton = favItem.querySelector(".fa-heart");
-    
-                favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
-                let isPresentFav = favourites.some(item => item === song.id);
-                if(isPresentFav){
-                    heartButton.classList.replace("fa-regular", "fa-solid");
-                }
-                heartButton.onclick = () => {
-                    let heartClassList = Array.from(heartButton.classList);
-                    isLiked = heartClassList.some(className => className === "fa-solid");
-                    if(isLiked){
-                        favourites = favourites.filter(item => item !== song.id);
-                        localStorage.setItem("favourites", JSON.stringify(favourites));
-                        heartButton.classList.replace("fa-solid", "fa-regular");
-                        console.log(favourites);
-                        getFavourites();
-                    }
-                    else {
-                        heartButton.classList.replace("fa-regular", "fa-solid");
-                        favourites.push(song.id);
-                        localStorage.setItem("favourites", JSON.stringify(favourites));
-                        console.log(favourites);
-                    }
-                    songList.innerHTML = "";
-                    for (let i = 0; i < 25 && i < songs.length; i++) {
-                        createSongCard(songs[i], songList);
-                    }
-                    playerHeart();
-                    updateQueueDisplay();
-                    
-                }
-                favContainer.appendChild(favItem);
-                
-                
-                minute_count_fav.innerHTML = formatTimeHours(favDuration);
-                song_count_fav.innerHTML = songCountFav;
-            
-                
-            }
-        
-            catch (error) {
-                console.error("errorrrrr in favvvvvv", error);
-            }
-        });
-    }
-    minute_count_fav.innerHTML = "00:00";
-    song_count_fav.innerHTML = "0";        
-}
-
 
 document.addEventListener("DOMContentLoaded", function() {
     const queueList = document.getElementById("queue-list");
@@ -1176,7 +1197,6 @@ function retrieve() {
         });
 }
 document.onload = retrieve();
-document.onload = getFavourites();
 
 
 //equalizer

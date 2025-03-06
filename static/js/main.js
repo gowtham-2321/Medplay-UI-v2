@@ -50,7 +50,9 @@ function updateScreenSize() {
     //song_list.style.height = `${screenHeight}px`;
 }
 
-window.addEventListener('resize', updateScreenSize);
+window.addEventListener('resize', () => {
+    updateScreenSize();
+});
 
 function songPage() {
     song_list.style.display = "block"; 
@@ -738,13 +740,33 @@ function playPause() {
     }
 }
 
+let audioIcon = document.getElementById("audio-icon");
+let audioBarBack = document.getElementById("audio-bar-back");
+let audioBar = document.getElementById("audio-bar");
+let isAudioOpen = false;
+
+audioIcon.addEventListener('click', () => {
+    if(isAudioOpen){
+        audioBar.style.display = "none";
+        audioBarBack.style.display = "none";
+        isAudioOpen = false;
+    }
+    else{
+        audioBar.style.display = "block";
+        audioBarBack.style.display = "block";
+        isAudioOpen = true;
+    }
+});
+
 // Volume adjustment and seeking
 document.addEventListener('DOMContentLoaded', () => {
+    
     searchSongs(true, "english");
     const audioPlayer = document.getElementById('audio-player');
     const audioBar = document.querySelector('.audio-bar');
     const audioUpdateBar = document.querySelector('.audio-update-bar');
     const audioProgressCircle = document.querySelector('.audio-progress-circle');
+    //updateAudioBar(0);
 
     window.addEventListener('resize', () => {
         const rect = audioBar.getBoundingClientRect();
@@ -795,6 +817,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const updateWidth = volume * barWidth;
         audioUpdateBar.style.width = `${updateWidth}px`;
         audioProgressCircle.style.left = `${updateWidth}px`;
+        console.log(barWidth);
     }
 
     // Initialize the audio bar with the current volume

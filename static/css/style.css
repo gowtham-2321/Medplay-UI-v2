@@ -590,10 +590,24 @@ i {
 }
 
 .audio-bar {
+    display: none;
     width: 150px;
     height: 4px;
     background: var(--primary-text-color);
-    position: relative;
+    position: fixed;
+    z-index: 2;
+    transform: translate(-70px,-60px);
+}
+
+.audio-bar-back{
+    display: none;
+    position: fixed;
+    width: 200px;
+    height: 30px;
+    border-radius: 10px;
+    z-index: 1;
+    background: var(--secondary-bg-color);
+    transform: translate(-95px,-60px);
 }
 
 .audio-update-bar {
@@ -1166,9 +1180,14 @@ input[type="range"]::-moz-range-thumb {
     .download-queue span, .play-queue span, .download-fav span, .play-fav span{
         display: none;
     }
+    .audio-bar-back{
+        width: 120px;
+        transform: translate(-50px,-60px);
 
+    }
     .audio-bar{
         width: 70px;
+        transform: translate(-25px,-60px);
     }
 
 }
@@ -1191,11 +1210,6 @@ input[type="range"]::-moz-range-thumb {
     }
     #song-count, #minute-count, #song-count-fav, #minute-count-fav{
         font-size: 40px;
-    }
-
-    .audio-bar {
-        position: fixed;
-        transform: translate(-25px, -45px);
     }
 }
 

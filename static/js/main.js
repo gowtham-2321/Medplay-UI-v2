@@ -388,10 +388,6 @@ function getAlbumSongs(albumSongs, albumId, limit) {
                 }
                 updateQueueDisplay();
                 playerHeart();
-                album_list.innerHTML = "";
-                for (let i = 0; i < 5 && i < albums.length; i++) {
-                createAlbumCard(albums[i], album_list);
-                }
                 getFavourites();
                 songList.innerHTML = "";
                 for (let i = 0; i < 25 && i < songs.length; i++) {
@@ -538,10 +534,6 @@ function playmySong(song) {
         songList.innerHTML = "";
         for (let i = 0; i < 25 && i < songs.length; i++) {
             createSongCard(songs[i], songList);
-        }
-        album_list.innerHTML = "";
-        for (let i = 0; i < 5 && i < albums.length; i++) {
-            createAlbumCard(albums[i], album_list);
         }
         updateQueueDisplay();
         getFavourites();
@@ -1060,10 +1052,6 @@ function updateQueueDisplay() {
             for (let i = 0; i < 25 && i < songs.length; i++) {
                 createSongCard(songs[i], songList);
             }
-            album_list.innerHTML = "";
-            for (let i = 0; i < 5 && i < albums.length; i++) {
-            createAlbumCard(albums[i], album_list);
-            }
             playerHeart();
             updateQueueDisplay();
             getFavourites();
@@ -1161,10 +1149,6 @@ function getFavourites(){
                 songList.innerHTML = "";
                 for (let i = 0; i < 25 && i < songs.length; i++) {
                     createSongCard(songs[i], songList);
-                }
-                album_list.innerHTML = "";
-                for (let i = 0; i < 5 && i < albums.length; i++) {
-                createAlbumCard(albums[i], album_list);
                 }
                 playerHeart();
                 updateQueueDisplay();

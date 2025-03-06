@@ -311,7 +311,7 @@ function createSongCard(song, songList) {
     /* favourites checker */
     const heartButton = card.querySelector(".fa-heart");
     favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
-    let isPresentFav = favourites.some(item => item.id === song.id);
+    let isPresentFav = favourites.some(item => item === song.id);
     if(isPresentFav){
         heartButton.classList.replace("fa-regular", "fa-solid");
     }
@@ -319,19 +319,20 @@ function createSongCard(song, songList) {
         let heartClassList = Array.from(heartButton.classList);
         isLiked = heartClassList.some(className => className === "fa-solid");
         if(isLiked){
-            favourites = favourites.filter(item => item.id !== song.id);
+            favourites = favourites.filter(item => item !== song.id);
             localStorage.setItem("favourites", JSON.stringify(favourites));
             heartButton.classList.replace("fa-solid", "fa-regular");
             console.log(favourites);
         }
         else {
             heartButton.classList.replace("fa-regular", "fa-solid");
-            favourites.push(song);
+            favourites.push(song.id);
             localStorage.setItem("favourites", JSON.stringify(favourites));
             console.log(favourites);
         }
         updateQueueDisplay();
         playerHeart();
+        getFavourites();
     }
     /*favourites checker ends*/
 
@@ -376,7 +377,7 @@ function playmySong(song) {
         let hearttClassList = Array.from(heartt.classList);
         isLiked = hearttClassList.some(className => className === "fa-solid");
         if(isLiked){
-            favourites = favourites.filter(item => item.id !== song.id);
+            favourites = favourites.filter(item => item !== song.id);
             localStorage.setItem("favourites", JSON.stringify(favourites));
             heartt.classList.replace("fa-solid", "fa-regular");
             playerHeart();
@@ -384,10 +385,10 @@ function playmySong(song) {
         else{
             heartt.classList.replace('fa-regular', 'fa-solid');
             favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
-            isPresentFavCheck = favourites.some(item => item.id === song.id);
+            isPresentFavCheck = favourites.some(item => item === song.id);
             if (!isPresentFavCheck)
             {
-                favourites.push(song);
+                favourites.push(song.id);
                 localStorage.setItem("favourites", JSON.stringify(favourites));
             }
             console.log(song.id);
@@ -398,6 +399,7 @@ function playmySong(song) {
             createSongCard(songs[i], songList);
         }
         updateQueueDisplay();
+        getFavourites();
         
     })
 }
@@ -410,7 +412,7 @@ function playerHeart() {
     console.log(currentSong);
     let heartt = document.getElementById("player-heart");
     favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
-    let isPresentFav = favourites.some(item => item.id === currentSong.id);
+    let isPresentFav = favourites.some(item => item === currentSong.id);
     if(isPresentFav){
         heartt.classList.replace('fa-regular', 'fa-solid');
     }
@@ -889,7 +891,7 @@ function updateQueueDisplay() {
         const heartButton = queueItem.querySelector(".fa-heart");
 
         favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
-        let isPresentFav = favourites.some(item => item.id === song.id);
+        let isPresentFav = favourites.some(item => item === song.id);
         if(isPresentFav){
             heartButton.classList.replace("fa-regular", "fa-solid");
         }
@@ -897,14 +899,14 @@ function updateQueueDisplay() {
             let heartClassList = Array.from(heartButton.classList);
             isLiked = heartClassList.some(className => className === "fa-solid");
             if(isLiked){
-                favourites = favourites.filter(item => item.id !== song.id);
+                favourites = favourites.filter(item => item !== song.id);
                 localStorage.setItem("favourites", JSON.stringify(favourites));
                 heartButton.classList.replace("fa-solid", "fa-regular");
                 console.log(favourites);
             }
             else {
                 heartButton.classList.replace("fa-regular", "fa-solid");
-                favourites.push(song);
+                favourites.push(song.id);
                 localStorage.setItem("favourites", JSON.stringify(favourites));
                 console.log(favourites);
             }
@@ -914,6 +916,7 @@ function updateQueueDisplay() {
             }
             playerHeart();
             updateQueueDisplay();
+            getFavourites();
             
         }
 
@@ -922,6 +925,119 @@ function updateQueueDisplay() {
     });
     songCountTime();
 }
+let favDuration = 0;
+let songCountFav = 0;
+async function getFavourites(){    
+    let minute_count_fav = document.getElementById("minute-count-fav");
+    let song_count_fav = document.getElementById("song-count-fav");
+    let favDuration = 0; 
+    let songCountFav = 0;
+    favourites = JSON.parse(localStorage.getItem("favourites")) || [];
+    const favContainer = document.getElementById("fav-list");
+    favContainer.innerHTML = "";
+    if(favourites.length>0){
+        favourites.forEach(async fav => {
+            try {
+                const response = await fetch(`/search/song?id=${fav}`);
+                const resp = await response.json();
+                let song = resp[0];
+                const favItem = document.createElement("div");
+                favItem.classList.add("song-card");
+                favItem.classList.add("fav-Item");
+    
+                favDuration = +favDuration + +song.duration;
+                songCountFav = +songCountFav + +1;
+    
+                console.log(favDuration);
+                const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+                //name slicing
+                let new_name = song.name;
+                let new_art_name = song.artists.primary[0].name;
+                let new_album_name = song.album.name;
+                let new_duration = formatTime(song.duration);
+                if (new_name.length > 45) {
+                    new_name = new_name.slice(0,45)+"...";
+                }
+                if (new_art_name.length > 35) {
+                    new_art_name = new_art_name.slice(0,35)+"...";
+                }
+                if (new_album_name.length > 35) {
+                    new_album_name = new_art_name.slice(0,35)+"...";
+                }
+    
+                favItem.innerHTML = `
+                    <img class="song-card-art" src="${imageUrl}" alt="">
+                    <span class="song-card-song-name">${new_name ||"Unkown Song"}</span>
+                    <span class="song-card-artist-name">${new_art_name ||"Unkown Artist"}</span>
+                    <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
+                    <span class="song-card-timestamp">${new_duration || "00:00"}</span>
+                    <div class="song-card-icons">
+                        <i class="fa-regular fa-heart"></i>
+                        <i class="fa-solid fa-play no-for-now"></i>
+                        <i class="fa-solid fa-download"></i>
+                        <i class="fa-solid fa-plus"></i>
+                    </div>
+    
+                `
+                const play= favItem.querySelector(".fa-play");
+                play.onclick = () => playmySong(song);
+    
+                const down = favItem.querySelector(".fa-download");
+                down.onclick = () => {
+                    downloadSong(song);
+                }
+                const favButton = favItem.querySelector(".fa-plus");
+                favButton.onclick = () => addToQueue(song);            
+    
+                const heartButton = favItem.querySelector(".fa-heart");
+    
+                favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
+                let isPresentFav = favourites.some(item => item === song.id);
+                if(isPresentFav){
+                    heartButton.classList.replace("fa-regular", "fa-solid");
+                }
+                heartButton.onclick = () => {
+                    let heartClassList = Array.from(heartButton.classList);
+                    isLiked = heartClassList.some(className => className === "fa-solid");
+                    if(isLiked){
+                        favourites = favourites.filter(item => item !== song.id);
+                        localStorage.setItem("favourites", JSON.stringify(favourites));
+                        heartButton.classList.replace("fa-solid", "fa-regular");
+                        console.log(favourites);
+                        getFavourites();
+                    }
+                    else {
+                        heartButton.classList.replace("fa-regular", "fa-solid");
+                        favourites.push(song.id);
+                        localStorage.setItem("favourites", JSON.stringify(favourites));
+                        console.log(favourites);
+                    }
+                    songList.innerHTML = "";
+                    for (let i = 0; i < 25 && i < songs.length; i++) {
+                        createSongCard(songs[i], songList);
+                    }
+                    playerHeart();
+                    updateQueueDisplay();
+                    
+                }
+                favContainer.appendChild(favItem);
+                
+                
+                minute_count_fav.innerHTML = formatTimeHours(favDuration);
+                song_count_fav.innerHTML = songCountFav;
+            
+                
+            }
+        
+            catch (error) {
+                console.error("errorrrrr in favvvvvv", error);
+            }
+        });
+    }
+    minute_count_fav.innerHTML = "00:00";
+    song_count_fav.innerHTML = "0";        
+}
+
 
 document.addEventListener("DOMContentLoaded", function() {
     const queueList = document.getElementById("queue-list");
@@ -1060,6 +1176,7 @@ function retrieve() {
         });
 }
 document.onload = retrieve();
+document.onload = getFavourites();
 
 
 //equalizer

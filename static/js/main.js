@@ -37,6 +37,7 @@ let minute_count = document.getElementById("minute-count");
 let songPageNo = 1;
 let albumPageNo = 1;
 let currentViewingAlbum = null;
+let currentViewingAlbumSongs = [];
 let q= "love";
 
 function songPage() {
@@ -355,7 +356,13 @@ async function albumSongPager(albumId) {
     album_page.appendChild(albumInfo);
     const albumSongList = document.createElement("div");
     albumSongList.classList.add("album-song-list");
-    data.songs.forEach(song => {
+    currentViewingAlbumSongs = data.songs;
+    createAlbumSongCards(albumSongList);
+    album_page.appendChild(albumSongList);
+}
+
+function createAlbumSongCards(albumSongList) {
+    currentViewingAlbumSongs.forEach(song => {
         const songImageUrl = `/image/?url=${encodeURIComponent(song.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
         //name slicing
         let new_name = song.name;
@@ -399,7 +406,7 @@ async function albumSongPager(albumId) {
         }
         const queueButton = songCard.querySelector(".fa-plus");
         queueButton.onclick = () => addToQueue(song);
-        
+
         /* favourites checker */
         const heartButton = songCard.querySelector(".fa-heart");
         favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
@@ -411,7 +418,7 @@ async function albumSongPager(albumId) {
             let heartClassList = Array.from(heartButton.classList);
             isLiked = heartClassList.some(className => className === "fa-solid");
             if(isLiked){
-                favourites = favourites.filter(item => item !== song.id);
+                favourites = favourites.filter(item => item.id !== song.id);
                 localStorage.setItem("favourites", JSON.stringify(favourites));
                 heartButton.classList.replace("fa-solid", "fa-regular");
                 console.log(favourites);
@@ -427,13 +434,10 @@ async function albumSongPager(albumId) {
             getFavourites();
         }
         /*favourites checker ends*/
-    
         albumSongList.appendChild(songCard);
     });
-
-    album_page.appendChild(albumSongList);
-
 }
+
 function createSongCard(song, songList) {
     const card = document.createElement("div");
     card.classList.add("song-card");
@@ -509,6 +513,11 @@ function createSongCard(song, songList) {
     songList.appendChild(card);
 }
 
+function updater() {
+    const lst =  document.querySelector("album-song-list")
+    createAlbumSongCards(lst);
+}
+
 function playmySong(song) {
     currentSong = song;
     const player = document.getElementById("audio-player");
@@ -551,6 +560,10 @@ function playmySong(song) {
             localStorage.setItem("favourites", JSON.stringify(favourites));
             heartt.classList.replace("fa-solid", "fa-regular");
             playerHeart();
+            if (currentViewingAlbumSongs.some(i => i.id === song.id))
+            {
+                updater();
+            }
         }
         else{
             heartt.classList.replace('fa-regular', 'fa-solid');
@@ -563,6 +576,10 @@ function playmySong(song) {
             }
             console.log(song);
             console.log(favourites);
+            if (currentViewingAlbumSongs.some(i => i.id === song.id))
+                {
+                    updater();
+                }
         }
         songList.innerHTML = "";
         for (let i = 0; i < 25 && i < songs.length; i++) {

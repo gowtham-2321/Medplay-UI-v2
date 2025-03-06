@@ -36,6 +36,7 @@ let minute_count = document.getElementById("minute-count");
 //jeevan variii
 let songPageNo = 1;
 let albumPageNo = 1;
+let currentViewingAlbum = null;
 let q= "love";
 
 function songPage() {
@@ -327,19 +328,30 @@ async function albumSongPager(albumId) {
     const data = await response.json();
     const imageUrl = `/image/?url=${encodeURIComponent(data.image[2].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
     console.log(data);
+    currentViewingAlbum = data;
     albumInfo.innerHTML = `
     <img class="album-info-card-image" src="${imageUrl}">
     <div class="album-info-card">
         <span class="album-page-artist-name">${data.artists.primary[0].name}</span>
         <span class="album-name-album-card">${data.name}</span>
         <div class="album-card-play">
-        <div class="album-play-icon">
-            <i class="fa-solid fa-play"></i>
-        </div>
-        <span>Play all songs</span>
+            <div class="album-play-icon">
+                <i class="fa-solid fa-play"></i>
+            </div>
+            <span>Play all songs</span>
         </div>
     </div>
     `;
+
+    const playAll = albumInfo.querySelector(".album-card-play");
+    playAll.onclick = () => {
+        let temp = songQueue;
+        songQueue = []
+        data.songs.forEach(song => songQueue.push(song));
+        temp.forEach(song => songQueue.push(song));
+        playNextInQueue();
+        updateQueueDisplay();
+    }
     album_page.appendChild(albumInfo);
     const albumSongList = document.createElement("div");
     albumSongList.classList.add("album-song-list");

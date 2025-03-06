@@ -550,8 +550,10 @@ function createSongCard(song, songList) {
 }
 
 function updater() {
-    const lst =  document.querySelector("album-song-list")
+    const lst =  document.querySelector(".album-song-list");
+    lst.innerHTML=``;
     createAlbumSongCards(lst);
+    console.log("hi11");
 }
 
 function playmySong(song) {
@@ -622,9 +624,7 @@ function playmySong(song) {
             createSongCard(songs[i], songList);
         }
         updateQueueDisplay();
-        getFavourites();
-        albumSongPager(song.album.id);
-        
+        getFavourites();        
     })
 }
 

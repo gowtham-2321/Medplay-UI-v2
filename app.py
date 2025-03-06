@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, Response, stream_with_context
+from flask import Flask, render_template, request, jsonify, Response, stream_with_context, send_file
 import requests
 from io import BytesIO
 import urllib3
@@ -100,6 +100,23 @@ def searchAlbum():
     
     return albums
 
+@app.route('/search/artists', methods=['GET'])
+def searchArtists():
+    alQ = request.args.get('q', '')
+    limit = request.args.get('limit', '')
+    page = request.args.get('page', '')
+    
+    try:
+        response = requests.get(f"{API_URL}/api/search/artists?query={alQ}&limit={limit}&page={page}")
+        artists = response.json().get('data', [])
+        artists = artists["results"]
+    except Exception as e:
+        print("Error Fetching Artists search", e)
+        artists = []
+    
+    return artists
+    
+
 @app.route('/stream/')
 def stream():
     url = request.args.get('url', '')
@@ -128,8 +145,11 @@ def image():
     url = request.args.get('url', '')
     if not url:
         return "No URL provided", 400
-
-    upstream_response = requests.get(url, stream=True)
+    
+    
+    upstream_response = requests.get(url, stream=True, verify=False)
+    if upstream_response.status_code != 200:
+        return send_file('static/img/song art.jpg')
 
     def generate():
         for chunk in upstream_response.iter_content(chunk_size=8192):

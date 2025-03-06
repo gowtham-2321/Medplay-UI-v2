@@ -9,6 +9,7 @@
     --primary-bg-color: #242424;
     --secondary-bg-color: #303030;
     --heart: #f05542;
+    --max-height: 0px;
 } 
 
 *{
@@ -61,7 +62,7 @@ i {
 
 .header {
     width: 100vw;
-    height: 145px;
+    height: 140px;
     box-sizing: border-box;
     background: var(--primary-bg-color);
     display: flex;
@@ -127,7 +128,7 @@ i {
 
 .main-center {
     width: 76vw;
-    height: 85vh;
+    height: 85%;
     background: var(--primary-bg-color);
     box-sizing: border-box;
     padding: 10px;
@@ -177,17 +178,18 @@ i {
 }
 
 .songlist {
+    height: var(--max-height);
     margin-top: 20px;
     position: absolute;
     width: 100%;
     box-sizing: border-box;
     padding: 10px;
-    height: fit-content;
+    padding-bottom: 30pxx;
     display: block;
     opacity: 100%;
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
     overflow-y: auto;
-    max-height: 68vh;
+    
 }
 .song-card {
     display: flex;
@@ -296,7 +298,7 @@ i {
     opacity: 0;
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
     overflow-y: auto;
-    max-height: 65vh;
+    height: var(--max-height);
 }
 .artist-card {
     display: flex;
@@ -336,7 +338,7 @@ i {
     margin-top: 20px;
     box-sizing: border-box;
     padding: 10px;
-    max-height: 65vh;
+    height: var(--max-height);
     overflow-y: auto;
     overflow-x: hidden;
     opacity: 0;
@@ -346,7 +348,6 @@ i {
 .album-card {
     display: flex;
     flex-direction: column;
-    align-items: center;
     width: 160px;
     height: 230px;
     cursor: pointer;
@@ -369,13 +370,18 @@ i {
 }
 
 .album-img {
-    border-radius: 20px;
+    border-radius: 10px;
     width: 150px;
     height: 150px;
+    margin-bottom: 20px;
 }
 
 .album-name {
-    text-align: center;
+    text-align: left;
+}
+.album-artist-name{
+    color: var(--secondary-text-color);
+    text-align: left;
 }
 
 
@@ -632,6 +638,7 @@ i {
 .relative-holder {
     width: 100%;
     position: absolute;
+    height: 100%;
 }
 
 .classification {
@@ -678,6 +685,7 @@ i {
 
 .artist-name-artist-card, .album-name-album-card {
     font-size: 40px;
+    font-weight: 600;
 }
 
 .artist-card-play, .album-card-play {
@@ -697,14 +705,18 @@ i {
 }
 
 .artist-song-list, .album-song-list  {
+    margin-top: 20px;
     padding-top: 20px;
+    overflow-y: auto;
+    height: 30vh;
+    padding-bottom: 100px;
 }
 
 .back-icon {
     width: 35px;
     height: 35px;
     border-radius: 50%;
-    border: 3px solid var(--primary-text-color);
+    border: 3px solid var(--secondary-text-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -716,6 +728,7 @@ i {
     display: flex;
     align-items: center;
     gap: 10px;
+    color: var(--secondary-text-color);
 }
 
 .fa-heart {
@@ -724,6 +737,8 @@ i {
 
 
 .feed {
+    width: 100%;
+    height: 100%;
     opacity: 1;
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
 }

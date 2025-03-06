@@ -746,6 +746,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const audioUpdateBar = document.querySelector('.audio-update-bar');
     const audioProgressCircle = document.querySelector('.audio-progress-circle');
 
+    window.addEventListener('resize', () => {
+        const rect = audioBar.getBoundingClientRect();
+        const width = rect.width;
+        volume = audioPlayer.volume;
+        updateAudioBar(volume);
+    });
+
     audioBar.addEventListener('click', (event) => {
         const rect = audioBar.getBoundingClientRect();
         const offsetX = event.clientX - rect.left;
@@ -1245,7 +1252,7 @@ function getFavourites(){
                 <span class="song-card-timestamp">${new_duration || "00:00"}</span>
                 <div class="song-card-icons">
                     <i class="fa-regular fa-heart"></i>
-                    <i class="fa-solid fa-play no-for-now"></i>
+                    <i class="fa-solid fa-play"></i>
                     <i class="fa-solid fa-download"></i>
                     <i class="fa-solid fa-plus"></i>
                 </div>

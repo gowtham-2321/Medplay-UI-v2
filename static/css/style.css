@@ -186,7 +186,7 @@ i {
     opacity: 100%;
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
     overflow-y: auto;
-    max-height: 70vh;
+    max-height: 68vh;
 }
 .song-card {
     display: flex;
@@ -332,7 +332,8 @@ i {
     flex-direction: column;
     box-sizing: border-box;
     padding: 20px;
-    height: fit-content;
+    height: 69vh;
+    overflow-x: auto;
     opacity: 0;
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
 }
@@ -1083,7 +1084,7 @@ input[type="range"] {
     appearance: none;
     width: 8px; 
     height: 125px;
-    background: var(--primary-bg-color); 
+    background: var(--primary-text-color); 
     outline: none;
     opacity: 1;
     transition: opacity .2s;
@@ -1246,7 +1247,7 @@ input[type="range"]::-moz-range-thumb {
     .song-card-icons {
         width: 25%;
     }
-    .big-box, .big-box-fav{
+    .big-box {
         gap: 20px;
     }
     #song-count, #minute-count, #song-count-fav, #minute-count-fav{

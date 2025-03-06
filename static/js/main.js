@@ -393,6 +393,11 @@ function getAlbumSongs(albumSongs, albumId, limit) {
                 }
                 updateQueueDisplay();
                 playerHeart();
+                getFavourites();
+                songList.innerHTML = "";
+                for (let i = 0; i < 25 && i < songs.length; i++) {
+                    createSongCard(songs[i], songList);
+                }           
             }
             /*favourites checker ends*/
             albumSongs.appendChild(songCard);

@@ -726,6 +726,10 @@ i {
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
 }
 
+.album-page-artist-name {
+    color: var(--secondary-text-color);
+}
+
 .artist-info-card-holder, .album-info-card-holder {
     display: flex;
     gap: 20px;

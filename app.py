@@ -29,7 +29,7 @@ def search():
     page = request.args.get('page', '')
 
 
-    print(query,limit,page)
+    #print(query,limit,page)
     if not query:
         return render_template('index.html', songs=None)
     
@@ -45,13 +45,11 @@ def search():
     
     return songs
 
-@app.route('/albums/songs', methods=['GET'])
-def searchAlbumSongs():
+@app.route('/albums', methods=['GET'])
+def getAlbum():
     albumid = request.args.get('id', '')
-    limit = request.args.get('limit', '')
 
-
-    print(albumid,limit)
+    #print(albumid)
     if not albumid:
         return render_template('index.html', songs=None)
     
@@ -59,13 +57,12 @@ def searchAlbumSongs():
         response = requests.get(f"{API_URL}/api/albums?id={albumid}", verify=False)
         # print(response.status_code, response.text)
         songs = response.json().get('data', [])
-        songs = songs['songs']
 
     except Exception as e:
         print("Error fetching search results:", e)
         songs = []
     
-    data = songs[:int(limit)]
+    data = songs
     return jsonify(data)
     
 
@@ -78,7 +75,7 @@ def searchsong():
     
     try:
         response = requests.get(f"{API_URL}/api/songs/{id}", verify=False)
-        print(response.status_code, response.text)
+        #print(response.status_code, response.text)
         song = response.json().get('data', [])
 
     except Exception as e:

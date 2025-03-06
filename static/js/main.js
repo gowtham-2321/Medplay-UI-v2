@@ -403,8 +403,25 @@ async function albumSongPager(albumId) {
                 localStorage.setItem("favourites", JSON.stringify(favourites));
                 heartButton.classList.replace("fa-solid", "fa-regular");
                 console.log(favourites);
+            }
+            else {
+                heartButton.classList.replace("fa-regular", "fa-solid");
+                favourites.push(song);
+                localStorage.setItem("favourites", JSON.stringify(favourites));
+                console.log(favourites);
+            }
+            updateQueueDisplay();
+            playerHeart();
+            getFavourites();
+        }
+        /*favourites checker ends*/
+    
+        albumSongList.appendChild(songCard);
+    });
 
+    album_page.appendChild(albumSongList);
 
+}
 function createSongCard(song, songList) {
     const card = document.createElement("div");
     card.classList.add("song-card");

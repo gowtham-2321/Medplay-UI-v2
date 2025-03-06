@@ -1,6 +1,10 @@
 from flask import Flask, render_template, request, jsonify, Response, stream_with_context
 import requests
 from io import BytesIO
+import urllib3
+
+# Suppress only the single InsecureRequestWarning from urllib3 needed for development
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 app = Flask(__name__)
 
@@ -25,13 +29,13 @@ def search():
     page = request.args.get('page', '')
 
 
-    print(query,limit,page)
+    #print(query,limit,page)
     if not query:
         return render_template('index.html', songs=None)
     
     try:
         response = requests.get(f"{API_URL}/api/search/songs?query={query}&limit={limit}&page={page}", verify=False)
-        print(response.status_code, response.text)
+        # print(response.status_code, response.text)
         songs = response.json().get('data', [])
         songs = songs["results"]
 
@@ -40,7 +44,61 @@ def search():
         songs = []
     
     return songs
+
+@app.route('/albums', methods=['GET'])
+def getAlbum():
+    albumid = request.args.get('id', '')
+
+    #print(albumid)
+    if not albumid:
+        return render_template('index.html', songs=None)
     
+    try:
+        response = requests.get(f"{API_URL}/api/albums?id={albumid}", verify=False)
+        # print(response.status_code, response.text)
+        songs = response.json().get('data', [])
+
+    except Exception as e:
+        print("Error fetching search results:", e)
+        songs = []
+    
+    data = songs
+    return jsonify(data)
+    
+
+@app.route('/search/song', methods=['GET'])
+def searchsong():
+    id = request.args.get('id', '')
+
+    if not id:
+        return None
+    
+    try:
+        response = requests.get(f"{API_URL}/api/songs/{id}", verify=False)
+        #print(response.status_code, response.text)
+        song = response.json().get('data', [])
+
+    except Exception as e:
+        print("Error fetching search results:", e)
+        song = []
+    
+    return song
+
+@app.route('/search/albums', methods=['GET'])
+def searchAlbum():
+    alQ = request.args.get('q', '')
+    limit = request.args.get('limit', '')
+    page = request.args.get('page', '')
+    
+    try:
+        response = requests.get(f"{API_URL}/api/search/albums?query={alQ}&limit={limit}&page={page}")
+        albums= response.json().get('data',[])
+        albums = albums["results"]
+    except Exception as e:
+        print("Error Fetching albums search", e)
+        albums=[]
+    
+    return albums
 
 @app.route('/stream/')
 def stream():

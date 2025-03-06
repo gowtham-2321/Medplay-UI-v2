@@ -225,10 +225,12 @@ inpField.addEventListener("keypress", function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
         console.log("Enter pressed");
+        if (album_page.style.display === "block"){
+            albumSongPageBack();
+        }
         displayFeed();
         searchSongs(true);
         searchAlbums(true);
-        
     }
 });
     

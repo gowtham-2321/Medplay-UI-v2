@@ -638,7 +638,6 @@ i {
 .relative-holder {
     width: 100%;
     position: absolute;
-    height: 100%;
 }
 
 .classification {
@@ -738,7 +737,6 @@ i {
 
 .feed {
     width: 100%;
-    height: 100%;
     opacity: 1;
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
 }

@@ -31,6 +31,7 @@ let themes = document.getElementById("themes");
 let feed_btn = document.getElementById("feed-btn");
 let song_count = document.getElementById("song-count");
 let minute_count = document.getElementById("minute-count");
+let wholePage = document.getElementById("whole-page");
 
 
 //jeevan variii
@@ -39,6 +40,17 @@ let albumPageNo = 1;
 let currentViewingAlbum = null;
 let currentViewingAlbumSongs = [];
 let q= "love";
+
+
+function updateScreenSize() {
+    let screenHeight = window.innerHeight - 210;
+    wholePage.style.height = `${screenHeight}px`;
+    screenHeight = screenHeight - 100;
+    document.documentElement.style.setProperty('--max-height', `${screenHeight}px`);
+    //song_list.style.height = `${screenHeight}px`;
+}
+
+window.addEventListener('resize', updateScreenSize);
 
 function songPage() {
     song_list.style.display = "block"; 
@@ -215,10 +227,12 @@ inpField.addEventListener("keypress", function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
         console.log("Enter pressed");
+        if (album_page.style.display === "block"){
+            albumSongPageBack();
+        }
         displayFeed();
         searchSongs(true);
         searchAlbums(true);
-        
     }
 });
     
@@ -299,13 +313,24 @@ function createAlbumCard(album, albumList) {
     const imageUrl = `/image/?url=${encodeURIComponent(album.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
     //name slicing
     let new_name = album.name;
-    if (new_name.length > 45) {
-        new_name = new_name.slice(0,45)+"...";
+    if (new_name.length > 30) {
+        new_name = new_name.slice(0,30)+"...";
+    }
+    let new_art_name = album.artists.primary;
+    if(new_art_name.length === 0){
+        new_art_name = "";
+    }
+    else {
+        new_art_name = new_art_name[0].name;
+    }
+    if (new_art_name.length > 30) {
+        new_art_name = new_art_name.slice(0,30)+"...";
     }
     //slicing end
     thsAlbum.innerHTML = `
             <img class="album-img" src="${imageUrl}" alt="">
             <span class="album-name">${new_name ||"Unkown Album"}</span>
+            <span class = "album-artist-name">${new_art_name || "Unknown Artist"}</span>
             
     `;
     thsAlbum.addEventListener('click', () => {
@@ -410,7 +435,7 @@ function createAlbumSongCards(albumSongList) {
         /* favourites checker */
         const heartButton = songCard.querySelector(".fa-heart");
         favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
-        let isPresentFav = favourites.some(item => item === song.id);
+        let isPresentFav = favourites.some(item => item.id === song.id);
         if(isPresentFav){
             heartButton.classList.replace("fa-regular", "fa-solid");
         }
@@ -425,8 +450,13 @@ function createAlbumSongCards(albumSongList) {
             }
             else {
                 heartButton.classList.replace("fa-regular", "fa-solid");
-                favourites.push(song);
-                localStorage.setItem("favourites", JSON.stringify(favourites));
+                favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
+                let isPresentFavCheck = favourites.some(item => item.id === song.id);
+                if (!isPresentFavCheck)
+                {
+                    favourites.push(song);
+                    localStorage.setItem("favourites", JSON.stringify(favourites));
+                }
                 console.log(favourites);
             }
             updateQueueDisplay();
@@ -500,7 +530,13 @@ function createSongCard(song, songList) {
         }
         else {
             heartButton.classList.replace("fa-regular", "fa-solid");
-            favourites.push(song);
+            favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
+            let isPresentFavCheck = favourites.some(item => item.id === song.id);
+            if (!isPresentFavCheck)
+            {
+                favourites.push(song);
+                localStorage.setItem("favourites", JSON.stringify(favourites));
+            }
             localStorage.setItem("favourites", JSON.stringify(favourites));
             console.log(favourites);
         }
@@ -587,6 +623,7 @@ function playmySong(song) {
         }
         updateQueueDisplay();
         getFavourites();
+        albumSongPager(song.album.id);
         
     })
 }
@@ -1408,8 +1445,12 @@ function retrieve() {
         applyTheme(nameee);
         });
 }
-document.onload = retrieve();
-document.onload = getFavourites();
+document.addEventListener("DOMContentLoaded", () => {
+    retrieve();
+    getFavourites();
+    updateScreenSize();
+});
+
 
 
 //equalizer

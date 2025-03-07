@@ -81,7 +81,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgements
 
-- [JioSaavn API](https://jiosaavn-api-privatecvc2.vercel.app/)
+- [JioSaavn API](https://api-medplay.vercel.app/) - cloned from [sumitkolhe/jiosaavn-api](https://github.com/sumitkolhe/jiosaavn-api)
 - [Flask](https://flask.palletsprojects.com/)
 - [Font Awesome](https://fontawesome.com/)
 - [Google Fonts](https://fonts.google.com/)

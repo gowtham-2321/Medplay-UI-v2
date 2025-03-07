@@ -52,6 +52,20 @@ function updateScreenSize() {
 
 window.addEventListener('resize', () => {
     updateScreenSize();
+    if(isAudioOpen ){
+        if(window.innerWidth < 1300){
+            audioBar.style.transform = "translate(-25px,-60px)";
+            audioBarBack.style.transform = "translate(-50px,-60px)";
+        }
+        else{
+            audioBar.style.transform = "translate(-70px,-60px)";
+            audioBarBack.style.transform = "translate(-95px,-60px)";
+        }
+    }
+    else{
+        audioBar.style.transform = "translate(700px,-60px)";
+        audioBarBack.style.transform = "translate(700px,-60px)";
+    }
 });
 
 function songPage() {
@@ -747,13 +761,19 @@ let isAudioOpen = false;
 
 audioIcon.addEventListener('click', () => {
     if(isAudioOpen){
-        audioBar.style.display = "none";
-        audioBarBack.style.display = "none";
+        audioBar.style.transform = "translate(700px,-60px)";
+        audioBarBack.style.transform = "translate(700px,-60px)";
         isAudioOpen = false;
     }
     else{
-        audioBar.style.display = "block";
-        audioBarBack.style.display = "block";
+        if(window.innerWidth < 1300){
+            audioBar.style.transform = "translate(-25px,-60px)";
+            audioBarBack.style.transform = "translate(-50px,-60px)";
+        }
+        else{
+            audioBar.style.transform = "translate(-70px,-60px)";
+            audioBarBack.style.transform = "translate(-95px,-60px)";
+        }
         isAudioOpen = true;
     }
 });

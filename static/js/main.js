@@ -1898,4 +1898,10 @@ audio.addEventListener('play', () => {
     }
 });
 
+if("mediaSession" in navigator){
+    navigator.mediaSession.setActionHandler('nexttrack', function() {
+        playNextInQueue();
+    });
+}
+
 //console.log("oooombbuuu");

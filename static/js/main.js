@@ -762,6 +762,13 @@ function updater() {
     console.log("hi11");
 }
 
+function artUpdater() {
+    const lst =  document.querySelector(".artist-song-list");
+    lst.innerHTML=``;
+    createArtistSongCards(lst);
+    console.log("hi112");
+}
+
 function playmySong(song) {
     currentSong = song;
     const player = document.getElementById("audio-player");
@@ -800,38 +807,38 @@ function playmySong(song) {
         let hearttClassList = Array.from(heartt.classList);
         isLiked = hearttClassList.some(className => className === "fa-solid");
         if(isLiked){
-            favourites = favourites.filter(item => item.id !== song.id);
+            console.log("disliked");
+            favourites = favourites.filter(item => item.id !== currentSong.id);
             localStorage.setItem("favourites", JSON.stringify(favourites));
             heartt.classList.replace("fa-solid", "fa-regular");
-            playerHeart();
-            if (currentViewingAlbumSongs.some(i => i.id === song.id))
-            {
-                updater();
-            }
         }
         else{
+            console.log("liked");
             heartt.classList.replace('fa-regular', 'fa-solid');
             favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
-            isPresentFavCheck = favourites.some(item => item.id === song.id);
+            isPresentFavCheck = favourites.some(item => item.id === currentSong.id);
             if (!isPresentFavCheck)
             {
-                favourites.push(song);
+                favourites.push(currentSong);
                 localStorage.setItem("favourites", JSON.stringify(favourites));
             }
-            console.log(song);
-            console.log(favourites);
-            if (currentViewingAlbumSongs.some(i => i.id === song.id))
-                {
-                    updater();
-                }
+        }
+        
+        if (currentViewingAlbumSongs.some(i => i.id === currentSong.id))
+        {
+            updater();
+        }
+        if (currentViewingArtistSongs.some(i => i.id === currentSong.id))
+        {
+            artUpdater();
         }
         songList.innerHTML = "";
         for (let i = 0; i < 25 && i < songs.length; i++) {
             createSongCard(songs[i], songList);
         }
         updateQueueDisplay();
-        getFavourites();        
-    })
+        getFavourites(); 
+    });
 }
 
 
@@ -1424,6 +1431,10 @@ function updateQueueDisplay() {
                 {
                     updater();
                 }
+                if (currentViewingArtistSongs.some(i => i.id === song.id))
+                {
+                    artUpdater();
+                }
             }
             else {
                 heartButton.classList.replace("fa-regular", "fa-solid");
@@ -1434,6 +1445,10 @@ function updateQueueDisplay() {
                 if (currentViewingAlbumSongs.some(i => i.id === song.id))
                 {
                     updater();
+                }
+                if (currentViewingArtistSongs.some(i => i.id === song.id))
+                {
+                    artUpdater();
                 }
             }
             songList.innerHTML = "";
@@ -1532,6 +1547,10 @@ function getFavourites(){
                     {
                         updater();
                     }
+                    if (currentViewingArtistSongs.some(i => i.id === song.id))
+                    {
+                        artUpdater();
+                    }
                 }
                 else {
                     heartButton.classList.replace("fa-regular", "fa-solid");
@@ -1542,6 +1561,10 @@ function getFavourites(){
                     if (currentViewingAlbumSongs.some(i => i.id === song.id))
                     {
                         updater();
+                    }
+                    if (currentViewingArtistSongs.some(i => i.id === song.id))
+                    {
+                        artUpdater();
                     }
                 }
                 songList.innerHTML = "";

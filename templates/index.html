@@ -5,6 +5,8 @@
   <title>Medplay</title>
   <link rel="shortcut icon" href="{{ url_for('static', filename="img/M.png")}}">
   <script src="https://kit.fontawesome.com/ecaf831147.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+
   <link rel="stylesheet" href="{{ url_for('static', filename="css/style.css")}}">
 
 </head>
@@ -335,7 +337,7 @@
             <span>Duration</span>
           </div>
           <div class="icon-queue">
-            <div class="download-queue">
+            <div class="download-queue" onclick="downloadQueue()">
               <i class="fa-solid fa-download"></i>
               <span>Download Queue</span>
             </div>
@@ -361,7 +363,7 @@
             <span>Duration</span>
           </div>
           <div class="icon-fav">
-            <div class="download-fav">
+            <div class="download-fav" onclick="downloadFavourites()">
               <i class="fa-solid fa-download"></i>
               <span>Download favourites</span>
             </div>

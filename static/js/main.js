@@ -431,6 +431,7 @@ async function albumSongPager(albumId) {
 
     const playAll = albumInfo.querySelector(".album-card-play");
     playAll.onclick = () => {
+        // downloadAlbum(data);
         let temp = songQueue;
         songQueue = [];
         currentViewingAlbumSongs.forEach(song => songQueue.push(song));
@@ -1928,6 +1929,154 @@ if("mediaSession" in navigator){
     });
 }
 
+async function downloadFavourites() {
+    downloadFavNotif();
+    let favourites = JSON.parse(localStorage.getItem("favourites")) || [];
+    downloadSongsAsZip(favourites, "Favourites-medplay");
+}
+
+async function downloadQueue() {
+    downloadQueNotif();
+    downList= songQueue;
+    downloadSongsAsZip(downList, "Queue-medplay");
+}
+
+async function downloadAlbum(album) {
+    downloadAlbNotif(album.name);
+    downList= currentViewingAlbumSongs;
+    downloadSongsAsZip(downList, `${album.name}-medplay`);
+}
+
+async function convertMp4ToMp3Blob(mp4Url, imageUrl, artist, title, album, year, genre) {
+    const { createFFmpeg, fetchFile } = await import("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.5/+esm");
+    const { default: ID3Writer } = await import("https://cdn.jsdelivr.net/npm/browser-id3-writer@4.0.0/+esm");
+
+    const ffmpeg = createFFmpeg({ log: true });
+
+    try {
+        if (!mp4Url || !imageUrl) {
+            alert("Metadata is missing MP4 or Image URLs!");
+            return;
+        }
+
+        if (!ffmpeg.isLoaded()) {
+            await ffmpeg.load();
+        }
+
+        const mp4Buffer = await fetchAsArrayBuffer(mp4Url);
+        const imageBuffer = await fetchAsArrayBuffer(imageUrl);
+
+        ffmpeg.FS("writeFile", "input.mp4", new Uint8Array(mp4Buffer));
+        await ffmpeg.run("-i", "input.mp4", "-vn", "-b:a", "192k", "output.mp3");
+
+        const mp3Data = ffmpeg.FS("readFile", "output.mp3");
+
+        const writer = new ID3Writer(mp3Data);
+        writer.setFrame("TPE1", artist)
+              .setFrame("TIT2", title)
+              .setFrame("TALB", album)
+              .setFrame("TYER", year)
+              .setFrame("TCON", genre)
+              .setFrame("APIC", { type: 3, data: new Uint8Array(imageBuffer), description: "Cover" });
+        writer.addTag();
+
+        return new Blob([writer.arrayBuffer], { type: "audio/mp3" });
+
+    } catch (error) {
+        console.error("Error processing files:", error);
+        alert("Conversion failed! Check the URLs.");
+    }
+}
+
+async function downloadSongsAsZip(songsList, zipName) {
+    if (songsList.length === 0) {
+        return;
+    }
+
+    const zip = new JSZip();
+    const folder = zip.folder(zipName);
+
+    for (const [index, song] of songsList.entries()) {
+        const downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
+        const imageUrl = song.image[2].url;
+        const artist = song.artists.primary.map(a => a.name);
+        const title = song.name;
+        const album = song.album.name;
+        const year = song.year;
+        const genre = Array.isArray(song.genre) ? song.genre : [song.genre];
+
+        const mp3Blob = await convertMp4ToMp3BlobWithProgress(downloadUrl, imageUrl, artist, title, album, year, genre, (songProgress) => {
+            // Calculate and log progress for each song
+            const progress = ((index + songProgress) / songsList.length);
+            console.log(`Download progress: ${progress.toFixed(2)}%`);
+            let downPer = document.getElementById("download-percent");
+            let dowBar = document.getElementById("download-update");
+            downPer.innerHTML = `${(progress * 100).toFixed(0)}%`;
+            dowBar.style.width = `${(progress * 180)}px`;
+            if(progress * 100 == 100){
+                removeDownloadNotif();
+            }
+        });
+        const arrayBuffer = await mp3Blob.arrayBuffer();
+        const filename = `${song.name || "Unknown_Song"}.mp3`;
+        folder.file(filename, arrayBuffer);
+    }
+
+    zip.generateAsync({ type: "blob" }).then(content => {
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(content);
+        link.download = `${zipName}.zip`;
+        link.click();
+    });
+}
+
+async function convertMp4ToMp3BlobWithProgress(mp4Url, imageUrl, artist, title, album, year, genre, progressCallback) {
+    const { createFFmpeg, fetchFile } = await import("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.5/+esm");
+    const { default: ID3Writer } = await import("https://cdn.jsdelivr.net/npm/browser-id3-writer@4.0.0/+esm");
+
+    const ffmpeg = createFFmpeg({ log: true });
+
+    try {
+        if (!mp4Url || !imageUrl) {
+            alert("Metadata is missing MP4 or Image URLs!");
+            return;
+        }
+
+        if (!ffmpeg.isLoaded()) {
+            await ffmpeg.load();
+        }
+
+        const mp4Buffer = await fetchAsArrayBufferWithProgress(mp4Url, (percentage) => {
+            // progressCallback(percentage / 2); // First half of the progress
+        });
+        const imageBuffer = await fetchAsArrayBuffer(imageUrl);
+
+        ffmpeg.FS("writeFile", "input.mp4", new Uint8Array(mp4Buffer));
+        ffmpeg.setProgress(({ ratio }) => {
+            // progressCallback(0.5 + ratio / 2); // Second half of the progress
+            progressCallback(ratio);
+        });
+        await ffmpeg.run("-i", "input.mp4", "-vn", "-b:a", "192k", "output.mp3");
+
+        const mp3Data = ffmpeg.FS("readFile", "output.mp3");
+
+        const writer = new ID3Writer(mp3Data);
+        writer.setFrame("TPE1", artist)
+              .setFrame("TIT2", title)
+              .setFrame("TALB", album)
+              .setFrame("TYER", year)
+              .setFrame("TCON", genre)
+              .setFrame("APIC", { type: 3, data: new Uint8Array(imageBuffer), description: "Cover" });
+        writer.addTag();
+
+        return new Blob([writer.arrayBuffer], { type: "audio/mp3" });
+
+    } catch (error) {
+        console.error("Error processing files:", error);
+        alert("Conversion failed! Check the URLs.");
+    }
+}
+
 function downloadNotif(song){
     let notif = document.getElementById("notification");
 
@@ -1943,12 +2092,62 @@ function downloadNotif(song){
     downloadName.innerHTML = song.name;
 }
 
+function downloadFavNotif(){
+    let notif = document.getElementById("notification");
+
+    notif.style.display = "flex"; 
+    setTimeout(() => {
+        notif.style.opacity = "1";
+    }, 300);
+    let notifTitle = document.getElementById("download-title");
+    notifTitle.innerHTML = "Download Favourites";
+
+    let downloadName = document.getElementById("download-name");
+    let notifImage = document.getElementById("notif-image");
+    notifImage.src = "/static/img/M.png";
+    downloadName.innerHTML = "Your Favourites";
+}
+
+function downloadQueNotif(){
+    let notif = document.getElementById("notification");
+
+    notif.style.display = "flex"; 
+    setTimeout(() => {
+        notif.style.opacity = "1";
+    }, 300);
+    let notifTitle = document.getElementById("download-title");
+    notifTitle.innerHTML = "Download Queue";
+
+    let downloadName = document.getElementById("download-name");
+    let notifImage = document.getElementById("notif-image");
+    notifImage.src = "/static/img/M.png";
+    downloadName.innerHTML = " Your Queue";
+}
+
+function downloadAlbNotif(alName){
+    let notif = document.getElementById("notification");
+
+    notif.style.display = "flex"; 
+    setTimeout(() => {
+        notif.style.opacity = "1";
+    }, 300);
+    let notifTitle = document.getElementById("download-title");
+    notifTitle.innerHTML = "Download Album";
+
+    let downloadName = document.getElementById("download-name");
+    let notifImage = document.getElementById("notif-image");
+    notifImage.src = "/static/img/M.png";
+    downloadName.innerHTML = `${alName}-Album`;
+}
+
 function removeDownloadNotif(){
     let notif = document.getElementById("notification");
 
     notif.style.opacity = "0"; 
     setTimeout(() => {
         notif.style.display = "none";
+        let notifTitle = document.getElementById("download-title");
+        notifTitle.innerHTML = "Download Song";
         let downBar = document.getElementById("download-update");
         let downPer = document.getElementById("download-percent");
         downPer.innerHTML = "0%";

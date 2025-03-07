@@ -2033,6 +2033,11 @@ async function downloadSongsAsZip(songsList, zipName) {
     const folder = zip.folder(zipName);
 
     for (const [index, song] of songsList.entries()) {
+        if (abortController.signal.aborted) {
+            console.log("Download process aborted");
+            break;
+        }
+
         const downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
         const imageUrl = song.image[2].url;
         const artist = song.artists.primary.map(a => a.name);
@@ -2058,12 +2063,17 @@ async function downloadSongsAsZip(songsList, zipName) {
         folder.file(filename, arrayBuffer);
     }
 
-    zip.generateAsync({ type: "blob" }).then(content => {
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(content);
-        link.download = `${zipName}.zip`;
-        link.click();
-    });
+    if (!abortController.signal.aborted) {
+        zip.generateAsync({ type: "blob" }).then(content => {
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(content);
+            link.download = `${zipName}.zip`;
+            link.click();
+        });
+    }
+    else {
+        abortController = new AbortController();
+    }
 }
 
 async function convertMp4ToMp3BlobWithProgress(mp4Url, imageUrl, artist, title, album, year, genre, progressCallback) {
@@ -2083,14 +2093,13 @@ async function convertMp4ToMp3BlobWithProgress(mp4Url, imageUrl, artist, title, 
         }
 
         const mp4Buffer = await fetchAsArrayBufferWithProgress(mp4Url, (percentage) => {
-            // progressCallback(percentage / 2); // First half of the progress
+            progressCallback((percentage / 200) * 0.2); // First half of the progress
         });
         const imageBuffer = await fetchAsArrayBuffer(imageUrl);
 
         ffmpeg.FS("writeFile", "input.mp4", new Uint8Array(mp4Buffer));
         ffmpeg.setProgress(({ ratio }) => {
-            // progressCallback(0.5 + ratio / 2); // Second half of the progress
-            progressCallback(ratio);
+            progressCallback((0.5 + ratio / 2) * 0.8); // Second half of the progress
         });
         await ffmpeg.run("-i", "input.mp4", "-vn", "-b:a", "192k", "output.mp3");
 
@@ -2112,6 +2121,68 @@ async function convertMp4ToMp3BlobWithProgress(mp4Url, imageUrl, artist, title, 
         alert("Conversion failed! Check the URLs.");
     }
 }
+
+let abortController = new AbortController();
+
+async function fetchAsArrayBufferWithProgress(url, progressCallback) {
+    const response = await fetch(url, { signal: abortController.signal });
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const reader = response.body.getReader();
+    const contentLength = +response.headers.get('Content-Length');
+    let receivedLength = 0;
+    const chunks = [];
+
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+            break;
+        }
+        chunks.push(value);
+        receivedLength += value.length;
+
+        if (contentLength) {
+            const percentage = (receivedLength / contentLength) * 100;
+            progressCallback(percentage.toFixed(2));
+        }
+    }
+
+    const chunksAll = new Uint8Array(receivedLength);
+    let position = 0;
+    for (let chunk of chunks) {
+        chunksAll.set(chunk, position);
+        position += chunk.length;
+    }
+
+    return chunksAll.buffer;
+}
+
+function cancelDownload() {
+    abortController.abort();
+    console.log("Download canceled");
+    removeDownloadNotif();
+
+    // Clear the buffer and reload ffmpeg
+    clearBufferAndReloadFFmpeg();
+}
+
+async function clearBufferAndReloadFFmpeg() {
+    const { createFFmpeg } = await import("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.5/+esm");
+    const ffmpeg = createFFmpeg({ log: true });
+
+    if (ffmpeg.isLoaded()) {
+        ffmpeg.exit();
+        await ffmpeg.load();
+    }
+}
+
+// Add a button to trigger the cancelDownload function
+const cancelButton = document.createElement("button");
+cancelButton.textContent = "Cancel Download";
+cancelButton.onclick = cancelDownload;
+document.body.appendChild(cancelButton);
 
 function downloadNotif(song){
     let notif = document.getElementById("notification");
@@ -2140,6 +2211,7 @@ function downloadFavNotif(){
 
     let downloadName = document.getElementById("download-name");
     let notifImage = document.getElementById("notif-image");
+    notifImage.onclick = () => cancelDownload();
     notifImage.src = "/static/img/M.png";
     downloadName.innerHTML = "Your Favourites";
 }

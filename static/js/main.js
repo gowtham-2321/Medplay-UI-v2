@@ -2,9 +2,6 @@
 let albums = [];
 let songs = [];
 let artists = [];
-let songQuery = "";
-let albumQuery = "";
-let artistQuery = "";
 const songList = document.getElementById("songlist");
 let favourites = JSON.parse(localStorage.getItem("favourites")) || [];
 let noOfSongs = 0;
@@ -45,7 +42,10 @@ let artistPageNo = 1;
 let currentViewingAlbum = null;
 let currentViewingAlbumSongs = [];
 let currentViewingArtistSongs = [];
-let q= "love";
+let q= "english";
+let songQuery = "";
+let albumQuery = "";
+let artistQuery = "";
 
 
 function updateScreenSize() {
@@ -82,7 +82,7 @@ window.addEventListener('resize', () => {
 });
 
 function songPage() {
-    if (document.getElementById("search-query").value != songQuery) {
+    if ((document.getElementById("search-query").value || q) != songQuery) {
         console.log("same query");
         searchSongs(true);
     }
@@ -108,7 +108,7 @@ function songPage() {
     album_class.classList.remove("active-class");
 }
 function artistPage() {
-    if (document.getElementById("search-query").value != artistQuery) {
+    if ((document.getElementById("search-query").value || q) != artistQuery) {
         searchArtists(true);
     }
     artist_list.style.display = "grid"; 
@@ -133,7 +133,7 @@ function artistPage() {
     album_class.classList.remove("active-class");
 }
 function albumPage() {
-    if (document.getElementById("search-query").value != albumQuery) {
+    if ((document.getElementById("search-query").value || q) != albumQuery) {
         searchAlbums(true);
     }
     album_list.style.display = "grid"; 

@@ -1477,6 +1477,7 @@ function updateQueueDisplay() {
                     localStorage.setItem("favourites", JSON.stringify(favourites));
                     
                 }
+            }
             songList.innerHTML = "";
             for (let i = 0; i < 25 && i < songs.length; i++) {
                 createSongCard(songs[i], songList);
@@ -1490,12 +1491,8 @@ function updateQueueDisplay() {
             getFavourites();
             playerHeart(); //because when i like a song while its playing i want it to update
         };
-
-
-        queueItem.setAttribute("draggable", true);
-        queueContainer.appendChild(queueItem);
-    };
-
+    queueItem.setAttribute("draggable", true);
+    queueContainer.appendChild(queueItem);
 });
     songCountTime();
 }

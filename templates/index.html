@@ -18,7 +18,7 @@
     <div class="search-bar-holder">
       <div class="search-bar">
         <i class="fa fa-search"></i>
-        <input type="text" class="input" name="txt" id="search-query"></input>
+        <input type="text" class="input" value="english" name="txt" id="search-query"></input>
       </div>
     </div>
     <div class="profile-holder"></div>
@@ -489,4 +489,20 @@
 <audio id = "audio-player" ontimeupdate="updateProgress()" onloadedmetadata="updateDuration()"></audio>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 <script src = "{{ url_for('static', filename="js/main.js")}}"></script>
+<!--<script>
+  function sendTitleBarColor() {
+      let rootStyle = getComputedStyle(document.documentElement);
+      let primaryColor = rootStyle.getPropertyValue('--primary-bg-color').trim(); // Get CSS variable
+
+      if (window.pywebview && window.pywebview.api) {
+          window.pywebview.api.update_title_bar_color(primaryColor); // Send color to Python
+          console.log("Sent color to Python:", primaryColor);
+      } else {
+          console.error("PyWebview API not available. Retrying...");
+          setTimeout(sendTitleBarColor, 500); // Retry after 500ms
+      }
+  }
+
+  document.addEventListener("DOMContentLoaded", sendTitleBarColor);
+</script> -->
 </html>

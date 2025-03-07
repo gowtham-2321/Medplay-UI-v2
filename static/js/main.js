@@ -52,7 +52,23 @@ function updateScreenSize() {
     //song_list.style.height = `${screenHeight}px`;
 }
 
-window.addEventListener('resize', updateScreenSize);
+window.addEventListener('resize', () => {
+    updateScreenSize();
+    if(isAudioOpen ){
+        if(window.innerWidth < 1300){
+            audioBar.style.transform = "translate(-25px,-60px)";
+            audioBarBack.style.transform = "translate(-50px,-60px)";
+        }
+        else{
+            audioBar.style.transform = "translate(-70px,-60px)";
+            audioBarBack.style.transform = "translate(-95px,-60px)";
+        }
+    }
+    else{
+        audioBar.style.transform = "translate(700px,-60px)";
+        audioBarBack.style.transform = "translate(700px,-60px)";
+    }
+});
 
 function songPage() {
     song_list.style.display = "block"; 
@@ -926,13 +942,46 @@ function playPause() {
     }
 }
 
+let audioIcon = document.getElementById("audio-icon");
+let audioBarBack = document.getElementById("audio-bar-back");
+let audioBar = document.getElementById("audio-bar");
+let isAudioOpen = false;
+
+audioIcon.addEventListener('click', () => {
+    if(isAudioOpen){
+        audioBar.style.transform = "translate(700px,-60px)";
+        audioBarBack.style.transform = "translate(700px,-60px)";
+        isAudioOpen = false;
+    }
+    else{
+        if(window.innerWidth < 1300){
+            audioBar.style.transform = "translate(-25px,-60px)";
+            audioBarBack.style.transform = "translate(-50px,-60px)";
+        }
+        else{
+            audioBar.style.transform = "translate(-70px,-60px)";
+            audioBarBack.style.transform = "translate(-95px,-60px)";
+        }
+        isAudioOpen = true;
+    }
+});
+
 // Volume adjustment and seeking
 document.addEventListener('DOMContentLoaded', () => {
+    
     searchSongs(true, "english");
     const audioPlayer = document.getElementById('audio-player');
     const audioBar = document.querySelector('.audio-bar');
     const audioUpdateBar = document.querySelector('.audio-update-bar');
     const audioProgressCircle = document.querySelector('.audio-progress-circle');
+    //updateAudioBar(0);
+
+    window.addEventListener('resize', () => {
+        const rect = audioBar.getBoundingClientRect();
+        const width = rect.width;
+        volume = audioPlayer.volume;
+        updateAudioBar(volume);
+    });
 
     audioBar.addEventListener('click', (event) => {
         const rect = audioBar.getBoundingClientRect();
@@ -976,6 +1025,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const updateWidth = volume * barWidth;
         audioUpdateBar.style.width = `${updateWidth}px`;
         audioProgressCircle.style.left = `${updateWidth}px`;
+        console.log(barWidth);
     }
 
     // Initialize the audio bar with the current volume
@@ -1443,7 +1493,7 @@ function getFavourites(){
                 <span class="song-card-timestamp">${new_duration || "00:00"}</span>
                 <div class="song-card-icons">
                     <i class="fa-regular fa-heart"></i>
-                    <i class="fa-solid fa-play no-for-now"></i>
+                    <i class="fa-solid fa-play"></i>
                     <i class="fa-solid fa-download"></i>
                     <i class="fa-solid fa-plus"></i>
                 </div>

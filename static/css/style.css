@@ -49,6 +49,7 @@ body {
     padding: 0px;
     font-family: "Lexend", serif;
     color: var(--primary-text-color);
+    background: var(--primary-bg-color);
 }
 i {
     cursor: pointer;
@@ -189,6 +190,7 @@ i {
     opacity: 100%;
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
     overflow-y: auto;
+    overflow-x: hidden;
     
 }
 .song-card {
@@ -505,7 +507,7 @@ i {
     gap: 20px;
     box-shadow: 0px -65px 161px 200px rgba(3, 3, 3, 0.158);
     overflow: hidden;
-    z-index: 2;
+    z-index: 3;
 }
 
 .music-player-art {
@@ -520,7 +522,7 @@ i {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 400px;
+    width: 250px;
     justify-content: center;
     text-align: left;
     box-sizing: border-box;
@@ -590,10 +592,26 @@ i {
 }
 
 .audio-bar {
+    display: block;
     width: 150px;
     height: 4px;
     background: var(--primary-text-color);
-    position: relative;
+    position: fixed;
+    z-index: 1;
+    /*transform: translate(-70px,0px);*/
+    transform: translate(700px, 100px);
+}
+
+.audio-bar-back{
+    display: block;
+    position: fixed;
+    width: 200px;
+    height: 30px;
+    border-radius: 10px;
+    z-index: 0;
+    background: var(--secondary-bg-color);
+    /*transform: translate(-95px,0px);*/
+    transform: translate(700px, 100px);
 }
 
 .audio-update-bar {
@@ -601,6 +619,7 @@ i {
     height: 4px;
     background: var(--accent-color);
     position: relative;
+    z-index: 1;
 }
 
 .audio-progress-circle {
@@ -611,6 +630,7 @@ i {
     position: absolute;
     top: -4px;
     left: 0;
+    z-index: 1;
 }
 
 .music-player-end-icons {
@@ -1166,9 +1186,14 @@ input[type="range"]::-moz-range-thumb {
     .download-queue span, .play-queue span, .download-fav span, .play-fav span{
         display: none;
     }
-
+    .audio-bar-back{
+        width: 120px;
+    }
     .audio-bar{
         width: 70px;
+    }
+    .music-player-art{
+        display: none;
     }
 
 }
@@ -1192,10 +1217,17 @@ input[type="range"]::-moz-range-thumb {
     #song-count, #minute-count, #song-count-fav, #minute-count-fav{
         font-size: 40px;
     }
-
-    .audio-bar {
-        position: fixed;
-        transform: translate(-25px, -45px);
+    .music-player-artist-name{
+        display: none;
+    }
+    .music-player-holder{
+        gap: 10px;
+    }
+    .music-player-end-icons{
+        gap: 10px;
+    }
+    .music-player-end-icons div {
+        padding: none;
     }
 }
 
@@ -1235,6 +1267,10 @@ input[type="range"]::-moz-range-thumb {
     .queuelist, .favlist{
         height: 30vh;
         margin-bottom: 100px;
+    }
+
+    .music-player-timestamp > .slash-line, #duration{
+        display: none;
     }
 
 }

@@ -484,6 +484,26 @@
 <div class="blur" id="blur" onclick="eqbtn()"></div>
 <!--eq ends here-->
 
+<div class="notification" id="notification">
+  <div class="notification-header">
+    <span id="download-title">Download Song</span>
+    <i class="fa-solid fa-x" onclick="removeDownloadNotif()"></i>
+  </div>
+  <div class="notif-content">
+    <img src="{{ url_for('static', filename="img/plc.png")}}" class="notif-image", id="notif-image">
+    <div class="notif-details">
+      <span class="downloading">Downloading</span>
+      <span id="download-name"></span>
+      <div class="download-detail">
+        <div class="download-bar">
+          <div class="download-update" id="download-update"></div>
+        </div>
+        <span id="download-percent">0%</span>
+      </div>
+    </div>
+  </div>
+  
+</div>
 
 
 <audio id = "audio-player" ontimeupdate="updateProgress()" onloadedmetadata="updateDuration()"></audio>

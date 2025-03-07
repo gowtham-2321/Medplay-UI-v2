@@ -11,6 +11,7 @@
     --heart: #f05542;
     --max-height: 0px;
     --album-artist-song-list-height: 0px;
+    --shrinked-album-artist-song-list-height: 0px;
     --queue-fav-height: 0px;
     --shrinked-queue-fav-height: 0px;
 } 
@@ -435,7 +436,8 @@ i {
 .title {
     color: var(--primary-text-color);
     font-weight: 700;
-    font-size: 2.2vw;
+    /*font-size: 2.2vw;*/
+    font-size: 42px;
     margin: 0;
     cursor: pointer;
 }
@@ -447,7 +449,8 @@ i {
 
 .tagline {
     color: var(--accent-color);
-    font-size: .8vw;
+    /*font-size: .8vw;*/
+    font-size: 14px;
     cursor: pointer;
 }
 
@@ -479,6 +482,7 @@ i {
     padding: 20px;
     gap: 5px;
     color: var(--secondary-text-color);
+    min-width: 300px;
     
 }
 
@@ -733,7 +737,7 @@ i {
     overflow-y: auto;
     height: var(--album-artist-song-list-height);
     padding-bottom: 30px;
-    padding: 10pxf;
+    padding: 10px;
 }
 
 .back-icon {
@@ -1088,6 +1092,76 @@ input[type="range"]::-moz-range-thumb {
     z-index: 1;
 }
 
+.notification{
+    top: 30px;
+    right: 30px;
+    position: fixed;
+    width: 400px;
+    height: fit-content;
+    border-radius: 20px;
+    background: var(--secondary-bg-color);
+    padding: 20px;
+    box-sizing: border-box;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    opacity: 0;
+    transition: display .3s ease-in-out, opacity .3s ease-in-out;
+}
+.notification-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.downloading, #download-title, #download-percent{
+    color: var(--secondary-text-color);
+}
+
+
+.notification-header > i{
+    font-size: 10px;
+    color: var(--accent-color);
+}
+
+.notif-content{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.notif-image{
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+}
+
+.download-detail{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.download-bar{
+    width: 180px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--primary-bg-color);
+}
+.download-update{
+    position: relative;
+    width: 0px;
+    height: 3px;
+    background: var(--accent-color);
+    border-radius: 2px;
+    transition: width .2s ease;
+}
+.notif-details{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
 @media only screen and (max-width: 700px){
 
         input[type="range"] {
@@ -1230,6 +1304,21 @@ input[type="range"]::-moz-range-thumb {
     .music-player-end-icons div {
         padding: none;
     }
+
+    /*album info*/
+    .album-info-card-image,.artist-info-card-image{
+        height: 120px;
+        width: 120px;
+    }
+
+    .album-name-album-card, .artist-name-artist-card{
+        font-size: 30px;
+    }
+
+    .artist-song-list, .album-song-list {
+        height: var(--shrinked-album-artist-song-list-height);
+    }
+    /*album info ends*/
 }
 
 @media only screen and (max-width: 750px) {
@@ -1279,8 +1368,17 @@ input[type="range"]::-moz-range-thumb {
         display: none;
     }
     .queue, .favourites{
-        overflow-y: auto;
         height: 75vh;
+    }
+}
+
+@media only screen and (max-height: 900px){
+    .queue, .favourites{
+        overflow-y: auto;
+    }
+    .album-disp-songs, .artist-disp-songs{
+        height: var(--max-height);
+        overflow-y: auto;
     }
 }
 

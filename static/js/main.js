@@ -55,8 +55,10 @@ function updateScreenSize() {
     let albumArtistSongHeight = screenHeight - 450;
     let queueFavHeight = screenHeight - 280;
     let shrinkedQueueFavHeight = screenHeight - 470;
+    let shrinkedAlbumArtistSongHeight = albumArtistSongHeight + 60;
     document.documentElement.style.setProperty('--max-height', `${maxScreenHeight}px`);
     document.documentElement.style.setProperty('--album-artist-song-list-height', `${albumArtistSongHeight}px`);
+    document.documentElement.style.setProperty('--shrinked-album-artist-song-list-height', `${shrinkedAlbumArtistSongHeight}px`);
     document.documentElement.style.setProperty('--queue-fav-height', `${queueFavHeight}px`);
     document.documentElement.style.setProperty('--shrinked-queue-fav-height', `${shrinkedQueueFavHeight}px`);
 
@@ -436,11 +438,15 @@ async function albumSongPager(albumId) {
         playNextInQueue();
         updateQueueDisplay();
     }
-    album_page.appendChild(albumInfo);
+    const albumDispSongs = document.createElement("div");
+    albumDispSongs.classList.add("album-disp-songs");
+    albumDispSongs.appendChild(albumInfo);
     const albumSongList = document.createElement("div");
     albumSongList.classList.add("album-song-list");
     createAlbumSongCards(albumSongList);
-    album_page.appendChild(albumSongList);
+    albumDispSongs.appendChild(albumSongList);
+
+    album_page.appendChild(albumDispSongs);
 }
 
 function createAlbumSongCards(albumSongList) {
@@ -709,12 +715,17 @@ async function artistSongPager(artistId) {
         playNextInQueue();
         updateQueueDisplay();
     }
-    artist_page.appendChild(artistInfo);
 
+    const artistDispSongs = document.createElement("div");
+    artistDispSongs.classList.add("artist-disp-songs");
+
+    artistDispSongs.appendChild(artistInfo);
     const artistSongList = document.createElement("div");
     artistSongList.classList.add("artist-song-list");
     createArtistSongCards(artistSongList);
-    artist_page.appendChild(artistSongList);
+    artistDispSongs.appendChild(artistSongList);
+
+    artist_page.appendChild(artistDispSongs);
 }
 
 function createArtistSongCards(artistSongList) {
@@ -1152,7 +1163,14 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
 
         ffmpeg.FS("writeFile", "input.mp4", new Uint8Array(mp4Buffer));
         ffmpeg.setProgress(({ ratio }) => {
+            let downPer = document.getElementById("download-percent");
+            let dowBar = document.getElementById("download-update");
+            downPer.innerHTML = `${(ratio * 100).toFixed(0)}%`;
+            dowBar.style.width = `${(ratio * 180)}px`;
             console.log(`Processing progress: ${(ratio * 100).toFixed(2)}%`);
+            if(ratio*100 == 100){
+                removeDownloadNotif();
+            }
         });
         await ffmpeg.run("-i", "input.mp4", "-vn", "-b:a", "192k", "output.mp3");
 
@@ -1182,6 +1200,7 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
 }
 
 async function downloadSong(song) {
+    downloadNotif(song);
     // name slicing
     let new_name = song.name;
     if (new_name.length > 16) {
@@ -1909,4 +1928,26 @@ if("mediaSession" in navigator){
     });
 }
 
-//console.log("oooombbuuu");
+function downloadNotif(song){
+    let notif = document.getElementById("notification");
+
+    notif.style.display = "flex"; 
+    setTimeout(() => {
+        notif.style.opacity = "1";
+    }, 300);
+
+    let downloadName = document.getElementById("download-name");
+    let notifImage = document.getElementById("notif-image");
+    const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+    notifImage.src = imageUrl;
+    downloadName.innerHTML = song.name;
+}
+
+function removeDownloadNotif(){
+    let notif = document.getElementById("notification");
+
+    notif.style.opacity = "0"; 
+    setTimeout(() => {
+        notif.style.display = "none";
+    }, 300);
+}

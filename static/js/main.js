@@ -603,6 +603,9 @@ function createSongCard(song, songList) {
         if(currentViewingAlbumSongs.some(item => item.id === song.id)){
             updater();
         }
+        if(currentViewingArtistSongs.some(item => item.id === song.id)){
+            artUpdater();
+        }
         getFavourites();
         playerHeart(); //because when i like a song while its playing i want it to update
     };
@@ -872,6 +875,9 @@ function playmySong(song) {
         updateQueueDisplay();
         if(currentViewingAlbumSongs.some(item => item.id === song.id)){
             updater();
+        }
+        if(currentViewingArtistSongs.some(item => item.id === song.id)){
+            artUpdater();
         }
     };
     
@@ -1474,6 +1480,9 @@ function updateQueueDisplay() {
             }
             if(currentViewingAlbumSongs.some(item => item.id === song.id)){
                 updater();
+            }
+            if(currentViewingArtistSongs.some(item => item.id === song.id)){
+                artUpdater();
             }
             getFavourites();
             playerHeart(); //because when i like a song while its playing i want it to update

@@ -45,8 +45,10 @@ let q= "love";
 function updateScreenSize() {
     let screenHeight = window.innerHeight - 210;
     wholePage.style.height = `${screenHeight}px`;
-    screenHeight = screenHeight - 100;
-    document.documentElement.style.setProperty('--max-height', `${screenHeight}px`);
+    let maxScreenHeight = screenHeight - 100;
+    let albumArtistSongHeight = screenHeight - 450;
+    document.documentElement.style.setProperty('--max-height', `${maxScreenHeight}px`);
+    document.documentElement.style.setProperty('--album-artist-song-list-height', `${albumArtistSongHeight}px`);
     //song_list.style.height = `${screenHeight}px`;
 }
 
@@ -304,7 +306,7 @@ async function searchAlbums(isNew, q) {
         else {
             albumPageNo = 1;
         }
-        const response = await fetch(`/search/albums?q=${query}&limit=10&page=${albumPageNo}`);
+        const response = await fetch(`/search/albums?q=${query}&limit=15&page=${albumPageNo}`);
         const data = await response.json();
         albums = data;
         console.log(albums);
@@ -313,7 +315,7 @@ async function searchAlbums(isNew, q) {
             throw new Error("No albums found");
         }
 
-        for (let i = 0; i < 10 && i < albums.length; i++) {
+        for (let i = 0; i < 15 && i < albums.length; i++) {
             createAlbumCard(albums[i], album_list);
         }
 

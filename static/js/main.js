@@ -1274,12 +1274,22 @@ function updateQueueDisplay() {
                 localStorage.setItem("favourites", JSON.stringify(favourites));
                 heartButton.classList.replace("fa-solid", "fa-regular");
                 console.log(favourites);
+                playerHeart();
+                if (currentViewingAlbumSongs.some(i => i.id === song.id))
+                {
+                    updater();
+                }
             }
             else {
                 heartButton.classList.replace("fa-regular", "fa-solid");
                 favourites.push(song);
                 localStorage.setItem("favourites", JSON.stringify(favourites));
                 console.log(favourites);
+                playerHeart();
+                if (currentViewingAlbumSongs.some(i => i.id === song.id))
+                {
+                    updater();
+                }
             }
             songList.innerHTML = "";
             for (let i = 0; i < 25 && i < songs.length; i++) {
@@ -1372,12 +1382,22 @@ function getFavourites(){
                     heartButton.classList.replace("fa-solid", "fa-regular");
                     console.log(favourites);
                     getFavourites();
+                    playerHeart();
+                    if (currentViewingAlbumSongs.some(i => i.id === song.id))
+                    {
+                        updater();
+                    }
                 }
                 else {
                     heartButton.classList.replace("fa-regular", "fa-solid");
                     favourites.push(song.id);
                     localStorage.setItem("favourites", JSON.stringify(favourites));
                     console.log(favourites);
+                    playerHeart();
+                    if (currentViewingAlbumSongs.some(i => i.id === song.id))
+                    {
+                        updater();
+                    }
                 }
                 songList.innerHTML = "";
                 for (let i = 0; i < 25 && i < songs.length; i++) {

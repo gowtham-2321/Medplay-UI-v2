@@ -180,6 +180,7 @@ i {
 }
 
 .songlist {
+    display: block;
     height: var(--max-height);
     margin-top: 20px;
     position: absolute;

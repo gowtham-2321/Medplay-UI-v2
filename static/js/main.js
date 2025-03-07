@@ -1,6 +1,10 @@
 //gowhthiee variii
 let albums = [];
 let songs = [];
+let artists = [];
+let songQuery = "";
+let albumQuery = "";
+let artistQuery = "";
 const songList = document.getElementById("songlist");
 let favourites = JSON.parse(localStorage.getItem("favourites")) || [];
 let noOfSongs = 0;
@@ -73,6 +77,10 @@ window.addEventListener('resize', () => {
 });
 
 function songPage() {
+    if (document.getElementById("search-query").value != songQuery) {
+        console.log("same query");
+        searchSongs(true);
+    }
     song_list.style.display = "block"; 
     setTimeout(() => {
         song_list.style.opacity = "1";
@@ -95,6 +103,9 @@ function songPage() {
     album_class.classList.remove("active-class");
 }
 function artistPage() {
+    if (document.getElementById("search-query").value != artistQuery) {
+        searchArtists(true);
+    }
     artist_list.style.display = "grid"; 
     setTimeout(() => {
         artist_list.style.opacity = "1";
@@ -117,6 +128,9 @@ function artistPage() {
     album_class.classList.remove("active-class");
 }
 function albumPage() {
+    if (document.getElementById("search-query").value != albumQuery) {
+        searchAlbums(true);
+    }
     album_list.style.display = "grid"; 
     setTimeout(() => {
         album_list.style.opacity = "1";
@@ -254,15 +268,24 @@ inpField.addEventListener("keypress", function(event) {
             albumSongPageBack();
         }
         displayFeed();
-        searchSongs(true);
-        searchAlbums(true);
-        searchArtists(true);
+        console.log(window.getComputedStyle(song_list).display);
+        if(window.getComputedStyle(song_list).display === "block"){
+            console.log("song list");
+            searchSongs(true);
+        }
+        else if(window.getComputedStyle(artist_list).display === "grid"){
+            searchArtists(true);
+        }
+        else if(window.getComputedStyle(album_list).display === "grid"){
+            searchAlbums(true);
+        }
     }
 });
     
 async function searchSongs(isNew, q) {
 
     const query = document.getElementById("search-query").value || q;
+    songQuery = query;
     songList.innerHTML =``;
     
     //console.log(isNew);
@@ -304,6 +327,7 @@ async function searchSongs(isNew, q) {
 async function searchAlbums(isNew, q) {
     const query = document.getElementById("search-query").value || q;
     album_list.innerHTML =``;
+    albumQuery = query;
 
     try {
         if (!isNew) {
@@ -577,6 +601,7 @@ function createSongCard(song, songList) {
 async function searchArtists(isNew, q) {
     const query = document.getElementById("search-query").value || q;
     artist_list.innerHTML =``;
+    artistQuery = query;
 
     try {
         if(!isNew)

@@ -269,8 +269,11 @@ inpField.addEventListener("keypress", function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
         console.log("Enter pressed");
-        if (album_page.style.display === "block"){
+        if (window.getComputedStyle(album_page).display === "block"){
             albumSongPageBack();
+        }
+        if (window.getComputedStyle(artist_page).display === "block"){
+            artistSongPageBack();
         }
         displayFeed();
         console.log(window.getComputedStyle(song_list).display);

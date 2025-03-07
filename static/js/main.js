@@ -533,6 +533,14 @@ function createAlbumSongCards(albumSongList) {
 
         albumSongList.appendChild(songCard);
     });
+    var song_cards = document.querySelectorAll('.song-card');
+    song_cards.forEach(song_card => {
+        let play_icon = song_card.querySelector(".fa-play");
+        play_icon.addEventListener('click', () => {
+            song_cards.forEach(s => s.classList.remove('song-card-selected'));
+            song_card.classList.add('song-card-selected');
+        });
+    });
 }
 
 function createSongCard(song, songList) {
@@ -618,7 +626,6 @@ function createSongCard(song, songList) {
         getFavourites();
         playerHeart(); //because when i like a song while its playing i want it to update
     };
-
     songList.appendChild(card);
 }
 
@@ -812,6 +819,14 @@ function createArtistSongCards(artistSongList) {
 
         artistSongList.appendChild(songCard);
     });
+    var song_cards = document.querySelectorAll('.song-card');
+    song_cards.forEach(song_card => {
+        let play_icon = song_card.querySelector(".fa-play");
+        play_icon.addEventListener('click', () => {
+            song_cards.forEach(s => s.classList.remove('song-card-selected'));
+            song_card.classList.add('song-card-selected');
+        });
+    });
 }
 
 function updater() {
@@ -873,13 +888,11 @@ function playmySong(song) {
             playerHeartt.classList.replace("fa-solid", "fa-regular");
         }
         else{
-            console.log("notichu");
             if(!isPresentFav){
                 favourites.push(song);
                 localStorage.setItem("favourites", JSON.stringify(favourites));
             }
             playerHeartt.classList.replace("fa-regular", "fa-solid");
-            console.log("notimudunjathu");
         }
         songList.innerHTML = "";
         for (let i = 0; i < 25 && i < songs.length; i++) {
@@ -894,12 +907,20 @@ function playmySong(song) {
             artUpdater();
         }
     };
+    var song_cards = document.querySelectorAll('.song-card');
+    song_cards.forEach(song_card => {
+        let play_icon = song_card.querySelector(".fa-play");
+        play_icon.addEventListener('click', () => {
+            song_cards.forEach(s => s.classList.remove('song-card-selected'));
+            song_card.classList.add('song-card-selected');
+        });
+    });
     
 }
 
 
 function playerHeart() {
-    console.log("enna paduthuraanga");
+    
     let playerHeart = document.getElementById("player-heart");
     favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
     let isPresentFav = favourites.some(item => item.id === currentSong.id);
@@ -909,7 +930,6 @@ function playerHeart() {
     else{
         playerHeart.classList.replace("fa-solid", "fa-regular");
     }
-    
 }
 
 function playFavourites() {
@@ -1087,7 +1107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const updateWidth = volume * barWidth;
         audioUpdateBar.style.width = `${updateWidth}px`;
         audioProgressCircle.style.left = `${updateWidth}px`;
-        console.log(barWidth);
+        //console.log(barWidth);
     }
 
     // Initialize the audio bar with the current volume
@@ -1373,7 +1393,7 @@ function songCountTime()
         songQueue.forEach(song => {
             duration = +duration + +song.duration;
         })
-        console.log(duration);
+        //console.log(duration);
         minute_count.innerHTML = formatTimeHours(duration);
     }
     song_count.innerHTML = `${noOfSongs}`;
@@ -1381,7 +1401,7 @@ function songCountTime()
 
 function formatTimeHours(seconds) {
     const hoursQ = Math.floor(seconds / 3600);
-    console.log(hoursQ);
+    //console.log(hoursQ);
     const minutesQ = Math.floor((seconds % 3600) / 60);
     const secsQ = Math.floor(seconds % 60);
 
@@ -1514,6 +1534,14 @@ function updateQueueDisplay() {
     queueContainer.appendChild(queueItem);
 });
     songCountTime();
+    var song_cards = document.querySelectorAll('.song-card');
+    song_cards.forEach(song_card => {
+        let play_icon = song_card.querySelector(".fa-play");
+        play_icon.addEventListener('click', () => {
+            song_cards.forEach(s => s.classList.remove('song-card-selected'));
+            song_card.classList.add('song-card-selected');
+        });
+    });
 }
 let favDuration = 0;
 let songCountFav = 0;
@@ -1535,7 +1563,7 @@ function getFavourites(){
             favDuration = +favDuration + +song.duration;
             songCountFav = +songCountFav + +1;
 
-            console.log(favDuration);
+            //console.log(favDuration);
             const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
             //name slicing
             let new_name = song.name;
@@ -1640,7 +1668,15 @@ function getFavourites(){
     else{
         minute_count_fav.innerHTML = "00:00";
         song_count_fav.innerHTML = "0";
-    }         
+    }      
+    var song_cards = document.querySelectorAll('.song-card');
+    song_cards.forEach(song_card => {
+        let play_icon = song_card.querySelector(".fa-play");
+        play_icon.addEventListener('click', () => {
+            song_cards.forEach(s => s.classList.remove('song-card-selected'));
+            song_card.classList.add('song-card-selected');
+        });
+    });   
 }
 
 document.addEventListener("DOMContentLoaded", function() {

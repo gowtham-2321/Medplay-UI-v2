@@ -11,6 +11,8 @@
     --heart: #f05542;
     --max-height: 0px;
     --album-artist-song-list-height: 0px;
+    --queue-fav-height: 0px;
+    --shrinked-queue-fav-height: 0px;
 } 
 
 *{
@@ -829,9 +831,8 @@ i {
     position: relative;
     display: block;
     padding: 10px;
-    height: fit-content;
     overflow-y: auto;
-    max-height: 47vh;
+    height: var(--queue-fav-height);
 }
 
 .queue-Item:hover {
@@ -846,7 +847,6 @@ i {
     display: none;
     opacity: 0;
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
-    overflow-y: auto;
     height: 100%;
     width: 100%;
 }
@@ -908,9 +908,8 @@ i {
     position: relative;
     display: block;
     padding: 10px;
-    height: fit-content;
     overflow-y: auto;
-    max-height: 47vh;
+    height: var(--queue-fav-height);
 }
 
 /*favourite ends*/
@@ -1256,7 +1255,10 @@ input[type="range"]::-moz-range-thumb {
     }
 
     .big-box, .big-box-fav{
+        display: flex;
         flex-direction: column;
+        height: 400px;
+        margin-bottom: 20px;
     }
     .download-queue > span, .play-queue > span, .download-fav > span, .play-fav > span{
         display: block;
@@ -1264,23 +1266,21 @@ input[type="range"]::-moz-range-thumb {
     .download-queue, .play-queue, .icon-queue, .download-fav, .play-fav, .icon-fav{
         width: 300px;
     }
-
+    .download-queue, .play-queue {
+        height: 160px;
+    }
     .queuelist, .favlist{
-        height: 30vh;
+        height: var(--shrinked-queue-fav-height);
         margin-bottom: 100px;
     }
 
     .music-player-timestamp > .slash-line, #duration{
         display: none;
     }
-
-    .queue{
+    .queue, .favourites{
         overflow-y: auto;
+        height: 75vh;
     }
-    .queuelist{
-        height: 50vh;
-    }
-
 }
 
 

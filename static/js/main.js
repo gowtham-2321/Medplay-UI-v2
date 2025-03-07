@@ -49,8 +49,13 @@ function updateScreenSize() {
     wholePage.style.height = `${screenHeight}px`;
     let maxScreenHeight = screenHeight - 100;
     let albumArtistSongHeight = screenHeight - 450;
+    let queueFavHeight = screenHeight - 280;
+    let shrinkedQueueFavHeight = screenHeight - 470;
     document.documentElement.style.setProperty('--max-height', `${maxScreenHeight}px`);
     document.documentElement.style.setProperty('--album-artist-song-list-height', `${albumArtistSongHeight}px`);
+    document.documentElement.style.setProperty('--queue-fav-height', `${queueFavHeight}px`);
+    document.documentElement.style.setProperty('--shrinked-queue-fav-height', `${shrinkedQueueFavHeight}px`);
+
     //song_list.style.height = `${screenHeight}px`;
 }
 

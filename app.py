@@ -45,13 +45,52 @@ def search():
     
     return songs
 
+@app.route('/artists', methods=['GET'])
+def getArtist():
+    aritstId = request.args.get('id', '')
+    
+    if not aritstId:
+        return None
+    
+    try:
+        response = requests.get(f"{API_URL}/api/artists/{aritstId}", verify=False)
+        data = response.json().get('data', [])
+        
+    except Exception as e:
+        print("Errir fetching Artist Songs", e)
+        data = []
+        
+    return jsonify(data)
+
+@app.route('/artists/songs', methods=['GET'])
+def getArtistSongs():
+    aritstId = request.args.get('id', '')
+    
+    if not aritstId:
+        return None
+    
+    try:
+        data = []
+        for i in range(3):
+            response = requests.get(f"{API_URL}/api/artists/{aritstId}/songs?page={i}", verify=False)
+            resp = response.json().get('data', [])
+            resp = resp['songs']
+            data.extend(resp)
+            
+        
+    except Exception as e:
+        print("Errir fetching Artist Songs", e)
+        data = []
+    
+    return jsonify(data)
+
 @app.route('/albums', methods=['GET'])
 def getAlbum():
     albumid = request.args.get('id', '')
 
     #print(albumid)
     if not albumid:
-        return render_template('index.html', songs=None)
+        return None
     
     try:
         response = requests.get(f"{API_URL}/api/albums?id={albumid}", verify=False)

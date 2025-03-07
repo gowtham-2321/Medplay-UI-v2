@@ -1163,7 +1163,14 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
 
         ffmpeg.FS("writeFile", "input.mp4", new Uint8Array(mp4Buffer));
         ffmpeg.setProgress(({ ratio }) => {
+            let downPer = document.getElementById("download-percent");
+            let dowBar = document.getElementById("download-update");
+            downPer.innerHTML = `${(ratio * 100).toFixed(0)}%`;
+            dowBar.style.width = `${(ratio * 180)}px`;
             console.log(`Processing progress: ${(ratio * 100).toFixed(2)}%`);
+            if(ratio*100 == 100){
+                removeDownloadNotif();
+            }
         });
         await ffmpeg.run("-i", "input.mp4", "-vn", "-b:a", "192k", "output.mp3");
 
@@ -1193,6 +1200,7 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
 }
 
 async function downloadSong(song) {
+    downloadNotif(song);
     // name slicing
     let new_name = song.name;
     if (new_name.length > 16) {
@@ -1920,4 +1928,26 @@ if("mediaSession" in navigator){
     });
 }
 
-//console.log("oooombbuuu");
+function downloadNotif(song){
+    let notif = document.getElementById("notification");
+
+    notif.style.display = "flex"; 
+    setTimeout(() => {
+        notif.style.opacity = "1";
+    }, 300);
+
+    let downloadName = document.getElementById("download-name");
+    let notifImage = document.getElementById("notif-image");
+    const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+    notifImage.src = imageUrl;
+    downloadName.innerHTML = song.name;
+}
+
+function removeDownloadNotif(){
+    let notif = document.getElementById("notification");
+
+    notif.style.opacity = "0"; 
+    setTimeout(() => {
+        notif.style.display = "none";
+    }, 300);
+}

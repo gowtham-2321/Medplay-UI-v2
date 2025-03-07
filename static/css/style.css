@@ -1092,6 +1092,76 @@ input[type="range"]::-moz-range-thumb {
     z-index: 1;
 }
 
+.notification{
+    top: 30px;
+    right: 30px;
+    position: fixed;
+    width: 400px;
+    height: fit-content;
+    border-radius: 20px;
+    background: var(--secondary-bg-color);
+    padding: 20px;
+    box-sizing: border-box;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    opacity: 0;
+    transition: display .3s ease-in-out, opacity .3s ease-in-out;
+}
+.notification-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.downloading, #download-title, #download-percent{
+    color: var(--secondary-text-color);
+}
+
+
+.notification-header > i{
+    font-size: 10px;
+    color: var(--accent-color);
+}
+
+.notif-content{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.notif-image{
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+}
+
+.download-detail{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.download-bar{
+    width: 180px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--primary-bg-color);
+}
+.download-update{
+    position: relative;
+    width: 0px;
+    height: 3px;
+    background: var(--accent-color);
+    border-radius: 2px;
+    transition: width .2s ease;
+}
+.notif-details{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
 @media only screen and (max-width: 700px){
 
         input[type="range"] {

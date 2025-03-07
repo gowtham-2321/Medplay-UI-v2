@@ -55,8 +55,10 @@ function updateScreenSize() {
     let albumArtistSongHeight = screenHeight - 450;
     let queueFavHeight = screenHeight - 280;
     let shrinkedQueueFavHeight = screenHeight - 470;
+    let shrinkedAlbumArtistSongHeight = albumArtistSongHeight + 60;
     document.documentElement.style.setProperty('--max-height', `${maxScreenHeight}px`);
     document.documentElement.style.setProperty('--album-artist-song-list-height', `${albumArtistSongHeight}px`);
+    document.documentElement.style.setProperty('--shrinked-album-artist-song-list-height', `${shrinkedAlbumArtistSongHeight}px`);
     document.documentElement.style.setProperty('--queue-fav-height', `${queueFavHeight}px`);
     document.documentElement.style.setProperty('--shrinked-queue-fav-height', `${shrinkedQueueFavHeight}px`);
 
@@ -436,11 +438,15 @@ async function albumSongPager(albumId) {
         playNextInQueue();
         updateQueueDisplay();
     }
-    album_page.appendChild(albumInfo);
+    const albumDispSongs = document.createElement("div");
+    albumDispSongs.classList.add("album-disp-songs");
+    albumDispSongs.appendChild(albumInfo);
     const albumSongList = document.createElement("div");
     albumSongList.classList.add("album-song-list");
     createAlbumSongCards(albumSongList);
-    album_page.appendChild(albumSongList);
+    albumDispSongs.appendChild(albumSongList);
+
+    album_page.appendChild(albumDispSongs);
 }
 
 function createAlbumSongCards(albumSongList) {
@@ -709,12 +715,17 @@ async function artistSongPager(artistId) {
         playNextInQueue();
         updateQueueDisplay();
     }
-    artist_page.appendChild(artistInfo);
 
+    const artistDispSongs = document.createElement("div");
+    artistDispSongs.classList.add("artist-disp-songs");
+
+    artistDispSongs.appendChild(artistInfo);
     const artistSongList = document.createElement("div");
     artistSongList.classList.add("artist-song-list");
     createArtistSongCards(artistSongList);
-    artist_page.appendChild(artistSongList);
+    artistDispSongs.appendChild(artistSongList);
+
+    artist_page.appendChild(artistDispSongs);
 }
 
 function createArtistSongCards(artistSongList) {

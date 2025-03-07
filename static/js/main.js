@@ -1949,5 +1949,9 @@ function removeDownloadNotif(){
     notif.style.opacity = "0"; 
     setTimeout(() => {
         notif.style.display = "none";
-    }, 300);
+        let downBar = document.getElementById("download-update");
+        let downPer = document.getElementById("download-percent");
+        downPer.innerHTML = "0%";
+        downBar.style.width = 0;
+    }, 300);  
 }

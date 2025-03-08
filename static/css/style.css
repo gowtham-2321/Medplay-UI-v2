@@ -1112,11 +1112,16 @@ input[type="range"]::-moz-range-thumb {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
+    -webkit-box-shadow: -1px 2px 148px -19px rgba(0,0,0,0.39);
+    -moz-box-shadow: -1px 2px 148px -19px rgba(0,0,0,0.39);
+    box-shadow: -1px 2px 148px -19px rgba(0,0,0,0.39);
 }
 
 .downloading, #download-title, #download-percent{
     color: var(--secondary-text-color);
+}
+#download-percent{
+    width: 40px;
 }
 
 
@@ -1143,7 +1148,7 @@ input[type="range"]::-moz-range-thumb {
     gap: 10px;
 }
 .download-bar{
-    width: 180px;
+    width: 120px;
     height: 3px;
     border-radius: 2px;
     background: var(--primary-bg-color);
@@ -1156,6 +1161,19 @@ input[type="range"]::-moz-range-thumb {
     border-radius: 2px;
     transition: width .2s ease;
 }
+
+.cancel-button{
+    height: 15px;
+    width: 60px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .notif-details{
     display: flex;
     flex-direction: column;

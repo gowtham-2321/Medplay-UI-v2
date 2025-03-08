@@ -1196,7 +1196,7 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
             let downPer = document.getElementById("download-percent");
             let dowBar = document.getElementById("download-update");
             downPer.innerHTML = `${(ratio * 100).toFixed(0)}%`;
-            dowBar.style.width = `${(ratio * 180)}px`;
+            dowBar.style.width = `${(ratio * 120)}px`;
             console.log(`Processing progress: ${(ratio * 100).toFixed(2)}%`);
             if(ratio*100 == 100){
                 removeDownloadNotif();
@@ -2076,7 +2076,7 @@ async function downloadSongsAsZip(songsList, zipName) {
             let downPer = document.getElementById("download-percent");
             let dowBar = document.getElementById("download-update");
             downPer.innerHTML = `${(progress * 100).toFixed(0)}%`;
-            dowBar.style.width = `${(progress * 180)}px`;
+            dowBar.style.width = `${(progress * 120)}px`;
             if(progress * 100 == 100){
                 removeDownloadNotif();
             }

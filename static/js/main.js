@@ -1978,7 +1978,7 @@ async function downloadQueue() {
 }
 
 async function downloadAlbum(album) {
-    downloadAlbNotif(album.name);
+    downloadAlbNotif(album);
     downList= currentViewingAlbumSongs;
     downloadSongsAsZip(downList, `${album.name}-medplay`);
 }
@@ -2232,7 +2232,7 @@ function downloadQueNotif(){
     downloadName.innerHTML = " Your Queue";
 }
 
-function downloadAlbNotif(alName){
+function downloadAlbNotif(album){
     let notif = document.getElementById("notification");
 
     notif.style.display = "flex"; 
@@ -2243,9 +2243,9 @@ function downloadAlbNotif(alName){
     notifTitle.innerHTML = "Download Album";
 
     let downloadName = document.getElementById("download-name");
-    let notifImage = document.getElementById("notif-image");
-    notifImage.src = "/static/img/M.png";
-    downloadName.innerHTML = `${alName}-Album`;
+    const imageUrl = `/image/?url=${encodeURIComponent(album.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+    notifImage.src = imageUrl;
+    downloadName.innerHTML = `${album.name}-Album`;
 }
 
 function removeDownloadNotif(){

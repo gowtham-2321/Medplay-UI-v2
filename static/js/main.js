@@ -46,6 +46,7 @@ let q= "english";
 let songQuery = "";
 let albumQuery = "";
 let artistQuery = "";
+let ffmpeg = null;
 
 
 function updateScreenSize() {
@@ -1162,10 +1163,18 @@ async function fetchAsArrayBuffer(url) {
 }
 
 async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, genre) {
-    const { createFFmpeg, fetchFile } = await import("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.5/+esm");
-    const { default: ID3Writer } = await import("https://cdn.jsdelivr.net/npm/browser-id3-writer@4.0.0/+esm");
+    try {
+        if(!ffmpeg.isLoaded()){
+            // ffmpeg = createFFmpeg({ log: true });
+        }
+    }
+    catch (error) {
+        console.error("Error loading FFmpeg:", error);
+        const { createFFmpeg, fetchFile } = await import("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.5/+esm");
+        ffmpeg = createFFmpeg({ log: true });
+    }
+    const { default: ID3Writer } = await import("https://cdn.jsdelivr.net/npm/browser-id3-writer@4.0.0/+esm");  
 
-    const ffmpeg = createFFmpeg({ log: true });
 
     try {
         if (!mp4Url || !imageUrl) {
@@ -1208,11 +1217,16 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
 
         const mp3Blob = new Blob([writer.arrayBuffer], { type: "audio/mp3" });
         const mp3Url = URL.createObjectURL(mp3Blob);
-
-        const link = document.createElement("a");
-        link.href = mp3Url;
-        link.download = `${title || "Unknown_Song"}.mp3`;
-        link.click();
+        if (!abortController.signal.aborted) {
+            URL.revokeObjectURL(mp3Url);
+            const link = document.createElement("a");
+            link.href = mp3Url;
+            link.download = `${title || "Unknown_Song"}.mp3`;
+            link.click();
+        }
+        else {
+            abortController = new AbortController();
+        }
 
     } catch (error) {
         console.error("Error processing files:", error);
@@ -1966,18 +1980,27 @@ if("mediaSession" in navigator){
 }
 
 async function downloadFavourites() {
-    downloadFavNotif();
     let favourites = JSON.parse(localStorage.getItem("favourites")) || [];
+    if (favourites.length === 0) {
+        return;
+    }
+    downloadFavNotif();
     downloadSongsAsZip(favourites, "Favourites-medplay");
 }
 
 async function downloadQueue() {
+    if (songQueue.length === 0) {
+        return;
+    }
     downloadQueNotif();
     downList= songQueue;
     downloadSongsAsZip(downList, "Queue-medplay");
 }
 
 async function downloadAlbum(album) {
+    if (currentViewingAlbumSongs.length === 0) {
+        return;
+    }
     downloadAlbNotif(album);
     downList= currentViewingAlbumSongs;
     downloadSongsAsZip(downList, `${album.name}-medplay`);
@@ -1987,7 +2010,7 @@ async function convertMp4ToMp3Blob(mp4Url, imageUrl, artist, title, album, year,
     const { createFFmpeg, fetchFile } = await import("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.5/+esm");
     const { default: ID3Writer } = await import("https://cdn.jsdelivr.net/npm/browser-id3-writer@4.0.0/+esm");
 
-    const ffmpeg = createFFmpeg({ log: true });
+    ffmpeg = createFFmpeg({ log: true });
 
     try {
         if (!mp4Url || !imageUrl) {
@@ -2077,10 +2100,18 @@ async function downloadSongsAsZip(songsList, zipName) {
 }
 
 async function convertMp4ToMp3BlobWithProgress(mp4Url, imageUrl, artist, title, album, year, genre, progressCallback) {
-    const { createFFmpeg, fetchFile } = await import("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.5/+esm");
-    const { default: ID3Writer } = await import("https://cdn.jsdelivr.net/npm/browser-id3-writer@4.0.0/+esm");
+    try {
+        if(!ffmpeg.isLoaded()){
+            // ffmpeg = createFFmpeg({ log: true });
+        }
+    }
+    catch (error) {
+        console.error("Error loading FFmpeg:", error);
+        const { createFFmpeg, fetchFile } = await import("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.5/+esm");
+        const { default: ID3Writer } = await import("https://cdn.jsdelivr.net/npm/browser-id3-writer@4.0.0/+esm");  
+        ffmpeg = createFFmpeg({ log: true });
+    }
 
-    const ffmpeg = createFFmpeg({ log: true });
 
     try {
         if (!mp4Url || !imageUrl) {
@@ -2117,47 +2148,12 @@ async function convertMp4ToMp3BlobWithProgress(mp4Url, imageUrl, artist, title, 
         return new Blob([writer.arrayBuffer], { type: "audio/mp3" });
 
     } catch (error) {
-        console.error("Error processing files:", error);
-        alert("Conversion failed! Check the URLs.");
+        // console.error("Error processing files:", error);
     }
 }
 
 let abortController = new AbortController();
 
-async function fetchAsArrayBufferWithProgress(url, progressCallback) {
-    const response = await fetch(url, { signal: abortController.signal });
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const reader = response.body.getReader();
-    const contentLength = +response.headers.get('Content-Length');
-    let receivedLength = 0;
-    const chunks = [];
-
-    while (true) {
-        const { done, value } = await reader.read();
-        if (done) {
-            break;
-        }
-        chunks.push(value);
-        receivedLength += value.length;
-
-        if (contentLength) {
-            const percentage = (receivedLength / contentLength) * 100;
-            progressCallback(percentage.toFixed(2));
-        }
-    }
-
-    const chunksAll = new Uint8Array(receivedLength);
-    let position = 0;
-    for (let chunk of chunks) {
-        chunksAll.set(chunk, position);
-        position += chunk.length;
-    }
-
-    return chunksAll.buffer;
-}
 
 function cancelDownload() {
     abortController.abort();
@@ -2169,13 +2165,27 @@ function cancelDownload() {
 }
 
 async function clearBufferAndReloadFFmpeg() {
-    const { createFFmpeg } = await import("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.5/+esm");
-    const ffmpeg = createFFmpeg({ log: true });
+    await unloadFFmpeg
+}
+async function unloadFFmpeg() {
+    if (ffmpeg) {
+        try {
+            await ffmpeg.exit(); // Stop FFmpeg properly
+            
+            // Terminate Web Worker if it exists
+            if (ffmpeg.worker) {
+                ffmpeg.worker.terminate();
+            }
+        } catch (error) {
+            console.warn("Error while exiting FFmpeg:", error);
+        }
 
-    if (ffmpeg.isLoaded()) {
-        ffmpeg.exit();
-        await ffmpeg.load();
+        // Clear instance reference
+        ffmpeg = null;
     }
+
+    // Remove FFmpeg from global cache
+    delete window.ffmpeg;
 }
 
 // Add a button to trigger the cancelDownload function
@@ -2196,6 +2206,7 @@ function downloadNotif(song){
     let notifImage = document.getElementById("notif-image");
     const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
     notifImage.src = imageUrl;
+    notifImage.onclick = () => cancelDownload();
     downloadName.innerHTML = song.name;
 }
 

@@ -1240,13 +1240,13 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
         }
         else {
             abortController = new AbortController();
-        }
+unloadFFmpeg();        }
 
     } catch (error) {
         console.error("Error processing files:", error);
         // alert("Conversion failed! Check the URLs.");
         abortController = new AbortController();
-    }
+unloadFFmpeg();    }
 }
 
 async function downloadSong(song) {
@@ -2060,7 +2060,7 @@ async function convertMp4ToMp3Blob(mp4Url, imageUrl, artist, title, album, year,
         console.error("Error processing files:", error);
         // alert("Conversion failed! Check the URLs.");
         abortController = new AbortController();
-    }
+unloadFFmpeg();    }
 }
 
 async function downloadSongsAsZip(songsList, zipName) {
@@ -2112,7 +2112,9 @@ async function downloadSongsAsZip(songsList, zipName) {
     }
     else {
         abortController = new AbortController();
-    }
+unloadFFmpeg();    }
+    abortController = new AbortController();
+
 }
 
 async function convertMp4ToMp3BlobWithProgress(mp4Url, imageUrl, artist, title, album, year, genre, progressCallback) {
@@ -2141,13 +2143,13 @@ async function convertMp4ToMp3BlobWithProgress(mp4Url, imageUrl, artist, title, 
         }
 
         const mp4Buffer = await fetchAsArrayBufferWithProgress(mp4Url, (percentage) => {
-            progressCallback((percentage / 200) * 0.2); // First half of the progress
+            progressCallback((percentage / 200) * 0.4); // First half of the progress
         });
         const imageBuffer = await fetchAsArrayBuffer(imageUrl);
 
         ffmpeg.FS("writeFile", "input.mp4", new Uint8Array(mp4Buffer));
         ffmpeg.setProgress(({ ratio }) => {
-            progressCallback((0.5 + ratio / 2) * 0.8); // Second half of the progress
+            progressCallback((0.5 + ratio / 2) * 0.6); // Second half of the progress
         });
         await ffmpeg.run("-i", "input.mp4", "-vn", "-b:a", "192k", "output.mp3");
 
@@ -2166,11 +2168,12 @@ async function convertMp4ToMp3BlobWithProgress(mp4Url, imageUrl, artist, title, 
 
     } catch (error) {
         // console.error("Error processing files:", error);
+        abortController = new AbortController();
+        unloadFFmpeg();
     }
 }
 
 let abortController = new AbortController();
-
 
 function cancelDownload() {
     abortController.abort();

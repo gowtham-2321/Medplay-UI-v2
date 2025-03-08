@@ -201,7 +201,7 @@ i {
 .song-card {
     display: flex;
     align-items: center;
-    /*justify-content: center;*/
+    justify-content: space-between;
     box-sizing: border-box;
     padding: 20px;
     width: 100%;

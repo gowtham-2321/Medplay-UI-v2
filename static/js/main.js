@@ -720,6 +720,11 @@ async function artistSongPager(artistId) {
         <span>Play all songs</span>
         </div>
     </div>
+    <div class="album-download-holder no-for-now">
+        <div class="album-download">
+            <i class="fa-solid fa-download"></i>
+        </div>
+    </div>
     `;
 
     currentViewingArtistSongs = songsData

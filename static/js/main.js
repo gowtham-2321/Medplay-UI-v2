@@ -1172,20 +1172,20 @@ function repeatSong() {
 
 //downloaderss
 async function fetchAsArrayBuffer(url) {
-    const response = await fetch(url);
+    const response = await fetch(url, {signal: abortController.signal});
     return response.arrayBuffer();
 }
 
 async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, genre) {
     try {
         if(!ffmpeg.isLoaded()){
-            // ffmpeg = createFFmpeg({ log: true });
+            // ffmpeg = createFFmpeg({ log: false });
         }
     }
     catch (error) {
         console.error("Error loading FFmpeg:", error);
         const { createFFmpeg, fetchFile } = await import("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.5/+esm");
-        ffmpeg = createFFmpeg({ log: true });
+        ffmpeg = createFFmpeg({ log: false });
     }
     const { default: ID3Writer } = await import("https://cdn.jsdelivr.net/npm/browser-id3-writer@4.0.0/+esm");  
 
@@ -1201,6 +1201,10 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
         }
 
         const mp4Buffer = await fetchAsArrayBufferWithProgress(mp4Url, (percentage) => {
+            let downPer = document.getElementById("download-percent");
+            let dowBar = document.getElementById("download-update");
+            downPer.innerHTML = `${(percentage / 2).toFixed(0)}%`;
+            dowBar.style.width = `${(percentage / 200 * 120)}px`;
             console.log(`Download progress: ${percentage}%`);
         });
         const imageBuffer = await fetchAsArrayBuffer(imageUrl);
@@ -1209,11 +1213,11 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
         ffmpeg.setProgress(({ ratio }) => {
             let downPer = document.getElementById("download-percent");
             let dowBar = document.getElementById("download-update");
-            downPer.innerHTML = `${(ratio * 100).toFixed(0)}%`;
-            dowBar.style.width = `${(ratio * 120)}px`;
+            downPer.innerHTML = `${(50 + ratio * 50).toFixed(0)}%`;
+            dowBar.style.width = `${(50 + ratio * 50) * 1.2}px`;
             console.log(`Processing progress: ${(ratio * 100).toFixed(2)}%`);
-            if(ratio*100 == 100){
-                removeDownloadNotif();
+            if (ratio * 100 == 100) {
+            removeDownloadNotif();
             }
         });
         await ffmpeg.run("-i", "input.mp4", "-vn", "-b:a", "192k", "output.mp3");
@@ -1240,13 +1244,15 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
         }
         else {
             abortController = new AbortController();
-unloadFFmpeg();        }
+            unloadFFmpeg();        
+        }
 
     } catch (error) {
         console.error("Error processing files:", error);
         // alert("Conversion failed! Check the URLs.");
         abortController = new AbortController();
-unloadFFmpeg();    }
+        unloadFFmpeg();
+    }
 }
 
 async function downloadSong(song) {
@@ -1277,7 +1283,7 @@ async function downloadSong(song) {
 }
 
 async function fetchAsArrayBufferWithProgress(url, progressCallback) {
-    const response = await fetch(url);
+    const response = await fetch(url, {signal: abortController.signal});
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -1652,7 +1658,6 @@ function getFavourites(){
                     heartButton.classList.replace("fa-solid", "fa-regular");
                     //console.log(favourites);
                     getFavourites();
-                    playerHeart();
                     if (currentViewingAlbumSongs.some(i => i.id === song.id))
                     {
                         updater();
@@ -1667,7 +1672,6 @@ function getFavourites(){
                     favourites.push(song.id);
                     localStorage.setItem("favourites", JSON.stringify(favourites));
                     console.log(favourites);
-                    playerHeart();
                     if (currentViewingAlbumSongs.some(i => i.id === song.id))
                     {
                         updater();
@@ -2025,7 +2029,7 @@ async function convertMp4ToMp3Blob(mp4Url, imageUrl, artist, title, album, year,
     const { createFFmpeg, fetchFile } = await import("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.5/+esm");
     const { default: ID3Writer } = await import("https://cdn.jsdelivr.net/npm/browser-id3-writer@4.0.0/+esm");
 
-    ffmpeg = createFFmpeg({ log: true });
+    ffmpeg = createFFmpeg({ log: false });
 
     try {
         if (!mp4Url || !imageUrl) {
@@ -2037,7 +2041,7 @@ async function convertMp4ToMp3Blob(mp4Url, imageUrl, artist, title, album, year,
             await ffmpeg.load();
         }
 
-        const mp4Buffer = await fetchAsArrayBuffer(mp4Url);
+        const mp4Buffer = await fetchAsArrayBuffer(mp4Url, abortController.signal);
         const imageBuffer = await fetchAsArrayBuffer(imageUrl);
 
         ffmpeg.FS("writeFile", "input.mp4", new Uint8Array(mp4Buffer));
@@ -2060,7 +2064,8 @@ async function convertMp4ToMp3Blob(mp4Url, imageUrl, artist, title, album, year,
         console.error("Error processing files:", error);
         // alert("Conversion failed! Check the URLs.");
         abortController = new AbortController();
-unloadFFmpeg();    }
+        unloadFFmpeg();
+    }
 }
 
 async function downloadSongsAsZip(songsList, zipName) {
@@ -2111,6 +2116,7 @@ async function downloadSongsAsZip(songsList, zipName) {
         });
     }
     else {
+        await unloadFFmpeg() ;
         abortController = new AbortController();
 unloadFFmpeg();    }
     abortController = new AbortController();
@@ -2118,18 +2124,17 @@ unloadFFmpeg();    }
 }
 
 async function convertMp4ToMp3BlobWithProgress(mp4Url, imageUrl, artist, title, album, year, genre, progressCallback) {
-    const { default: ID3Writer } = await import("https://cdn.jsdelivr.net/npm/browser-id3-writer@4.0.0/+esm");  
-
     try {
         if(!ffmpeg.isLoaded()){
-            // ffmpeg = createFFmpeg({ log: true });
+            // ffmpeg = createFFmpeg({ log: false });
         }
     }
     catch (error) {
         console.error("Error loading FFmpeg:", error);
         const { createFFmpeg, fetchFile } = await import("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.5/+esm");
-        ffmpeg = createFFmpeg({ log: true });
+        ffmpeg = createFFmpeg({ log: false });
     }
+    const { default: ID3Writer } = await import("https://cdn.jsdelivr.net/npm/browser-id3-writer@4.0.0/+esm");  
 
 
     try {
@@ -2168,8 +2173,8 @@ async function convertMp4ToMp3BlobWithProgress(mp4Url, imageUrl, artist, title, 
 
     } catch (error) {
         // console.error("Error processing files:", error);
+        await unloadFFmpeg() ;
         abortController = new AbortController();
-        unloadFFmpeg();
     }
 }
 
@@ -2179,7 +2184,6 @@ function cancelDownload() {
     abortController.abort();
     console.log("Download canceled");
     removeDownloadNotif();
-
     // Clear the buffer and reload ffmpeg
     clearBufferAndReloadFFmpeg();
 }
@@ -2187,6 +2191,7 @@ function cancelDownload() {
 async function clearBufferAndReloadFFmpeg() {
     await unloadFFmpeg();
 }
+
 async function unloadFFmpeg() {
     if (ffmpeg) {
         try {
@@ -2205,14 +2210,8 @@ async function unloadFFmpeg() {
     }
 
     // Remove FFmpeg from global cache
-    delete window.ffmpeg;
+    // delete window.ffmpeg;
 }
-
-// Add a button to trigger the cancelDownload function
-const cancelButton = document.createElement("button");
-cancelButton.textContent = "Cancel Download";
-cancelButton.onclick = cancelDownload;
-document.body.appendChild(cancelButton);
 
 function downloadNotif(song){
     let notif = document.getElementById("notification");
@@ -2226,7 +2225,6 @@ function downloadNotif(song){
     let notifImage = document.getElementById("notif-image");
     const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
     notifImage.src = imageUrl;
-    notifImage.onclick = () => cancelDownload();
     downloadName.innerHTML = song.name;
 }
 
@@ -2242,7 +2240,6 @@ function downloadFavNotif(){
 
     let downloadName = document.getElementById("download-name");
     let notifImage = document.getElementById("notif-image");
-    notifImage.onclick = () => cancelDownload();
     notifImage.src = "/static/img/M.png";
     downloadName.innerHTML = "Your Favourites";
 }

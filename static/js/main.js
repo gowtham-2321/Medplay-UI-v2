@@ -1230,7 +1230,8 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
 
     } catch (error) {
         console.error("Error processing files:", error);
-        alert("Conversion failed! Check the URLs.");
+        // alert("Conversion failed! Check the URLs.");
+        abortController = new AbortController();
     }
 }
 
@@ -2043,7 +2044,8 @@ async function convertMp4ToMp3Blob(mp4Url, imageUrl, artist, title, album, year,
 
     } catch (error) {
         console.error("Error processing files:", error);
-        alert("Conversion failed! Check the URLs.");
+        // alert("Conversion failed! Check the URLs.");
+        abortController = new AbortController();
     }
 }
 
@@ -2100,6 +2102,8 @@ async function downloadSongsAsZip(songsList, zipName) {
 }
 
 async function convertMp4ToMp3BlobWithProgress(mp4Url, imageUrl, artist, title, album, year, genre, progressCallback) {
+    const { default: ID3Writer } = await import("https://cdn.jsdelivr.net/npm/browser-id3-writer@4.0.0/+esm");  
+
     try {
         if(!ffmpeg.isLoaded()){
             // ffmpeg = createFFmpeg({ log: true });
@@ -2108,7 +2112,6 @@ async function convertMp4ToMp3BlobWithProgress(mp4Url, imageUrl, artist, title, 
     catch (error) {
         console.error("Error loading FFmpeg:", error);
         const { createFFmpeg, fetchFile } = await import("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.5/+esm");
-        const { default: ID3Writer } = await import("https://cdn.jsdelivr.net/npm/browser-id3-writer@4.0.0/+esm");  
         ffmpeg = createFFmpeg({ log: true });
     }
 
@@ -2165,7 +2168,7 @@ function cancelDownload() {
 }
 
 async function clearBufferAndReloadFFmpeg() {
-    await unloadFFmpeg
+    await unloadFFmpeg();
 }
 async function unloadFFmpeg() {
     if (ffmpeg) {

@@ -214,6 +214,13 @@ i {
     cursor: context-menu;
 }
 
+.responsive-song-card{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .song-card:hover {
     background: var(--secondary-bg-color); 
 }
@@ -305,6 +312,7 @@ i {
     opacity: 0;
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
     overflow-y: auto;
+    overflow-x: hidden;
     height: var(--max-height);
 }
 .artist-card {
@@ -856,6 +864,7 @@ i {
     display: block;
     padding: 10px;
     overflow-y: auto;
+    overflow-x: hidden;
     height: var(--queue-fav-height);
 }
 
@@ -933,6 +942,7 @@ i {
     display: block;
     padding: 10px;
     overflow-y: auto;
+    overflow-x: hidden;
     height: var(--queue-fav-height);
 }
 
@@ -949,6 +959,8 @@ i {
     grid-auto-rows:45px;
     gap: 5px;
     opacity: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
 }
 
@@ -1408,6 +1420,77 @@ input[type="range"]::-moz-range-thumb {
     .queue, .favourites{
         height: 75vh;
     }
+    .artist-info-card-image, .album-info-card-image{
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 600px){
+    .song-card{
+        height: 120px;
+        padding: 20px;
+        gap: 20px;
+        box-sizing: content-box;
+        width: 80%;
+        border-radius: 20px;
+        border: 2px solid var(--accent-color);
+        margin-bottom: 30px;
+        transition: transform .3s ease, border .3s ease;
+    }
+
+    .song-card-selected{
+        outline: 2px solid var(--accent-color);
+    }
+    .song-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .song-card-art{
+        width: 80px;
+        height: 80px;
+        background: var(--primary-text-color);
+    }
+    .responsive-song-card{
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        gap: 5px;
+    }
+    .song-card-artist-name{
+        display: block;
+        width: 100%;
+        padding: 0;
+    }
+    .song-card-song-name{
+        padding: 0;
+        width: 100%;
+    }
+    .song-card-icons{
+        margin: 0;
+        gap: 20px;
+        justify-content: start;
+        padding: 5px;
+    }
+    .music-player-end-icons{
+        display: none;
+    }
+    #audio-icon{
+        display: none;
+    }
+    .artist-info-card-holder, .album-info-card-holder {
+        width: 90%;
+    }
+    .profile-holder{
+        display: none;
+    }
+}
+@media only screen and (max-width: 400px){
+    .search-bar{
+        min-width: 200px;
+    }
+    .theme-choice{
+        width: 250px;
+    }
 }
 
 @media only screen and (max-height: 900px){
@@ -1419,6 +1502,7 @@ input[type="range"]::-moz-range-thumb {
         overflow-y: auto;
     }
 }
+
 
 .no-for-now {
     display: none;

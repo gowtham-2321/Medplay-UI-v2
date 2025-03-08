@@ -48,7 +48,9 @@ let albumQuery = "";
 let artistQuery = "";
 let ffmpeg = null;
 
-
+function load(){
+    location.reload();
+}
 function updateScreenSize() {
     let screenHeight = window.innerHeight - 210;
     wholePage.style.height = `${screenHeight}px`;
@@ -484,15 +486,17 @@ function createAlbumSongCards(albumSongList) {
         songCard.classList.add("song-card");
         songCard.innerHTML = `
             <img class="song-card-art" src="${songImageUrl}" alt="">
-            <span class="song-card-song-name">${new_name}</span>
-            <span class="song-card-artist-name">${new_art_name}</span>
-            <span class="song-card-album-name">${new_album_name}</span>
-            <span class="song-card-timestamp">${new_duration}</span>
-            <div class="song-card-icons">
-            <i class="fa-regular fa-heart"></i>
-            <i class="fa-solid fa-play"></i>
-            <i class="fa-solid fa-download"></i>
-            <i class="fa-solid fa-plus"></i>
+            <div class="responsive-song-card">
+                <span class="song-card-song-name">${new_name}</span>
+                <span class="song-card-artist-name">${new_art_name}</span>
+                <span class="song-card-album-name">${new_album_name}</span>
+                <span class="song-card-timestamp">${new_duration}</span>
+                <div class="song-card-icons">
+                <i class="fa-regular fa-heart"></i>
+                <i class="fa-solid fa-play"></i>
+                <i class="fa-solid fa-download"></i>
+                <i class="fa-solid fa-plus"></i>
+                </div>
             </div>
 
         `
@@ -576,15 +580,17 @@ function createSongCard(song, songList) {
     //slicing end
     card.innerHTML = `
             <img class="song-card-art" src="${imageUrl}" alt="">
-            <span class="song-card-song-name">${new_name ||"Unkown Song"}</span>
-            <span class="song-card-artist-name">${new_art_name ||"Unkown Artist"}</span>
-            <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
-            <span class="song-card-timestamp">${new_duration || "00:00"}</span>
-            <div class="song-card-icons">
-                <i class="fa-regular fa-heart"></i>
-                <i class="fa-solid fa-play"></i>
-                <i class="fa-solid fa-download"></i>
-                <i class="fa-solid fa-plus"></i>
+            <div class="responsive-song-card">
+                <span class="song-card-song-name">${new_name ||"Unkown Song"}</span>
+                <span class="song-card-artist-name">${new_art_name ||"Unkown Artist"}</span>
+                <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
+                <span class="song-card-timestamp">${new_duration || "00:00"}</span>
+                <div class="song-card-icons">
+                    <i class="fa-regular fa-heart"></i>
+                    <i class="fa-solid fa-play"></i>
+                    <i class="fa-solid fa-download"></i>
+                    <i class="fa-solid fa-plus"></i>
+                </div>
             </div>
     `;
     
@@ -775,15 +781,17 @@ function createArtistSongCards(artistSongList) {
         songCard.classList.add("song-card");
         songCard.innerHTML = `
             <img class="song-card-art" src="${songImageUrl}" alt="">
-            <span class="song-card-song-name">${new_name}</span>
-            <span class="song-card-artist-name">${new_art_name}</span>
-            <span class="song-card-album-name">${new_album_name}</span>
-            <span class="song-card-timestamp">${new_duration}</span>
-            <div class="song-card-icons">
-            <i class="fa-regular fa-heart"></i>
-            <i class="fa-solid fa-play"></i>
-            <i class="fa-solid fa-download"></i>
-            <i class="fa-solid fa-plus"></i>
+            <div class="responsive-song-card">
+                <span class="song-card-song-name">${new_name}</span>
+                <span class="song-card-artist-name">${new_art_name}</span>
+                <span class="song-card-album-name">${new_album_name}</span>
+                <span class="song-card-timestamp">${new_duration}</span>
+                <div class="song-card-icons">
+                <i class="fa-regular fa-heart"></i>
+                <i class="fa-solid fa-play"></i>
+                <i class="fa-solid fa-download"></i>
+                <i class="fa-solid fa-plus"></i>
+                </div>
             </div>
 
         `
@@ -1498,15 +1506,17 @@ function updateQueueDisplay() {
 
         queueItem.innerHTML = `
             <img class="song-card-art" src="${imageUrl}" alt="">
-            <span class="song-card-song-name">${new_name ||"Unkown Song"}</span>
-            <span class="song-card-artist-name">${new_art_name ||"Unkown Artist"}</span>
-            <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
-            <span class="song-card-timestamp">${new_duration || "00:00"}</span>
-            <div class="song-card-icons">
-                <i class="fa-regular fa-heart"></i>
-                <i class="fa-solid fa-play no-for-now"></i>
-                <i class="fa-solid fa-download"></i>
-                <i class="fa-solid fa-trash"></i>
+            <div class="responsive-song-card">
+                <span class="song-card-song-name">${new_name ||"Unkown Song"}</span>
+                <span class="song-card-artist-name">${new_art_name ||"Unkown Artist"}</span>
+                <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
+                <span class="song-card-timestamp">${new_duration || "00:00"}</span>
+                <div class="song-card-icons">
+                    <i class="fa-regular fa-heart"></i>
+                    <i class="fa-solid fa-play no-for-now"></i>
+                    <i class="fa-solid fa-download"></i>
+                    <i class="fa-solid fa-trash"></i>
+                </div>
             </div>
 
         `
@@ -1611,15 +1621,17 @@ function getFavourites(){
 
             favItem.innerHTML = `
                 <img class="song-card-art" src="${imageUrl}" alt="">
-                <span class="song-card-song-name">${new_name ||"Unkown Song"}</span>
-                <span class="song-card-artist-name">${new_art_name ||"Unkown Artist"}</span>
-                <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
-                <span class="song-card-timestamp">${new_duration || "00:00"}</span>
-                <div class="song-card-icons">
-                    <i class="fa-regular fa-heart"></i>
-                    <i class="fa-solid fa-play"></i>
-                    <i class="fa-solid fa-download"></i>
-                    <i class="fa-solid fa-plus"></i>
+                <div class="responsive-song-card">
+                    <span class="song-card-song-name">${new_name ||"Unkown Song"}</span>
+                    <span class="song-card-artist-name">${new_art_name ||"Unkown Artist"}</span>
+                    <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
+                    <span class="song-card-timestamp">${new_duration || "00:00"}</span>
+                    <div class="song-card-icons">
+                        <i class="fa-regular fa-heart"></i>
+                        <i class="fa-solid fa-play"></i>
+                        <i class="fa-solid fa-download"></i>
+                        <i class="fa-solid fa-plus"></i>
+                    </div>
                 </div>
 
             `

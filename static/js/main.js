@@ -1228,6 +1228,7 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
             removeDownloadNotif();
             }
         });
+        removeDownloadNotif();
         await ffmpeg.run("-i", "input.mp4", "-vn", "-b:a", "192k", "output.mp3");
 
         const mp3Data = ffmpeg.FS("readFile", "output.mp3");

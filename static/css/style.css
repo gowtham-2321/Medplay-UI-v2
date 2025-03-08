@@ -762,6 +762,7 @@ i {
     margin-top: 20px;
     padding-top: 20px;
     overflow-y: auto;
+    overflow-x: hidden;
     height: var(--album-artist-song-list-height);
     padding-bottom: 30px;
     padding: 10px;

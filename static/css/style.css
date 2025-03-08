@@ -201,7 +201,7 @@ i {
 .song-card {
     display: flex;
     align-items: center;
-    /*justify-content: center;*/
+    justify-content: space-between;
     box-sizing: border-box;
     padding: 20px;
     width: 100%;
@@ -708,6 +708,25 @@ i {
     flex-direction: column;
     justify-content: center;
     gap: 10px;
+    width: 100%;
+}
+
+.artist-download-holder, .album-download-holder{
+    width: fit-content;
+    display: flex;
+    justify-content: end;
+    align-items: end;
+}
+
+.artist-download, .album-download{
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 3px solid var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 
 .artist-name-artist-card, .album-name-album-card {
@@ -1172,6 +1191,7 @@ input[type="range"]::-moz-range-thumb {
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 }
 
 .notif-details{

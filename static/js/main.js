@@ -426,9 +426,18 @@ async function albumSongPager(albumId) {
             <span>Play all songs</span>
         </div>
     </div>
+    <div class="album-download-holder">
+        <div class="album-download">
+            <i class="fa-solid fa-download"></i>
+        </div>
+    </div>
     `;
     currentViewingAlbumSongs = data.songs;
 
+    const downAll = albumInfo.querySelector(".album-download");
+    downAll.onclick = () => {
+        downloadAlbum(data);
+    }
 
     const playAll = albumInfo.querySelector(".album-card-play");
     playAll.onclick = () => {
@@ -709,6 +718,11 @@ async function artistSongPager(artistId) {
             <i class="fa-solid fa-play"></i>
         </div>
         <span>Play all songs</span>
+        </div>
+    </div>
+    <div class="album-download-holder no-for-now">
+        <div class="album-download">
+            <i class="fa-solid fa-download"></i>
         </div>
     </div>
     `;
@@ -2248,7 +2262,7 @@ function downloadQueNotif(){
 
 function downloadAlbNotif(album){
     let notif = document.getElementById("notification");
-
+    let notifImage = document.getElementById("notif-image")
     notif.style.display = "flex"; 
     setTimeout(() => {
         notif.style.opacity = "1";

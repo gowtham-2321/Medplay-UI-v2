@@ -2104,15 +2104,21 @@ async function downloadSongsAsZip(songsList, zipName) {
         const genre = Array.isArray(song.genre) ? song.genre : [song.genre];
 
         const mp3Blob = await convertMp4ToMp3BlobWithProgress(downloadUrl, imageUrl, artist, title, album, year, genre, (songProgress) => {
-            // Calculate and log progress for each song
-            const progress = ((index + songProgress) / songsList.length);
-            console.log(`Download progress: ${progress.toFixed(2)}%`);
-            let downPer = document.getElementById("download-percent");
-            let dowBar = document.getElementById("download-update");
-            downPer.innerHTML = `${(progress * 100).toFixed(0)}%`;
-            dowBar.style.width = `${(progress * 120)}px`;
-            if(progress * 100 == 100){
-                removeDownloadNotif();
+            if(songProgress > 0){
+                // Calculate and log progress for each song
+
+                const progress = ((index + (songProgress/10)) / songsList.length);
+                console.log(`Download index: ${index} out of ${songsList.length}`);
+                console.log(`Download progress: ${progress.toFixed(2)}%`);
+                let downPer = document.getElementById("download-percent");
+                let dowBar = document.getElementById("download-update");
+                downPer.innerHTML = `${(progress * 100).toFixed(0)}%`;
+                dowBar.style.width = `${(progress * 120)}px`;
+                if(progress * 100 == 100){
+                    setTimeout(() => {
+                        removeDownloadNotif();
+                    }, 2000 );
+                }
             }
         });
         const arrayBuffer = await mp3Blob.arrayBuffer();
@@ -2161,13 +2167,16 @@ async function convertMp4ToMp3BlobWithProgress(mp4Url, imageUrl, artist, title, 
         }
 
         const mp4Buffer = await fetchAsArrayBufferWithProgress(mp4Url, (percentage) => {
-            progressCallback((percentage / 200) * 0.4); // First half of the progress
+            if (percentage < 100) {
+            progressCallback((percentage / 200) * 4); // First half of the progress
+            }
         });
         const imageBuffer = await fetchAsArrayBuffer(imageUrl);
 
+        progressCallback(4); // First half of the progress
         ffmpeg.FS("writeFile", "input.mp4", new Uint8Array(mp4Buffer));
-        ffmpeg.setProgress(({ ratio }) => {
-            progressCallback((0.5 + ratio / 2) * 0.6); // Second half of the progress
+        ffmpeg.setProgress(({ ratio = 0}) => {
+            progressCallback(((ratio) * 6) + 4); // Second half of the progress
         });
         await ffmpeg.run("-i", "input.mp4", "-vn", "-b:a", "192k", "output.mp3");
 

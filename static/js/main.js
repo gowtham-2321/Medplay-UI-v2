@@ -1225,11 +1225,11 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
             dowBar.style.width = `${(50 + ratio * 50) * 1.2}px`;
             console.log(`Processing progress: ${(ratio * 100).toFixed(2)}%`);
             if (ratio * 100 == 100) {
-            removeDownloadNotif();
+                removeDownloadNotif();
             }
         });
-        removeDownloadNotif();
         await ffmpeg.run("-i", "input.mp4", "-vn", "-b:a", "192k", "output.mp3");
+        removeDownloadNotif();
 
         const mp3Data = ffmpeg.FS("readFile", "output.mp3");
 
@@ -1245,11 +1245,11 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
         const mp3Blob = new Blob([writer.arrayBuffer], { type: "audio/mp3" });
         const mp3Url = URL.createObjectURL(mp3Blob);
         if (!abortController.signal.aborted) {
-            URL.revokeObjectURL(mp3Url);
             const link = document.createElement("a");
             link.href = mp3Url;
             link.download = `${title || "Unknown_Song"}.mp3`;
             link.click();
+            URL.revokeObjectURL(mp3Url);
         }
         else {
             abortController = new AbortController();

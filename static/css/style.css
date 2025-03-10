@@ -363,7 +363,7 @@ i {
     display: flex;
     flex-direction: column;
     width: 160px;
-    height: 230px;
+    height: 240px;
     cursor: pointer;
     border-radius: 20px;
     padding: 30px;
@@ -801,6 +801,11 @@ i {
     width: 100%;
 }
 
+.page-heading{
+    place-self: center;
+    font-size: 30px;
+}
+
 .big-box {
     width: 100%;
     display: flex;
@@ -808,6 +813,7 @@ i {
     justify-content: center;
     gap: 50px;
     margin-bottom: 50px;
+    margin-top: 30px;
 }
 
 .songs-left , .minutes-left{
@@ -885,6 +891,7 @@ i {
     justify-content: center;
     gap: 50px;
     margin-bottom: 50px;
+    margin-top: 30px;
 }
 
 .songs-left-fav , .minutes-left-fav{
@@ -1471,11 +1478,21 @@ input[type="range"]::-moz-range-thumb {
 
 @media only screen and (max-height: 900px){
     .queue, .favourites{
+        padding: 10px;
         overflow-y: auto;
     }
     .album-disp-songs, .artist-disp-songs{
         height: var(--max-height);
         overflow-y: auto;
+    }
+}
+
+@media only screen and (max-height: 750px){
+    .queue, .favourites{
+        overflow-y: auto;
+    }
+    .queuelist, .favlist{
+        height: fit-content;
     }
 }
 

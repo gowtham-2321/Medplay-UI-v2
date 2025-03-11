@@ -1270,7 +1270,7 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
 
 async function downloadSong(song) {
     if(isDownloading){
-        alert("Another download is in progress. Please wait for it to finish.");
+        alertNotif();        
         return;
     }
     downloadNotif(song);
@@ -2023,7 +2023,7 @@ if("mediaSession" in navigator){
 
 async function downloadFavourites() {
     if (isDownloading) {
-        alert("Another download is in progress. Please wait for it to finish.");
+        alertNotif();
         return;
     }
     let favourites = JSON.parse(localStorage.getItem("favourites")) || [];
@@ -2036,7 +2036,7 @@ async function downloadFavourites() {
 
 async function downloadQueue() {
     if (isDownloading) {
-        alert("Another download is in progress. Please wait for it to finish.");
+        alertNotif();
         return;
     }
     if (songQueue.length === 0) {
@@ -2049,7 +2049,7 @@ async function downloadQueue() {
 
 async function downloadAlbum(album) {
     if (isDownloading) {
-        alert("Another download is in progress. Please wait for it to finish.");
+        alertNotif();        
         return;
     }
     if (currentViewingAlbumSongs.length === 0) {
@@ -2359,7 +2359,9 @@ function removeAlertNotif(){
     let notif = document.getElementById("alert");
     setTimeout(() => {
         notif.style.opacity = "0";
-        notif.style.display = "none";
+        setTimeout(() => {
+            notif.style.display = "none";
+        }, 300);
     }, 5000); 
 }
 

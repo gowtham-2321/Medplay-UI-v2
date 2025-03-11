@@ -6,7 +6,8 @@ Medplay is an ad-free modern music player built using Flask for the backend and 
 
 - **Search Functionality**: Search for songs using the search bar. The search results are fetched from an external API.
 - **Music Playback**: Play songs directly within the application with controls for play/pause, volume adjustment, and progress tracking.
-- **Playlist Management**: Create and manage playlists.
+- **Favourites**: Mark songs as favourites and access them easily from a dedicated section.
+- **Queue**: Manage a dynamic queue where songs can be added, removed, and rearranged.
 - **Theming**: Support for multiple themes.
 - **Download Songs**: Download songs in MP3 format with metadata.
 - **Responsive Design**: Works well on different screen sizes.
@@ -53,7 +54,8 @@ Medplay is an ad-free modern music player built using Flask for the backend and 
 
 - **Search for Songs**: Use the search bar to search for songs. Press Enter or click the search icon to fetch results.
 - **Play Songs**: Click on a song card to play the song. Use the player controls at the bottom to play/pause, adjust volume, and seek.
-- **Manage Playlists**: Create and manage your playlists from the menu.
+- **Favourites**: Like the songs using the heart button and access them easily from a favourites section in the menu.
+- **Queue**: Add songs to the queue using the plus icon and access them from the queue section in the menu
 - **Change Themes**: Select different themes from the themes menu.
 - **Download Songs**: Click the download icon on a song card to download the song in MP3 format.
 
@@ -81,7 +83,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgements
 
-- [JioSaavn API](https://jiosaavn-api-privatecvc2.vercel.app/)
+- [JioSaavn API](https://api-medplay.vercel.app/) - cloned from [sumitkolhe/jiosaavn-api](https://github.com/sumitkolhe/jiosaavn-api)
 - [Flask](https://flask.palletsprojects.com/)
 - [Font Awesome](https://fontawesome.com/)
 - [Google Fonts](https://fonts.google.com/)

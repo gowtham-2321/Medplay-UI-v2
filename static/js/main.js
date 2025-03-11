@@ -2312,3 +2312,30 @@ function removeDownloadNotif(){
         downBar.style.width = 0;
     }, 300);  
 }
+
+function alertNotif(){
+    let notif = document.getElementById("alert");
+    notif.style.display = "flex";
+
+    setTimeout(() => {
+        notif.style.opacity = "1";
+    }, 100); 
+
+    removeAlertNotif();
+}
+
+function removeAlertNotif(){
+    let notif = document.getElementById("alert");
+    setTimeout(() => {
+        notif.style.opacity = "0";
+        notif.style.display = "none";
+    }, 5000); 
+}
+
+function removeAlertNotifQuick(){
+    let notif = document.getElementById("alert");
+    notif.style.opacity = "0";
+    setTimeout(() => {
+        notif.style.display = "none";
+    }, 100); 
+}

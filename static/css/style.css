@@ -11,9 +11,7 @@
     --heart: #f05542;
     --max-height: 0px;
     --album-artist-song-list-height: 0px;
-    --shrinked-album-artist-song-list-height: 0px;
     --queue-fav-height: 0px;
-    --shrinked-queue-fav-height: 0px;
 } 
 
 *{
@@ -757,7 +755,7 @@ i {
     padding-top: 20px;
     overflow-y: auto;
     overflow-x: hidden;
-    height: var(--album-artist-song-list-height);
+    height: fit-content;
     padding-bottom: 30px;
     padding: 10px;
 }
@@ -797,7 +795,9 @@ i {
     display: none;
     opacity: 0;
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
-    height: 100%;
+    height: var(--queue-fav-height);
+    padding: 10px;
+    overflow-y: auto;
     width: 100%;
 }
 
@@ -864,9 +864,7 @@ i {
     position: relative;
     display: block;
     padding: 10px;
-    overflow-y: auto;
     overflow-x: hidden;
-    height: var(--queue-fav-height);
 }
 
 .queue-Item:hover {
@@ -880,7 +878,10 @@ i {
     display: none;
     opacity: 0;
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
-    height: 100%;
+    /* height: var(--max-height); */
+    height: var(--queue-fav-height);
+    padding: 10px;
+    overflow-y: auto;
     width: 100%;
 }
 
@@ -941,9 +942,7 @@ i {
     position: relative;
     display: block;
     padding: 10px;
-    overflow-y: auto;
     overflow-x: hidden;
-    height: var(--queue-fav-height);
 }
 
 /*favourite ends*/
@@ -1281,6 +1280,12 @@ input[type="range"]::-moz-range-thumb {
     cursor: pointer;
 }
 
+.album-disp-songs, .artist-disp-songs{
+    height: var(--max-height);
+    padding: 10px;
+    overflow-y: auto;
+}
+
 @media only screen and (max-width: 700px){
 
         input[type="range"] {
@@ -1312,8 +1317,6 @@ input[type="range"]::-moz-range-thumb {
             padding-left: 62px;
         }
 }
-
-/*eq ends here*/
 
 @media only screen and (max-width: 1590px) {
     .song-card-album-name{
@@ -1431,9 +1434,6 @@ input[type="range"]::-moz-range-thumb {
     .album-name-album-card, .artist-name-artist-card{
         font-size: 30px;
     }
-    .artist-song-list, .album-song-list {
-        height: var(--shrinked-album-artist-song-list-height);
-    }
     /*album info ends*/
 }
 
@@ -1474,14 +1474,10 @@ input[type="range"]::-moz-range-thumb {
         height: 160px;
     }
     .queuelist, .favlist{
-        height: var(--shrinked-queue-fav-height);
         margin-bottom: 100px;
     }
     .music-player-timestamp > .slash-line, #duration{
         display: none;
-    }
-    .queue, .favourites{
-        height: 75vh;
     }
     .artist-info-card-image, .album-info-card-image{
         display: none;
@@ -1552,26 +1548,6 @@ input[type="range"]::-moz-range-thumb {
     }
     .theme-choice{
         width: 250px;
-    }
-}
-
-@media only screen and (max-height: 900px){
-    .queue, .favourites{
-        padding: 10px;
-        overflow-y: auto;
-    }
-    .album-disp-songs, .artist-disp-songs{
-        height: var(--max-height);
-        overflow-y: auto;
-    }
-}
-
-@media only screen and (max-height: 750px){
-    .queue, .favourites{
-        overflow-y: auto;
-    }
-    .queuelist, .favlist{
-        height: fit-content;
     }
 }
 

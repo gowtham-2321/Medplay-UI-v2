@@ -1,29 +1,31 @@
 <!DOCTYPE html>
 <html lang="en" >
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
   <title>Medplay</title>
   <link rel="shortcut icon" href="{{ url_for('static', filename="img/M.png")}}">
   <script src="https://kit.fontawesome.com/ecaf831147.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+
   <link rel="stylesheet" href="{{ url_for('static', filename="css/style.css")}}">
 
 </head>
 <body>
   <div class="header">
     <div class="logo-holder">
-      <h1 class="title">Medplay</h1>
-      <h1 class="title title-small">M</h1>
-      <span class="tagline">Adfree Modern Music Player</span>
+      <h1 class="title" onclick="load()">Medplay</h1>
+      <h1 class="title title-small" onclick="load()">M</h1>
+      <span class="tagline" onclick="load()">Adfree Modern Music Player</span>
     </div>
     <div class="search-bar-holder">
       <div class="search-bar">
         <i class="fa fa-search"></i>
-        <input type="text" class="input" name="txt" id="search-query"></input>
+        <input type="text" class="input" value="english" name="txt" id="search-query"></input>
       </div>
     </div>
     <div class="profile-holder"></div>
   </div>
-  <div class="whole-page"> 
+  <div class="whole-page" id="whole-page"> 
     <div class="menu-bar">
       <div class="feed-btn menu-btn menu-btn-selected" id="feed-btn" onclick="displayFeed()">
         <i class="fa-solid fa-music"></i>
@@ -325,6 +327,7 @@
 
       </div>
       <div class="queue" id="queue">
+        <span class="page-heading">Queue</span>
         <div class="big-box">
           <div class="songs-left">
             <span id="song-count">0</span>
@@ -335,7 +338,7 @@
             <span>Duration</span>
           </div>
           <div class="icon-queue">
-            <div class="download-queue">
+            <div class="download-queue" onclick="downloadQueue()">
               <i class="fa-solid fa-download"></i>
               <span>Download Queue</span>
             </div>
@@ -351,6 +354,7 @@
         </div>
       </div>
       <div class="favourites" id="favourites">
+        <span class="page-heading">Favourites</span>
         <div class="big-box-fav">
           <div class="songs-left-fav">
             <span id="song-count-fav">0</span>
@@ -361,11 +365,11 @@
             <span>Duration</span>
           </div>
           <div class="icon-fav">
-            <div class="download-fav">
+            <div class="download-fav" onclick="downloadFavourites()">
               <i class="fa-solid fa-download"></i>
               <span>Download favourites</span>
             </div>
-            <div class="play-fav" onclick="">
+            <div class="play-fav" onclick="playFavourites()">
               <i class="fa-solid fa-play"></i>
               <span>Play favourites</span>
             </div>
@@ -409,15 +413,16 @@
   </div>
 
   <div class="music-player-timestamp">
-    <span id="current-time">0:00</span> / <span id="duration">0:00</span>
+    <span id="current-time">0:00</span><span class="slash-line">/</span><span id="duration">0:00</span>
   </div>
 
   <div class="music-player-audio-controller">
-    <i class="fa-solid fa-volume-high"></i>
-    <div class="audio-bar">
+    <i class="fa-solid fa-volume-high" id="audio-icon"></i>
+    <div class="audio-bar" id="audio-bar">
       <div class="audio-update-bar"></div>
       <div class="audio-progress-circle"></div>
     </div>
+    <div class="audio-bar-back" id="audio-bar-back"></div>
   </div>
 
   <div class="music-player-end-icons">
@@ -483,9 +488,58 @@
 <div class="blur" id="blur" onclick="eqbtn()"></div>
 <!--eq ends here-->
 
+<div class="notification" id="notification">
+  <div class="notification-header">
+    <span id="download-title">Download Song</span>
+    <i class="fa-solid fa-x" onclick="removeDownloadNotif()"></i>
+  </div>
+  <div class="notif-content">
+    <img src="{{ url_for('static', filename="img/plc.png")}}" class="notif-image", id="notif-image">
+    <div class="notif-details">
+      <span class="downloading">Downloading</span>
+      <span id="download-name"></span>
+      <div class="download-detail">
+        <div class="download-bar">
+          <div class="download-update" id="download-update"></div>
+        </div>
+        <span id="download-percent">0%</span>
+        <div class="cancel-button" onclick="cancelDownload()">
+          <span>cancel</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="alert" id="alert">
+  <div class="alert-box">
+    <i class="fa-solid fa-triangle-exclamation"></i>  
+  </div>
+  
+  <div class="alert-content">
+    <span id="alert-title">Alert</span>
+    <span class="alert-message">Please wait for the current download to complete</span>
+  </div>
+  <div class="alert-ok" onclick="removeAlertNotifQuick()"><span>Got it!</span></div>
+</div>
 
 
 <audio id = "audio-player" ontimeupdate="updateProgress()" onloadedmetadata="updateDuration()"></audio>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 <script src = "{{ url_for('static', filename="js/main.js")}}"></script>
+<!--<script>
+  function sendTitleBarColor() {
+      let rootStyle = getComputedStyle(document.documentElement);
+      let primaryColor = rootStyle.getPropertyValue('--primary-bg-color').trim(); // Get CSS variable
+
+      if (window.pywebview && window.pywebview.api) {
+          window.pywebview.api.update_title_bar_color(primaryColor); // Send color to Python
+          console.log("Sent color to Python:", primaryColor);
+      } else {
+          console.error("PyWebview API not available. Retrying...");
+          setTimeout(sendTitleBarColor, 500); // Retry after 500ms
+      }
+  }
+
+  document.addEventListener("DOMContentLoaded", sendTitleBarColor);
+</script> -->
 </html>

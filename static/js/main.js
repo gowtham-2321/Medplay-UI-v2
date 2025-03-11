@@ -1,6 +1,7 @@
 //gowhthiee variii
 let albums = [];
 let songs = [];
+let artists = [];
 const songList = document.getElementById("songlist");
 let favourites = JSON.parse(localStorage.getItem("favourites")) || [];
 let noOfSongs = 0;
@@ -31,14 +32,66 @@ let themes = document.getElementById("themes");
 let feed_btn = document.getElementById("feed-btn");
 let song_count = document.getElementById("song-count");
 let minute_count = document.getElementById("minute-count");
+let wholePage = document.getElementById("whole-page");
 
 
 //jeevan variii
 let songPageNo = 1;
 let albumPageNo = 1;
-let q= "love";
+let artistPageNo = 1;
+let currentViewingAlbum = null;
+let currentViewingAlbumSongs = [];
+let currentViewingArtistSongs = [];
+let q= "english";
+let songQuery = "";
+let albumQuery = "";
+let artistQuery = "";
+let isDownloading = false;
+let ffmpeg = null;
+
+function load(){
+    location.reload();
+}
+function updateScreenSize() {
+    let screenHeight = window.innerHeight - 210;
+    wholePage.style.height = `${screenHeight}px`;
+    let maxScreenHeight = screenHeight - 100;
+    let albumArtistSongHeight = screenHeight - 450;
+    let queueFavHeight = screenHeight - 340;
+    let shrinkedQueueFavHeight = screenHeight - 470;
+    let shrinkedAlbumArtistSongHeight = albumArtistSongHeight + 60;
+    document.documentElement.style.setProperty('--max-height', `${maxScreenHeight}px`);
+    document.documentElement.style.setProperty('--album-artist-song-list-height', `${albumArtistSongHeight}px`);
+    document.documentElement.style.setProperty('--shrinked-album-artist-song-list-height', `${shrinkedAlbumArtistSongHeight}px`);
+    document.documentElement.style.setProperty('--queue-fav-height', `${queueFavHeight}px`);
+    document.documentElement.style.setProperty('--shrinked-queue-fav-height', `${shrinkedQueueFavHeight}px`);
+
+    //song_list.style.height = `${screenHeight}px`;
+}
+
+window.addEventListener('resize', () => {
+    updateScreenSize();
+    if(isAudioOpen ){
+        if(window.innerWidth < 1300){
+            audioBar.style.transform = "translate(-25px,-60px)";
+            audioBarBack.style.transform = "translate(-50px,-60px)";
+        }
+        else{
+            audioBar.style.transform = "translate(-70px,-60px)";
+            audioBarBack.style.transform = "translate(-95px,-60px)";
+        }
+    }
+    else{
+        audioBar.style.transform = "translate(700px,-60px)";
+        audioBarBack.style.transform = "translate(700px,-60px)";
+    }
+});
 
 function songPage() {
+    if ((document.getElementById("search-query").value || q) != songQuery) {
+        console.log("same query");
+        searchSongs(true);
+    }
     song_list.style.display = "block"; 
     setTimeout(() => {
         song_list.style.opacity = "1";
@@ -61,6 +114,9 @@ function songPage() {
     album_class.classList.remove("active-class");
 }
 function artistPage() {
+    if ((document.getElementById("search-query").value || q) != artistQuery) {
+        searchArtists(true);
+    }
     artist_list.style.display = "grid"; 
     setTimeout(() => {
         artist_list.style.opacity = "1";
@@ -83,6 +139,9 @@ function artistPage() {
     album_class.classList.remove("active-class");
 }
 function albumPage() {
+    if ((document.getElementById("search-query").value || q) != albumQuery) {
+        searchAlbums(true);
+    }
     album_list.style.display = "grid"; 
     setTimeout(() => {
         album_list.style.opacity = "1";
@@ -105,7 +164,10 @@ function albumPage() {
     album_class.classList.add("active-class");
 }
 
-function artistSongPage() {
+function artistSongPage(id) {
+    if (id) {
+        artistSongPager(id);
+    }
     artist_page.style.display = "block";
     setTimeout(() => {
         artist_page.style.opacity = "1";
@@ -213,16 +275,31 @@ inpField.addEventListener("keypress", function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
         console.log("Enter pressed");
+        if (window.getComputedStyle(album_page).display === "block"){
+            albumSongPageBack();
+        }
+        if (window.getComputedStyle(artist_page).display === "block"){
+            artistSongPageBack();
+        }
         displayFeed();
-        searchSongs(true);
-        searchAlbums(true);
-        
+        console.log(window.getComputedStyle(song_list).display);
+        if(window.getComputedStyle(song_list).display === "block"){
+            console.log("song list");
+            searchSongs(true);
+        }
+        else if(window.getComputedStyle(artist_list).display === "grid"){
+            searchArtists(true);
+        }
+        else if(window.getComputedStyle(album_list).display === "grid"){
+            searchAlbums(true);
+        }
     }
 });
     
 async function searchSongs(isNew, q) {
 
     const query = document.getElementById("search-query").value || q;
+    songQuery = query;
     songList.innerHTML =``;
     
     //console.log(isNew);
@@ -264,6 +341,7 @@ async function searchSongs(isNew, q) {
 async function searchAlbums(isNew, q) {
     const query = document.getElementById("search-query").value || q;
     album_list.innerHTML =``;
+    albumQuery = query;
 
     try {
         if (!isNew) {
@@ -272,7 +350,7 @@ async function searchAlbums(isNew, q) {
         else {
             albumPageNo = 1;
         }
-        const response = await fetch(`/search/albums?q=${query}&limit=10&page=${albumPageNo}`);
+        const response = await fetch(`/search/albums?q=${query}&limit=18&page=${albumPageNo}`);
         const data = await response.json();
         albums = data;
         console.log(albums);
@@ -281,7 +359,7 @@ async function searchAlbums(isNew, q) {
             throw new Error("No albums found");
         }
 
-        for (let i = 0; i < 10 && i < albums.length; i++) {
+        for (let i = 0; i < 18 && i < albums.length; i++) {
             createAlbumCard(albums[i], album_list);
         }
 
@@ -297,13 +375,24 @@ function createAlbumCard(album, albumList) {
     const imageUrl = `/image/?url=${encodeURIComponent(album.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
     //name slicing
     let new_name = album.name;
-    if (new_name.length > 45) {
-        new_name = new_name.slice(0,45)+"...";
+    if (new_name.length > 30) {
+        new_name = new_name.slice(0,30)+"...";
+    }
+    let new_art_name = album.artists.primary;
+    if(new_art_name.length === 0){
+        new_art_name = "";
+    }
+    else {
+        new_art_name = new_art_name[0].name;
+    }
+    if (new_art_name.length > 30) {
+        new_art_name = new_art_name.slice(0,30)+"...";
     }
     //slicing end
     thsAlbum.innerHTML = `
             <img class="album-img" src="${imageUrl}" alt="">
             <span class="album-name">${new_name ||"Unkown Album"}</span>
+            <span class = "album-artist-name">${new_art_name || "Unknown Artist"}</span>
             
     `;
     thsAlbum.addEventListener('click', () => {
@@ -327,23 +416,55 @@ async function albumSongPager(albumId) {
     const data = await response.json();
     const imageUrl = `/image/?url=${encodeURIComponent(data.image[2].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
     console.log(data);
+    currentViewingAlbum = data;
     albumInfo.innerHTML = `
     <img class="album-info-card-image" src="${imageUrl}">
     <div class="album-info-card">
         <span class="album-page-artist-name">${data.artists.primary[0].name}</span>
         <span class="album-name-album-card">${data.name}</span>
         <div class="album-card-play">
-        <div class="album-play-icon">
-            <i class="fa-solid fa-play"></i>
+            <div class="album-play-icon">
+                <i class="fa-solid fa-play"></i>
+            </div>
+            <span>Play all songs</span>
         </div>
-        <span>Play all songs</span>
+    </div>
+    <div class="album-download-holder">
+        <div class="album-download">
+            <i class="fa-solid fa-download"></i>
         </div>
     </div>
     `;
-    album_page.appendChild(albumInfo);
+    currentViewingAlbumSongs = data.songs;
+
+    const downAll = albumInfo.querySelector(".album-download");
+    downAll.onclick = () => {
+        downloadAlbum(data);
+    }
+
+    const playAll = albumInfo.querySelector(".album-card-play");
+    playAll.onclick = () => {
+        // downloadAlbum(data);
+        let temp = songQueue;
+        songQueue = [];
+        currentViewingAlbumSongs.forEach(song => songQueue.push(song));
+        temp.forEach(song => songQueue.push(song));
+        playNextInQueue();
+        updateQueueDisplay();
+    }
+    const albumDispSongs = document.createElement("div");
+    albumDispSongs.classList.add("album-disp-songs");
+    albumDispSongs.appendChild(albumInfo);
     const albumSongList = document.createElement("div");
     albumSongList.classList.add("album-song-list");
-    data.songs.forEach(song => {
+    createAlbumSongCards(albumSongList);
+    albumDispSongs.appendChild(albumSongList);
+
+    album_page.appendChild(albumDispSongs);
+}
+
+function createAlbumSongCards(albumSongList) {
+    currentViewingAlbumSongs.forEach(song => {
         const songImageUrl = `/image/?url=${encodeURIComponent(song.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
         //name slicing
         let new_name = song.name;
@@ -366,62 +487,78 @@ async function albumSongPager(albumId) {
         songCard.classList.add("song-card");
         songCard.innerHTML = `
             <img class="song-card-art" src="${songImageUrl}" alt="">
-            <span class="song-card-song-name">${new_name}</span>
-            <span class="song-card-artist-name">${new_art_name}</span>
-            <span class="song-card-album-name">${new_album_name}</span>
-            <span class="song-card-timestamp">${new_duration}</span>
-            <div class="song-card-icons">
-            <i class="fa-regular fa-heart"></i>
-            <i class="fa-solid fa-play"></i>
-            <i class="fa-solid fa-download"></i>
-            <i class="fa-solid fa-plus"></i>
+            <div class="responsive-song-card">
+                <span class="song-card-song-name">${new_name}</span>
+                <span class="song-card-artist-name">${new_art_name}</span>
+                <span class="song-card-album-name">${new_album_name}</span>
+                <span class="song-card-timestamp">${new_duration}</span>
+                <div class="song-card-icons">
+                <i class="fa-regular fa-heart"></i>
+                <i class="fa-solid fa-play"></i>
+                <i class="fa-solid fa-download"></i>
+                <i class="fa-solid fa-plus"></i>
+                </div>
             </div>
 
         `
         const play= songCard.querySelector(".fa-play");
-        play.onclick = () => playmySong(song);
-
+        play.onclick = () => {
+            playmySong(song);
+            playerHeart();
+        }
         const down = songCard.querySelector(".fa-download");
         down.onclick = () => {
             downloadSong(song);
         }
         const queueButton = songCard.querySelector(".fa-plus");
         queueButton.onclick = () => addToQueue(song);
-        
-        /* favourites checker */
+
         const heartButton = songCard.querySelector(".fa-heart");
         favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
-        let isPresentFav = favourites.some(item => item === song.id);
+        let isPresentFav = favourites.some(item => item.id === song.id);
         if(isPresentFav){
             heartButton.classList.replace("fa-regular", "fa-solid");
         }
-        heartButton.onclick = () => {
+
+        heartButton.onclick= () =>{
             let heartClassList = Array.from(heartButton.classList);
-            isLiked = heartClassList.some(className => className === "fa-solid");
-            if(isLiked){
-                favourites = favourites.filter(item => item !== song.id);
+            let isLiked = heartClassList.some(className => className === "fa-solid");
+            if(isLiked){  
+                favourites = favourites.filter(item => item.id !== song.id);
                 localStorage.setItem("favourites", JSON.stringify(favourites));
                 heartButton.classList.replace("fa-solid", "fa-regular");
-                console.log(favourites);
             }
-            else {
+            else{
                 heartButton.classList.replace("fa-regular", "fa-solid");
-                favourites.push(song);
-                localStorage.setItem("favourites", JSON.stringify(favourites));
-                console.log(favourites);
+                let isPresentFav = favourites.some(item => item.id === song.id);
+                if(!isPresentFav){
+                    favourites.push(song);
+                    localStorage.setItem("favourites", JSON.stringify(favourites));
+                    
+                }
             }
             updateQueueDisplay();
-            playerHeart();
+            songList.innerHTML = "";
+            for (let i = 0; i < 25 && i < songs.length; i++) {
+                createSongCard(songs[i], songList);
+            }
             getFavourites();
-        }
-        /*favourites checker ends*/
-    
+            playerHeart(); //because when i like a song while its playing i want it to update
+        };
+
+
         albumSongList.appendChild(songCard);
     });
-
-    album_page.appendChild(albumSongList);
-
+    var song_cards = document.querySelectorAll('.song-card');
+    song_cards.forEach(song_card => {
+        let play_icon = song_card.querySelector(".fa-play");
+        play_icon.addEventListener('click', () => {
+            song_cards.forEach(s => s.classList.remove('song-card-selected'));
+            song_card.classList.add('song-card-selected');
+        });
+    });
 }
+
 function createSongCard(song, songList) {
     const card = document.createElement("div");
     card.classList.add("song-card");
@@ -444,20 +581,25 @@ function createSongCard(song, songList) {
     //slicing end
     card.innerHTML = `
             <img class="song-card-art" src="${imageUrl}" alt="">
-            <span class="song-card-song-name">${new_name ||"Unkown Song"}</span>
-            <span class="song-card-artist-name">${new_art_name ||"Unkown Artist"}</span>
-            <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
-            <span class="song-card-timestamp">${new_duration || "00:00"}</span>
-            <div class="song-card-icons">
-                <i class="fa-regular fa-heart"></i>
-                <i class="fa-solid fa-play"></i>
-                <i class="fa-solid fa-download"></i>
-                <i class="fa-solid fa-plus"></i>
+            <div class="responsive-song-card">
+                <span class="song-card-song-name">${new_name ||"Unkown Song"}</span>
+                <span class="song-card-artist-name">${new_art_name ||"Unkown Artist"}</span>
+                <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
+                <span class="song-card-timestamp">${new_duration || "00:00"}</span>
+                <div class="song-card-icons">
+                    <i class="fa-regular fa-heart"></i>
+                    <i class="fa-solid fa-play"></i>
+                    <i class="fa-solid fa-download"></i>
+                    <i class="fa-solid fa-plus"></i>
+                </div>
             </div>
     `;
     
     const play= card.querySelector(".fa-play");
-    play.onclick = () => playmySong(song);
+    play.onclick = () => {
+        playmySong(song);
+        playerHeart();
+    }
 
     const down = card.querySelector(".fa-download");
     down.onclick = () => {
@@ -465,36 +607,265 @@ function createSongCard(song, songList) {
     }
     const queueButton = card.querySelector(".fa-plus");
     queueButton.onclick = () => addToQueue(song);
-    
-    /* favourites checker */
+
+
+
     const heartButton = card.querySelector(".fa-heart");
     favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
     let isPresentFav = favourites.some(item => item.id === song.id);
     if(isPresentFav){
         heartButton.classList.replace("fa-regular", "fa-solid");
     }
-    heartButton.onclick = () => {
+
+    heartButton.onclick= () =>{
         let heartClassList = Array.from(heartButton.classList);
-        isLiked = heartClassList.some(className => className === "fa-solid");
-        if(isLiked){
+        let isLiked = heartClassList.some(className => className === "fa-solid");
+        if(isLiked){  
             favourites = favourites.filter(item => item.id !== song.id);
             localStorage.setItem("favourites", JSON.stringify(favourites));
             heartButton.classList.replace("fa-solid", "fa-regular");
-            console.log(favourites);
         }
-        else {
+        else{
             heartButton.classList.replace("fa-regular", "fa-solid");
-            favourites.push(song);
-            localStorage.setItem("favourites", JSON.stringify(favourites));
-            console.log(favourites);
+            let isPresentFav = favourites.some(item => item.id === song.id);
+            if(!isPresentFav){
+                favourites.push(song);
+                localStorage.setItem("favourites", JSON.stringify(favourites));
+                
+            }
         }
         updateQueueDisplay();
-        playerHeart();
+        if(currentViewingAlbumSongs.some(item => item.id === song.id)){
+            updater();
+        }
+        if(currentViewingArtistSongs.some(item => item.id === song.id)){
+            artUpdater();
+        }
         getFavourites();
-    }
-    /*favourites checker ends*/
-
+        playerHeart(); //because when i like a song while its playing i want it to update
+    };
     songList.appendChild(card);
+}
+
+async function searchArtists(isNew, q) {
+    const query = document.getElementById("search-query").value || q;
+    artist_list.innerHTML =``;
+    artistQuery = query;
+
+    try {
+        if(!isNew)
+        {
+            artistPageNo = artistPageNo + 1;
+        } else {
+            artistPageNo = 1;
+        }
+        const response = await fetch(`/search/artists?q=${query}&limit=10&page=${artistPageNo}`);
+        const data = await response.json();
+        artists = data;
+        console.log("artists");
+        console.log(artists);
+
+        if (artists.length === 0) {
+            throw new Error("No artists found");
+        }
+
+        for (let i = 0; i < 10 && i < artists.length; i++) {
+            createArtistCard(artists[i], artist_list);
+        }
+    }  catch (error) {
+        console.error("Error fetching artists", error);
+        artist_list.innerHTML = "<p>No artists found</p>";
+    }
+}
+
+function createArtistCard(artist, artistList) {
+    const thsArtist = document.createElement("div");
+    thsArtist.classList.add("artist-card");
+    const imageUrl = `/image/?url=${encodeURIComponent(artist.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+
+    let new_name = artist.name;
+    if (new_name.length > 30) {
+        new_name = new_name.slice(0,30)+"...";
+    }
+
+    thsArtist.innerHTML = `
+        <img class="artist-card-img" src="${imageUrl}">
+        <span class="artist-card-name">${new_name}</span>
+    `;
+    thsArtist.addEventListener('click', () => {
+        artistSongPage(artist.id);
+    });
+    artistList.appendChild(thsArtist);
+}
+
+async function artistSongPager(artistId) {
+    artist_page.innerHTML = `
+    <div class="back-icon-holder">
+        <div class="back-icon" id="album-song-page-back" onclick="artistSongPageBack()">
+        <i class="fa-solid fa-caret-left"></i>
+        </div>
+        <span>Back</span>
+    </div>
+    `;
+    const artistInfo = document.createElement("div");
+    artistInfo.classList.add("artist-info-card-holder");
+    const response = await fetch(`/artists?id=${artistId}`);
+    const data = await response.json();
+    const songResponse = await fetch(`/artists/songs?id=${artistId}`);
+    const songsData = await songResponse.json();
+    const imageUrl = `/image/?url=${encodeURIComponent(data.image[2].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+    console.log(data);
+    artistInfo.innerHTML = `
+    <img class="artist-info-card-image" src="${imageUrl}">
+    <div class="artist-info-card">
+        <span>Artist</span>
+        <span class="artist-name-artist-card">${data.name}</span>
+        <div class="artist-card-play">
+        <div class="artist-play-icon">
+            <i class="fa-solid fa-play"></i>
+        </div>
+        <span>Play all songs</span>
+        </div>
+    </div>
+    <div class="album-download-holder no-for-now">
+        <div class="album-download">
+            <i class="fa-solid fa-download"></i>
+        </div>
+    </div>
+    `;
+
+    currentViewingArtistSongs = songsData
+
+    const playAll = artistInfo.querySelector(".artist-card-play");
+    playAll.onclick = () => {
+        let temp = songQueue;
+        songQueue = [];
+        currentViewingArtistSongs.forEach(song => songQueue.push(song));
+        temp.forEach(song => songQueue.push(song));
+        playNextInQueue();
+        updateQueueDisplay();
+    }
+
+    const artistDispSongs = document.createElement("div");
+    artistDispSongs.classList.add("artist-disp-songs");
+
+    artistDispSongs.appendChild(artistInfo);
+    const artistSongList = document.createElement("div");
+    artistSongList.classList.add("artist-song-list");
+    createArtistSongCards(artistSongList);
+    artistDispSongs.appendChild(artistSongList);
+
+    artist_page.appendChild(artistDispSongs);
+}
+
+function createArtistSongCards(artistSongList) {
+    currentViewingArtistSongs.forEach(song => {
+        const songImageUrl = `/image/?url=${encodeURIComponent(song.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+        //name slicing
+        let new_name = song.name;
+        let new_art_name = song.artists.primary[0].name;
+        
+        let new_album_name = song.album.name;
+        let new_duration = formatTime(song.duration);
+        if (new_name.length > 45) {
+            new_name = new_name.slice(0,45)+"...";
+        }
+        if (new_art_name.length > 35) {
+            new_art_name = new_art_name.slice(0,35)+"...";
+        }
+        if (new_album_name.length > 35) {
+            new_album_name = new_art_name.slice(0,35)+"...";
+        }
+        //slicing end
+
+        const songCard = document.createElement("div");
+        songCard.classList.add("song-card");
+        songCard.innerHTML = `
+            <img class="song-card-art" src="${songImageUrl}" alt="">
+            <div class="responsive-song-card">
+                <span class="song-card-song-name">${new_name}</span>
+                <span class="song-card-artist-name">${new_art_name}</span>
+                <span class="song-card-album-name">${new_album_name}</span>
+                <span class="song-card-timestamp">${new_duration}</span>
+                <div class="song-card-icons">
+                <i class="fa-regular fa-heart"></i>
+                <i class="fa-solid fa-play"></i>
+                <i class="fa-solid fa-download"></i>
+                <i class="fa-solid fa-plus"></i>
+                </div>
+            </div>
+
+        `
+        const play= songCard.querySelector(".fa-play");
+        play.onclick = () => {
+            playmySong(song);
+            playerHeart();
+        }
+
+        const down = songCard.querySelector(".fa-download");
+        down.onclick = () => {
+            downloadSong(song);
+        }
+        const queueButton = songCard.querySelector(".fa-plus");
+        queueButton.onclick = () => addToQueue(song);
+
+        const heartButton = songCard.querySelector(".fa-heart");
+        favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
+        let isPresentFav = favourites.some(item => item.id === song.id);
+        if(isPresentFav){
+            heartButton.classList.replace("fa-regular", "fa-solid");
+        }
+
+        heartButton.onclick= () =>{
+            let heartClassList = Array.from(heartButton.classList);
+            let isLiked = heartClassList.some(className => className === "fa-solid");
+            if(isLiked){  
+                favourites = favourites.filter(item => item.id !== song.id);
+                localStorage.setItem("favourites", JSON.stringify(favourites));
+                heartButton.classList.replace("fa-solid", "fa-regular");
+            }
+            else{
+                heartButton.classList.replace("fa-regular", "fa-solid");
+                let isPresentFav = favourites.some(item => item.id === song.id);
+                if(!isPresentFav){
+                    favourites.push(song);
+                    localStorage.setItem("favourites", JSON.stringify(favourites));
+                    
+                }
+            }
+            updateQueueDisplay();
+            songList.innerHTML = "";
+            for (let i = 0; i < 25 && i < songs.length; i++) {
+                createSongCard(songs[i], songList);
+            }
+            getFavourites();
+            playerHeart(); //because when i like a song while its playing i want it to update
+        };
+
+        artistSongList.appendChild(songCard);
+    });
+    var song_cards = document.querySelectorAll('.song-card');
+    song_cards.forEach(song_card => {
+        let play_icon = song_card.querySelector(".fa-play");
+        play_icon.addEventListener('click', () => {
+            song_cards.forEach(s => s.classList.remove('song-card-selected'));
+            song_card.classList.add('song-card-selected');
+        });
+    });
+}
+
+function updater() {
+    const lst =  document.querySelector(".album-song-list");
+    lst.innerHTML=``;
+    createAlbumSongCards(lst);
+    console.log("hi11");
+}
+
+function artUpdater() {
+    const lst =  document.querySelector(".artist-song-list");
+    lst.innerHTML=``;
+    createArtistSongCards(lst);
+    console.log("hi112");
 }
 
 function playmySong(song) {
@@ -525,59 +896,76 @@ function playmySong(song) {
     }
     //slicing end
     nowPlaying.textContent = `${new_name || "Unknown Song"}`;
-    nowArtist.textContent = `${new_art_name || "Unknown Artist"}`;
-
+    nowArtist.textContent = `${new_art_name || "Unknown Artist"}`;    
     playerDownloadIcon.onclick = () => downloadSong(song);
-    playerHeart();
 
-    let heartt = document.getElementById("player-heart");
-    heartt.addEventListener("click", () => {
-        let hearttClassList = Array.from(heartt.classList);
-        isLiked = hearttClassList.some(className => className === "fa-solid");
-        if(isLiked){
-            favourites = favourites.filter(item => item.id !== song.id);
-            localStorage.setItem("favourites", JSON.stringify(favourites));
-            heartt.classList.replace("fa-solid", "fa-regular");
-            playerHeart();
+    let playerHeartt = document.getElementById("player-heart");
+    playerHeartt.onclick = () =>{
+        let heartClassList = Array.from(playerHeartt.classList);
+        let heartIsLiked = heartClassList.some(className => className === "fa-solid");
+        favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
+        let isPresentFav = favourites.some(item => item.id === song.id);
+        if(heartIsLiked){
+            if(isPresentFav){
+                favourites = favourites.filter(item => item.id !== song.id);
+                localStorage.setItem("favourites", JSON.stringify(favourites));
+            }
+            playerHeartt.classList.replace("fa-solid", "fa-regular");
         }
         else{
-            heartt.classList.replace('fa-regular', 'fa-solid');
-            favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
-            isPresentFavCheck = favourites.some(item => item.id === song.id);
-            if (!isPresentFavCheck)
-            {
+            if(!isPresentFav){
                 favourites.push(song);
                 localStorage.setItem("favourites", JSON.stringify(favourites));
             }
-            console.log(song);
-            console.log(favourites);
+            playerHeartt.classList.replace("fa-regular", "fa-solid");
         }
         songList.innerHTML = "";
         for (let i = 0; i < 25 && i < songs.length; i++) {
             createSongCard(songs[i], songList);
         }
-        updateQueueDisplay();
         getFavourites();
-        
-    })
+        updateQueueDisplay();
+        if(currentViewingAlbumSongs.some(item => item.id === song.id)){
+            updater();
+        }
+        if(currentViewingArtistSongs.some(item => item.id === song.id)){
+            artUpdater();
+        }
+    };
+    var song_cards = document.querySelectorAll('.song-card');
+    song_cards.forEach(song_card => {
+        let play_icon = song_card.querySelector(".fa-play");
+        play_icon.addEventListener('click', () => {
+            song_cards.forEach(s => s.classList.remove('song-card-selected'));
+            song_card.classList.add('song-card-selected');
+        });
+    });
+    
 }
 
 
 function playerHeart() {
-    if (currentSong === null){
-        return;
-    }
-    console.log("currently playing" + currentSong.name);
-    console.log(currentSong);
-    let heartt = document.getElementById("player-heart");
+    
+    let playerHeart = document.getElementById("player-heart");
     favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
     let isPresentFav = favourites.some(item => item.id === currentSong.id);
     if(isPresentFav){
-        heartt.classList.replace('fa-regular', 'fa-solid');
+        playerHeart.classList.replace("fa-regular", "fa-solid");
     }
     else{
-        heartt.classList.replace('fa-solid', 'fa-regular');
+        playerHeart.classList.replace("fa-solid", "fa-regular");
     }
+}
+
+function playFavourites() {
+    if(favourites.length === 0){
+        return;
+    }
+    let temp = songQueue;
+    songQueue = favourites;
+    temp.forEach(song => songQueue.push(song));
+    playNextInQueue();
+    updateQueueDisplay();
 }
 
 //progress tracking
@@ -661,13 +1049,46 @@ function playPause() {
     }
 }
 
+let audioIcon = document.getElementById("audio-icon");
+let audioBarBack = document.getElementById("audio-bar-back");
+let audioBar = document.getElementById("audio-bar");
+let isAudioOpen = false;
+
+audioIcon.addEventListener('click', () => {
+    if(isAudioOpen){
+        audioBar.style.transform = "translate(700px,-60px)";
+        audioBarBack.style.transform = "translate(700px,-60px)";
+        isAudioOpen = false;
+    }
+    else{
+        if(window.innerWidth < 1300){
+            audioBar.style.transform = "translate(-25px,-60px)";
+            audioBarBack.style.transform = "translate(-50px,-60px)";
+        }
+        else{
+            audioBar.style.transform = "translate(-70px,-60px)";
+            audioBarBack.style.transform = "translate(-95px,-60px)";
+        }
+        isAudioOpen = true;
+    }
+});
+
 // Volume adjustment and seeking
 document.addEventListener('DOMContentLoaded', () => {
+    
     searchSongs(true, "english");
     const audioPlayer = document.getElementById('audio-player');
     const audioBar = document.querySelector('.audio-bar');
     const audioUpdateBar = document.querySelector('.audio-update-bar');
     const audioProgressCircle = document.querySelector('.audio-progress-circle');
+    //updateAudioBar(0);
+
+    window.addEventListener('resize', () => {
+        const rect = audioBar.getBoundingClientRect();
+        const width = rect.width;
+        volume = audioPlayer.volume;
+        updateAudioBar(volume);
+    });
 
     audioBar.addEventListener('click', (event) => {
         const rect = audioBar.getBoundingClientRect();
@@ -711,6 +1132,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const updateWidth = volume * barWidth;
         audioUpdateBar.style.width = `${updateWidth}px`;
         audioProgressCircle.style.left = `${updateWidth}px`;
+        //console.log(barWidth);
     }
 
     // Initialize the audio bar with the current volume
@@ -759,15 +1181,23 @@ function repeatSong() {
 
 //downloaderss
 async function fetchAsArrayBuffer(url) {
-    const response = await fetch(url);
+    const response = await fetch(url, {signal: abortController.signal});
     return response.arrayBuffer();
 }
 
 async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, genre) {
-    const { createFFmpeg, fetchFile } = await import("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.5/+esm");
-    const { default: ID3Writer } = await import("https://cdn.jsdelivr.net/npm/browser-id3-writer@4.0.0/+esm");
+    try {
+        if(!ffmpeg.isLoaded()){
+            // ffmpeg = createFFmpeg({ log: false });
+        }
+    }
+    catch (error) {
+        console.error("Error loading FFmpeg:", error);
+        const { createFFmpeg, fetchFile } = await import("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.5/+esm");
+        ffmpeg = createFFmpeg({ log: false });
+    }
+    const { default: ID3Writer } = await import("https://cdn.jsdelivr.net/npm/browser-id3-writer@4.0.0/+esm");  
 
-    const ffmpeg = createFFmpeg({ log: true });
 
     try {
         if (!mp4Url || !imageUrl) {
@@ -779,11 +1209,28 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
             await ffmpeg.load();
         }
 
-        const mp4Buffer = await fetchAsArrayBuffer(mp4Url);
+        const mp4Buffer = await fetchAsArrayBufferWithProgress(mp4Url, (percentage) => {
+            let downPer = document.getElementById("download-percent");
+            let dowBar = document.getElementById("download-update");
+            downPer.innerHTML = `${(percentage / 2).toFixed(0)}%`;
+            dowBar.style.width = `${(percentage / 200 * 120)}px`;
+            console.log(`Download progress: ${percentage}%`);
+        });
         const imageBuffer = await fetchAsArrayBuffer(imageUrl);
 
         ffmpeg.FS("writeFile", "input.mp4", new Uint8Array(mp4Buffer));
+        ffmpeg.setProgress(({ ratio }) => {
+            let downPer = document.getElementById("download-percent");
+            let dowBar = document.getElementById("download-update");
+            downPer.innerHTML = `${(50 + ratio * 50).toFixed(0)}%`;
+            dowBar.style.width = `${(50 + ratio * 50) * 1.2}px`;
+            console.log(`Processing progress: ${(ratio * 100).toFixed(2)}%`);
+            if (ratio * 100 == 100) {
+                removeDownloadNotif();
+            }
+        });
         await ffmpeg.run("-i", "input.mp4", "-vn", "-b:a", "192k", "output.mp3");
+        removeDownloadNotif();
 
         const mp3Data = ffmpeg.FS("readFile", "output.mp3");
 
@@ -798,19 +1245,35 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
 
         const mp3Blob = new Blob([writer.arrayBuffer], { type: "audio/mp3" });
         const mp3Url = URL.createObjectURL(mp3Blob);
-
-        const link = document.createElement("a");
-        link.href = mp3Url;
-        link.download = `${title || "Unknown_Song"}.mp3`;
-        link.click();
+        if (!abortController.signal.aborted) {
+            const link = document.createElement("a");
+            link.href = mp3Url;
+            link.download = `${title || "Unknown_Song"}.mp3`;
+            link.click();
+            URL.revokeObjectURL(mp3Url);
+            isDownloading = false;
+        }
+        else {
+            abortController = new AbortController();
+            unloadFFmpeg();     
+            isDownloading = false;   
+        }
 
     } catch (error) {
         console.error("Error processing files:", error);
-        alert("Conversion failed! Check the URLs.");
+        // alert("Conversion failed! Check the URLs.");
+        abortController = new AbortController();
+        unloadFFmpeg();
+        isDownloading = false;
     }
 }
 
 async function downloadSong(song) {
+    if(isDownloading){
+        alertNotif();        
+        return;
+    }
+    downloadNotif(song);
     // name slicing
     let new_name = song.name;
     if (new_name.length > 16) {
@@ -832,8 +1295,45 @@ async function downloadSong(song) {
 
     console.log(downloadUrl);
     console.log(filename);
+    isDownloading = true;
 
     await convertMp4ToMp3(downloadUrl, imageUrl, artist, title, album, year, genre);
+    isDownloading= false;
+}
+
+async function fetchAsArrayBufferWithProgress(url, progressCallback) {
+    const response = await fetch(url, {signal: abortController.signal});
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const reader = response.body.getReader();
+    const contentLength = +response.headers.get('Content-Length');
+    let receivedLength = 0;
+    const chunks = [];
+
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+            break;
+        }
+        chunks.push(value);
+        receivedLength += value.length;
+
+        if (contentLength) {
+            const percentage = (receivedLength / contentLength) * 100;
+            progressCallback(percentage.toFixed(2));
+        }
+    }
+
+    const chunksAll = new Uint8Array(receivedLength);
+    let position = 0;
+    for (let chunk of chunks) {
+        chunksAll.set(chunk, position);
+        position += chunk.length;
+    }
+
+    return chunksAll.buffer;
 }
 
 function displayFeed() {
@@ -948,7 +1448,7 @@ function songCountTime()
         songQueue.forEach(song => {
             duration = +duration + +song.duration;
         })
-        console.log(duration);
+        //console.log(duration);
         minute_count.innerHTML = formatTimeHours(duration);
     }
     song_count.innerHTML = `${noOfSongs}`;
@@ -956,7 +1456,7 @@ function songCountTime()
 
 function formatTimeHours(seconds) {
     const hoursQ = Math.floor(seconds / 3600);
-    console.log(hoursQ);
+    //console.log(hoursQ);
     const minutesQ = Math.floor((seconds % 3600) / 60);
     const secsQ = Math.floor(seconds % 60);
 
@@ -1024,15 +1524,17 @@ function updateQueueDisplay() {
 
         queueItem.innerHTML = `
             <img class="song-card-art" src="${imageUrl}" alt="">
-            <span class="song-card-song-name">${new_name ||"Unkown Song"}</span>
-            <span class="song-card-artist-name">${new_art_name ||"Unkown Artist"}</span>
-            <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
-            <span class="song-card-timestamp">${new_duration || "00:00"}</span>
-            <div class="song-card-icons">
-                <i class="fa-regular fa-heart"></i>
-                <i class="fa-solid fa-play no-for-now"></i>
-                <i class="fa-solid fa-download"></i>
-                <i class="fa-solid fa-trash"></i>
+            <div class="responsive-song-card">
+                <span class="song-card-song-name">${new_name ||"Unkown Song"}</span>
+                <span class="song-card-artist-name">${new_art_name ||"Unkown Artist"}</span>
+                <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
+                <span class="song-card-timestamp">${new_duration || "00:00"}</span>
+                <div class="song-card-icons">
+                    <i class="fa-regular fa-heart"></i>
+                    <i class="fa-solid fa-play no-for-now"></i>
+                    <i class="fa-solid fa-download"></i>
+                    <i class="fa-solid fa-trash"></i>
+                </div>
             </div>
 
         `
@@ -1047,45 +1549,60 @@ function updateQueueDisplay() {
         const queueButton = queueItem.querySelector(".fa-trash");
         queueButton.onclick = () => removeFromQueue(index);
 
-        const heartButton = queueItem.querySelector(".fa-heart");
 
+        const heartButton = queueItem.querySelector(".fa-heart");
         favourites = JSON.parse(localStorage.getItem("favourites")) || [];;
         let isPresentFav = favourites.some(item => item.id === song.id);
         if(isPresentFav){
             heartButton.classList.replace("fa-regular", "fa-solid");
         }
-        heartButton.onclick = () => {
+
+        heartButton.onclick= () =>{
             let heartClassList = Array.from(heartButton.classList);
-            isLiked = heartClassList.some(className => className === "fa-solid");
-            if(isLiked){
+            let isLiked = heartClassList.some(className => className === "fa-solid");
+            if(isLiked){  
                 favourites = favourites.filter(item => item.id !== song.id);
                 localStorage.setItem("favourites", JSON.stringify(favourites));
                 heartButton.classList.replace("fa-solid", "fa-regular");
-                console.log(favourites);
             }
-            else {
+            else{
                 heartButton.classList.replace("fa-regular", "fa-solid");
-                favourites.push(song);
-                localStorage.setItem("favourites", JSON.stringify(favourites));
-                console.log(favourites);
+                let isPresentFav = favourites.some(item => item.id === song.id);
+                if(!isPresentFav){
+                    favourites.push(song);
+                    localStorage.setItem("favourites", JSON.stringify(favourites));
+                    
+                }
             }
             songList.innerHTML = "";
             for (let i = 0; i < 25 && i < songs.length; i++) {
                 createSongCard(songs[i], songList);
             }
-            playerHeart();
-            updateQueueDisplay();
+            if(currentViewingAlbumSongs.some(item => item.id === song.id)){
+                updater();
+            }
+            if(currentViewingArtistSongs.some(item => item.id === song.id)){
+                artUpdater();
+            }
             getFavourites();
-            
-        }
-
-        queueItem.setAttribute("draggable", true);
-        queueContainer.appendChild(queueItem);
-    });
+            playerHeart(); //because when i like a song while its playing i want it to update
+        };
+    queueItem.setAttribute("draggable", true);
+    queueContainer.appendChild(queueItem);
+});
     songCountTime();
+    var song_cards = document.querySelectorAll('.song-card');
+    song_cards.forEach(song_card => {
+        let play_icon = song_card.querySelector(".fa-play");
+        play_icon.addEventListener('click', () => {
+            song_cards.forEach(s => s.classList.remove('song-card-selected'));
+            song_card.classList.add('song-card-selected');
+        });
+    });
 }
 let favDuration = 0;
 let songCountFav = 0;
+
 function getFavourites(){    
     let minute_count_fav = document.getElementById("minute-count-fav");
     let song_count_fav = document.getElementById("song-count-fav");
@@ -1103,7 +1620,7 @@ function getFavourites(){
             favDuration = +favDuration + +song.duration;
             songCountFav = +songCountFav + +1;
 
-            console.log(favDuration);
+            //console.log(favDuration);
             const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
             //name slicing
             let new_name = song.name;
@@ -1122,21 +1639,25 @@ function getFavourites(){
 
             favItem.innerHTML = `
                 <img class="song-card-art" src="${imageUrl}" alt="">
-                <span class="song-card-song-name">${new_name ||"Unkown Song"}</span>
-                <span class="song-card-artist-name">${new_art_name ||"Unkown Artist"}</span>
-                <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
-                <span class="song-card-timestamp">${new_duration || "00:00"}</span>
-                <div class="song-card-icons">
-                    <i class="fa-regular fa-heart"></i>
-                    <i class="fa-solid fa-play no-for-now"></i>
-                    <i class="fa-solid fa-download"></i>
-                    <i class="fa-solid fa-plus"></i>
+                <div class="responsive-song-card">
+                    <span class="song-card-song-name">${new_name ||"Unkown Song"}</span>
+                    <span class="song-card-artist-name">${new_art_name ||"Unkown Artist"}</span>
+                    <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
+                    <span class="song-card-timestamp">${new_duration || "00:00"}</span>
+                    <div class="song-card-icons">
+                        <i class="fa-regular fa-heart"></i>
+                        <i class="fa-solid fa-play"></i>
+                        <i class="fa-solid fa-download"></i>
+                        <i class="fa-solid fa-plus"></i>
+                    </div>
                 </div>
 
             `
             const play= favItem.querySelector(".fa-play");
-            play.onclick = () => playmySong(song);
-
+            play.onclick = () => {
+                playmySong(song);
+                playerHeart();
+            }
             const down = favItem.querySelector(".fa-download");
             down.onclick = () => {
                 downloadSong(song);
@@ -1158,14 +1679,30 @@ function getFavourites(){
                     favourites = favourites.filter(item => item.id !== song.id);
                     localStorage.setItem("favourites", JSON.stringify(favourites));
                     heartButton.classList.replace("fa-solid", "fa-regular");
-                    console.log(favourites);
+                    //console.log(favourites);
                     getFavourites();
+                    if (currentViewingAlbumSongs.some(i => i.id === song.id))
+                    {
+                        updater();
+                    }
+                    if (currentViewingArtistSongs.some(i => i.id === song.id))
+                    {
+                        artUpdater();
+                    }
                 }
                 else {
                     heartButton.classList.replace("fa-regular", "fa-solid");
                     favourites.push(song.id);
                     localStorage.setItem("favourites", JSON.stringify(favourites));
                     console.log(favourites);
+                    if (currentViewingAlbumSongs.some(i => i.id === song.id))
+                    {
+                        updater();
+                    }
+                    if (currentViewingArtistSongs.some(i => i.id === song.id))
+                    {
+                        artUpdater();
+                    }
                 }
                 songList.innerHTML = "";
                 for (let i = 0; i < 25 && i < songs.length; i++) {
@@ -1188,9 +1725,16 @@ function getFavourites(){
     else{
         minute_count_fav.innerHTML = "00:00";
         song_count_fav.innerHTML = "0";
-    }         
+    }      
+    var song_cards = document.querySelectorAll('.song-card');
+    song_cards.forEach(song_card => {
+        let play_icon = song_card.querySelector(".fa-play");
+        play_icon.addEventListener('click', () => {
+            song_cards.forEach(s => s.classList.remove('song-card-selected'));
+            song_card.classList.add('song-card-selected');
+        });
+    });   
 }
-
 
 document.addEventListener("DOMContentLoaded", function() {
     const queueList = document.getElementById("queue-list");
@@ -1328,9 +1872,11 @@ function retrieve() {
         applyTheme(nameee);
         });
 }
-document.onload = retrieve();
-document.onload = getFavourites();
-
+document.addEventListener("DOMContentLoaded", () => {
+    retrieve();
+    getFavourites();
+    updateScreenSize();
+});
 
 //equalizer
 let isEqOpen = false;
@@ -1469,4 +2015,360 @@ audio.addEventListener('play', () => {
     }
 });
 
-//console.log("oooombbuuu");
+if("mediaSession" in navigator){
+    navigator.mediaSession.setActionHandler('nexttrack', function() {
+        playNextInQueue();
+    });
+}
+
+async function downloadFavourites() {
+    if (isDownloading) {
+        alertNotif();
+        return;
+    }
+    let favourites = JSON.parse(localStorage.getItem("favourites")) || [];
+    if (favourites.length === 0) {
+        return;
+    }
+    downloadFavNotif();
+    downloadSongsAsZip(favourites, "Favourites-medplay");
+}
+
+async function downloadQueue() {
+    if (isDownloading) {
+        alertNotif();
+        return;
+    }
+    if (songQueue.length === 0) {
+        return;
+    }
+    downloadQueNotif();
+    downList= songQueue;
+    downloadSongsAsZip(downList, "Queue-medplay");
+}
+
+async function downloadAlbum(album) {
+    if (isDownloading) {
+        alertNotif();        
+        return;
+    }
+    if (currentViewingAlbumSongs.length === 0) {
+        return;
+    }
+    downloadAlbNotif(album);
+    downList= currentViewingAlbumSongs;
+    downloadSongsAsZip(downList, `${album.name}-medplay`);
+}
+
+async function convertMp4ToMp3Blob(mp4Url, imageUrl, artist, title, album, year, genre) {
+    const { createFFmpeg, fetchFile } = await import("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.5/+esm");
+    const { default: ID3Writer } = await import("https://cdn.jsdelivr.net/npm/browser-id3-writer@4.0.0/+esm");
+
+    ffmpeg = createFFmpeg({ log: false });
+
+    try {
+        if (!mp4Url || !imageUrl) {
+            alert("Metadata is missing MP4 or Image URLs!");
+            return;
+        }
+
+        if (!ffmpeg.isLoaded()) {
+            await ffmpeg.load();
+        }
+
+        const mp4Buffer = await fetchAsArrayBuffer(mp4Url, abortController.signal);
+        const imageBuffer = await fetchAsArrayBuffer(imageUrl);
+
+        ffmpeg.FS("writeFile", "input.mp4", new Uint8Array(mp4Buffer));
+        await ffmpeg.run("-i", "input.mp4", "-vn", "-b:a", "192k", "output.mp3");
+
+        const mp3Data = ffmpeg.FS("readFile", "output.mp3");
+
+        const writer = new ID3Writer(mp3Data);
+        writer.setFrame("TPE1", artist)
+              .setFrame("TIT2", title)
+              .setFrame("TALB", album)
+              .setFrame("TYER", year)
+              .setFrame("TCON", genre)
+              .setFrame("APIC", { type: 3, data: new Uint8Array(imageBuffer), description: "Cover" });
+        writer.addTag();
+
+        return new Blob([writer.arrayBuffer], { type: "audio/mp3" });
+
+    } catch (error) {
+        console.error("Error processing files:", error);
+        // alert("Conversion failed! Check the URLs.");
+        abortController = new AbortController();
+        unloadFFmpeg();
+    }
+}
+
+async function downloadSongsAsZip(songsList, zipName) {
+    if (songsList.length === 0) {
+        return;
+    }
+    isDownloading = true;
+
+    const zip = new JSZip();
+    const folder = zip.folder(zipName);
+
+    for (const [index, song] of songsList.entries()) {
+        if (abortController.signal.aborted) {
+            console.log("Download process aborted");
+            break;
+        }
+
+        const downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
+        const imageUrl = song.image[2].url;
+        const artist = song.artists.primary.map(a => a.name);
+        const title = song.name;
+        const album = song.album.name;
+        const year = song.year;
+        const genre = Array.isArray(song.genre) ? song.genre : [song.genre];
+
+        const mp3Blob = await convertMp4ToMp3BlobWithProgress(downloadUrl, imageUrl, artist, title, album, year, genre, (songProgress) => {
+            if(songProgress > 0){
+                // Calculate and log progress for each song
+
+                const progress = ((index + (songProgress/10)) / songsList.length);
+                console.log(`Download index: ${index} out of ${songsList.length}`);
+                console.log(`Download progress: ${progress.toFixed(2)}%`);
+                let downPer = document.getElementById("download-percent");
+                let dowBar = document.getElementById("download-update");
+                downPer.innerHTML = `${(progress * 100).toFixed(0)}%`;
+                dowBar.style.width = `${(progress * 120)}px`;
+                if(progress * 100 == 100){
+                    setTimeout(() => {
+                        removeDownloadNotif();
+                    }, 2000 );
+                }
+            }
+        });
+        const arrayBuffer = await mp3Blob.arrayBuffer();
+        const filename = `${song.name || "Unknown_Song"}.mp3`;
+        folder.file(filename, arrayBuffer);
+    }
+
+    if (!abortController.signal.aborted) {
+        zip.generateAsync({ type: "blob" }).then(content => {
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(content);
+            link.download = `${zipName}.zip`;
+            link.click();
+            isDownloading = false;
+        });
+    }
+    else {
+        await unloadFFmpeg() ;
+        abortController = new AbortController();
+        isDownloading = false;
+    }
+    abortController = new AbortController();
+    isDownloading = false;
+
+}
+
+async function convertMp4ToMp3BlobWithProgress(mp4Url, imageUrl, artist, title, album, year, genre, progressCallback) {
+    try {
+        if(!ffmpeg.isLoaded()){
+            // ffmpeg = createFFmpeg({ log: false });
+        }
+    }
+    catch (error) {
+        console.error("Error loading FFmpeg:", error);
+        const { createFFmpeg, fetchFile } = await import("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.5/+esm");
+        ffmpeg = createFFmpeg({ log: false });
+    }
+    isDownloading = true;
+    const { default: ID3Writer } = await import("https://cdn.jsdelivr.net/npm/browser-id3-writer@4.0.0/+esm");  
+
+
+    try {
+        if (!mp4Url || !imageUrl) {
+            alert("Metadata is missing MP4 or Image URLs!");
+            return;
+        }
+
+        if (!ffmpeg.isLoaded()) {
+            await ffmpeg.load();
+        }
+
+        const mp4Buffer = await fetchAsArrayBufferWithProgress(mp4Url, (percentage) => {
+            if (percentage < 100) {
+            progressCallback((percentage / 200) * 4); // First half of the progress
+            }
+        });
+        const imageBuffer = await fetchAsArrayBuffer(imageUrl);
+
+        progressCallback(4); // First half of the progress
+        ffmpeg.FS("writeFile", "input.mp4", new Uint8Array(mp4Buffer));
+        ffmpeg.setProgress(({ ratio = 0}) => {
+            progressCallback(((ratio) * 6) + 4); // Second half of the progress
+        });
+        await ffmpeg.run("-i", "input.mp4", "-vn", "-b:a", "192k", "output.mp3");
+
+        const mp3Data = ffmpeg.FS("readFile", "output.mp3");
+
+        const writer = new ID3Writer(mp3Data);
+        writer.setFrame("TPE1", artist)
+              .setFrame("TIT2", title)
+              .setFrame("TALB", album)
+              .setFrame("TYER", year)
+              .setFrame("TCON", genre)
+              .setFrame("APIC", { type: 3, data: new Uint8Array(imageBuffer), description: "Cover" });
+        writer.addTag();
+
+        return new Blob([writer.arrayBuffer], { type: "audio/mp3" });
+
+    } catch (error) {
+        // console.error("Error processing files:", error);
+        await unloadFFmpeg() ;
+        abortController = new AbortController();
+        isDownloading = false;
+    }
+}
+
+let abortController = new AbortController();
+
+function cancelDownload() {
+    abortController.abort();
+    console.log("Download canceled");
+    removeDownloadNotif();
+    // Clear the buffer and reload ffmpeg
+    clearBufferAndReloadFFmpeg();
+    isDownloading = false;
+}
+
+async function clearBufferAndReloadFFmpeg() {
+    await unloadFFmpeg();
+    isDownloading = false;
+}
+
+async function unloadFFmpeg() {
+    if (ffmpeg) {
+        try {
+            await ffmpeg.exit(); // Stop FFmpeg properly
+            
+            // Terminate Web Worker if it exists
+            if (ffmpeg.worker) {
+                ffmpeg.worker.terminate();
+            }
+        } catch (error) {
+            console.warn("Error while exiting FFmpeg:", error);
+        }
+
+        // Clear instance reference
+        ffmpeg = null;
+    }
+
+    // Remove FFmpeg from global cache
+    // delete window.ffmpeg;
+}
+
+function downloadNotif(song){
+    let notif = document.getElementById("notification");
+
+    notif.style.display = "flex"; 
+    setTimeout(() => {
+        notif.style.opacity = "1";
+    }, 300);
+
+    let downloadName = document.getElementById("download-name");
+    let notifImage = document.getElementById("notif-image");
+    const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+    notifImage.src = imageUrl;
+    downloadName.innerHTML = song.name;
+}
+
+function downloadFavNotif(){
+    let notif = document.getElementById("notification");
+
+    notif.style.display = "flex"; 
+    setTimeout(() => {
+        notif.style.opacity = "1";
+    }, 300);
+    let notifTitle = document.getElementById("download-title");
+    notifTitle.innerHTML = "Download Favourites";
+
+    let downloadName = document.getElementById("download-name");
+    let notifImage = document.getElementById("notif-image");
+    notifImage.src = "/static/img/M.png";
+    downloadName.innerHTML = "Your Favourites";
+}
+
+function downloadQueNotif(){
+    let notif = document.getElementById("notification");
+
+    notif.style.display = "flex"; 
+    setTimeout(() => {
+        notif.style.opacity = "1";
+    }, 300);
+    let notifTitle = document.getElementById("download-title");
+    notifTitle.innerHTML = "Download Queue";
+
+    let downloadName = document.getElementById("download-name");
+    let notifImage = document.getElementById("notif-image");
+    notifImage.src = "/static/img/M.png";
+    downloadName.innerHTML = " Your Queue";
+}
+
+function downloadAlbNotif(album){
+    let notif = document.getElementById("notification");
+    let notifImage = document.getElementById("notif-image")
+    notif.style.display = "flex"; 
+    setTimeout(() => {
+        notif.style.opacity = "1";
+    }, 300);
+    let notifTitle = document.getElementById("download-title");
+    notifTitle.innerHTML = "Download Album";
+
+    let downloadName = document.getElementById("download-name");
+    const imageUrl = `/image/?url=${encodeURIComponent(album.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+    notifImage.src = imageUrl;
+    downloadName.innerHTML = `${album.name}-Album`;
+}
+
+function removeDownloadNotif(){
+    let notif = document.getElementById("notification");
+
+    notif.style.opacity = "0"; 
+    setTimeout(() => {
+        notif.style.display = "none";
+        let notifTitle = document.getElementById("download-title");
+        notifTitle.innerHTML = "Download Song";
+        let downBar = document.getElementById("download-update");
+        let downPer = document.getElementById("download-percent");
+        downPer.innerHTML = "0%";
+        downBar.style.width = 0;
+    }, 300);  
+    isDownloading = false;
+}
+
+function alertNotif(){
+    let notif = document.getElementById("alert");
+    notif.style.display = "flex";
+
+    setTimeout(() => {
+        notif.style.opacity = "1";
+    }, 100); 
+
+    removeAlertNotif();
+}
+
+function removeAlertNotif(){
+    let notif = document.getElementById("alert");
+    setTimeout(() => {
+        notif.style.opacity = "0";
+        setTimeout(() => {
+            notif.style.display = "none";
+        }, 300);
+    }, 5000); 
+}
+
+function removeAlertNotifQuick(){
+    let notif = document.getElementById("alert");
+    notif.style.opacity = "0";
+    setTimeout(() => {
+        notif.style.display = "none";
+    }, 100); 
+}

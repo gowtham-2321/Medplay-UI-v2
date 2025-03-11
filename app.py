@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, Response, stream_with_context
+from flask import Flask, render_template, request, jsonify, Response, stream_with_context, send_file
 import requests
 from io import BytesIO
 import urllib3
@@ -45,13 +45,52 @@ def search():
     
     return songs
 
+@app.route('/artists', methods=['GET'])
+def getArtist():
+    aritstId = request.args.get('id', '')
+    
+    if not aritstId:
+        return None
+    
+    try:
+        response = requests.get(f"{API_URL}/api/artists/{aritstId}", verify=False)
+        data = response.json().get('data', [])
+        
+    except Exception as e:
+        print("Errir fetching Artist Songs", e)
+        data = []
+        
+    return jsonify(data)
+
+@app.route('/artists/songs', methods=['GET'])
+def getArtistSongs():
+    aritstId = request.args.get('id', '')
+    
+    if not aritstId:
+        return None
+    
+    try:
+        data = []
+        for i in range(3):
+            response = requests.get(f"{API_URL}/api/artists/{aritstId}/songs?page={i}", verify=False)
+            resp = response.json().get('data', [])
+            resp = resp['songs']
+            data.extend(resp)
+            
+        
+    except Exception as e:
+        print("Errir fetching Artist Songs", e)
+        data = []
+    
+    return jsonify(data)
+
 @app.route('/albums', methods=['GET'])
 def getAlbum():
     albumid = request.args.get('id', '')
 
     #print(albumid)
     if not albumid:
-        return render_template('index.html', songs=None)
+        return None
     
     try:
         response = requests.get(f"{API_URL}/api/albums?id={albumid}", verify=False)
@@ -100,6 +139,23 @@ def searchAlbum():
     
     return albums
 
+@app.route('/search/artists', methods=['GET'])
+def searchArtists():
+    alQ = request.args.get('q', '')
+    limit = request.args.get('limit', '')
+    page = request.args.get('page', '')
+    
+    try:
+        response = requests.get(f"{API_URL}/api/search/artists?query={alQ}&limit={limit}&page={page}")
+        artists = response.json().get('data', [])
+        artists = artists["results"]
+    except Exception as e:
+        print("Error Fetching Artists search", e)
+        artists = []
+    
+    return artists
+    
+
 @app.route('/stream/')
 def stream():
     url = request.args.get('url', '')
@@ -128,8 +184,11 @@ def image():
     url = request.args.get('url', '')
     if not url:
         return "No URL provided", 400
-
-    upstream_response = requests.get(url, stream=True)
+    
+    
+    upstream_response = requests.get(url, stream=True, verify=False)
+    if upstream_response.status_code != 200:
+        return send_file('static/img/song art.jpg')
 
     def generate():
         for chunk in upstream_response.iter_content(chunk_size=8192):

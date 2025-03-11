@@ -870,6 +870,7 @@ function artUpdater() {
 
 function playmySong(song) {
     currentSong = song;
+    playerHeart();
     const player = document.getElementById("audio-player");
     const nowPlaying = document.getElementById("player-song-name");
     const nowArtist = document.getElementById("player-artist-name");

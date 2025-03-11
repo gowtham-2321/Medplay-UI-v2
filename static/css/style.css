@@ -17,7 +17,7 @@
 } 
 
 *{
-    transition: background .3s, color .3s;
+    transition: background .2s, color .2s;
 }
 
 html {
@@ -1129,14 +1129,14 @@ input[type="range"]::-moz-range-thumb {
     gap: 10px;
     opacity: 0;
     transition: display .3s ease-in-out, opacity .3s ease-in-out;
+    -webkit-box-shadow: -1px 2px 148px -19px rgba(0,0,0,0.39);
+    -moz-box-shadow: -1px 2px 148px -19px rgba(0,0,0,0.39);
+    box-shadow: -1px 2px 148px -19px rgba(0,0,0,0.39);
 }
 .notification-header{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    -webkit-box-shadow: -1px 2px 148px -19px rgba(0,0,0,0.39);
-    -moz-box-shadow: -1px 2px 148px -19px rgba(0,0,0,0.39);
-    box-shadow: -1px 2px 148px -19px rgba(0,0,0,0.39);
 }
 
 .downloading, #download-title, #download-percent{
@@ -1200,6 +1200,85 @@ input[type="range"]::-moz-range-thumb {
     display: flex;
     flex-direction: column;
     gap: 5px;
+}
+
+/*alert notif*/
+
+.alert{
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: fixed;
+    width: fit-content;
+    height: fit-content;
+    align-items: center;
+    border-radius: 20px;
+    background: var(--secondary-bg-color);
+    padding: 20px;
+    box-sizing: border-box;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    opacity: 0;
+    transition: display .1s ease-in-out, opacity .1s ease-in-out;
+    border: 3px solid var(--heart);
+    -webkit-box-shadow: -1px 2px 148px -19px rgba(0,0,0,0.39);
+    -moz-box-shadow: -1px 2px 148px -19px rgba(0,0,0,0.39);
+    box-shadow: -1px 2px 148px -19px rgba(0,0,0,0.39);
+    animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+    0% { left: 50%;}
+    25% { left: 48%;}
+    50% { left: 52%;}
+    75% { left: 48%;}
+    100% { left: 52%;}
+}
+
+
+.alert-content{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+}
+
+.alert-box{
+    width: 100px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: -10%;
+    left: 50%;
+    background: var(--secondary-bg-color);
+    border: 3px solid var(--heart);
+    border-radius: 20px;
+    color: var(--heart);
+    transform: translate(-50%, -50%);
+    justify-content: center;
+    font-size: 30px;
+}
+#alert-title{
+    font-size: 25px;
+    font-weight: 700;
+    color: var(--heart);
+}
+
+.alert-ok{
+    padding: 8px;
+    width: 90px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid var(--heart);
+    margin-top: 10px;
+    cursor: pointer;
 }
 
 @media only screen and (max-width: 700px){

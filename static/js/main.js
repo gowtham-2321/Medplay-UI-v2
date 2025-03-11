@@ -46,6 +46,7 @@ let q= "english";
 let songQuery = "";
 let albumQuery = "";
 let artistQuery = "";
+let isDownloading = false;
 let ffmpeg = null;
 
 function load(){
@@ -1250,10 +1251,12 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
             link.download = `${title || "Unknown_Song"}.mp3`;
             link.click();
             URL.revokeObjectURL(mp3Url);
+            isDownloading = false;
         }
         else {
             abortController = new AbortController();
-            unloadFFmpeg();        
+            unloadFFmpeg();     
+            isDownloading = false;   
         }
 
     } catch (error) {
@@ -1261,10 +1264,15 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
         // alert("Conversion failed! Check the URLs.");
         abortController = new AbortController();
         unloadFFmpeg();
+        isDownloading = false;
     }
 }
 
 async function downloadSong(song) {
+    if(isDownloading){
+        alert("Another download is in progress. Please wait for it to finish.");
+        return;
+    }
     downloadNotif(song);
     // name slicing
     let new_name = song.name;
@@ -1287,8 +1295,10 @@ async function downloadSong(song) {
 
     console.log(downloadUrl);
     console.log(filename);
+    isDownloading = true;
 
     await convertMp4ToMp3(downloadUrl, imageUrl, artist, title, album, year, genre);
+    isDownloading= false;
 }
 
 async function fetchAsArrayBufferWithProgress(url, progressCallback) {
@@ -2012,6 +2022,10 @@ if("mediaSession" in navigator){
 }
 
 async function downloadFavourites() {
+    if (isDownloading) {
+        alert("Another download is in progress. Please wait for it to finish.");
+        return;
+    }
     let favourites = JSON.parse(localStorage.getItem("favourites")) || [];
     if (favourites.length === 0) {
         return;
@@ -2021,6 +2035,10 @@ async function downloadFavourites() {
 }
 
 async function downloadQueue() {
+    if (isDownloading) {
+        alert("Another download is in progress. Please wait for it to finish.");
+        return;
+    }
     if (songQueue.length === 0) {
         return;
     }
@@ -2030,6 +2048,10 @@ async function downloadQueue() {
 }
 
 async function downloadAlbum(album) {
+    if (isDownloading) {
+        alert("Another download is in progress. Please wait for it to finish.");
+        return;
+    }
     if (currentViewingAlbumSongs.length === 0) {
         return;
     }
@@ -2085,6 +2107,7 @@ async function downloadSongsAsZip(songsList, zipName) {
     if (songsList.length === 0) {
         return;
     }
+    isDownloading = true;
 
     const zip = new JSZip();
     const folder = zip.folder(zipName);
@@ -2132,13 +2155,16 @@ async function downloadSongsAsZip(songsList, zipName) {
             link.href = URL.createObjectURL(content);
             link.download = `${zipName}.zip`;
             link.click();
+            isDownloading = false;
         });
     }
     else {
         await unloadFFmpeg() ;
         abortController = new AbortController();
-unloadFFmpeg();    }
+        isDownloading = false;
+    }
     abortController = new AbortController();
+    isDownloading = false;
 
 }
 
@@ -2153,6 +2179,7 @@ async function convertMp4ToMp3BlobWithProgress(mp4Url, imageUrl, artist, title, 
         const { createFFmpeg, fetchFile } = await import("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.5/+esm");
         ffmpeg = createFFmpeg({ log: false });
     }
+    isDownloading = true;
     const { default: ID3Writer } = await import("https://cdn.jsdelivr.net/npm/browser-id3-writer@4.0.0/+esm");  
 
 
@@ -2197,6 +2224,7 @@ async function convertMp4ToMp3BlobWithProgress(mp4Url, imageUrl, artist, title, 
         // console.error("Error processing files:", error);
         await unloadFFmpeg() ;
         abortController = new AbortController();
+        isDownloading = false;
     }
 }
 
@@ -2208,10 +2236,12 @@ function cancelDownload() {
     removeDownloadNotif();
     // Clear the buffer and reload ffmpeg
     clearBufferAndReloadFFmpeg();
+    isDownloading = false;
 }
 
 async function clearBufferAndReloadFFmpeg() {
     await unloadFFmpeg();
+    isDownloading = false;
 }
 
 async function unloadFFmpeg() {
@@ -2311,4 +2341,5 @@ function removeDownloadNotif(){
         downPer.innerHTML = "0%";
         downBar.style.width = 0;
     }, 300);  
+    isDownloading = false;
 }

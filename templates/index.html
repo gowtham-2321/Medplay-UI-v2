@@ -47,7 +47,7 @@
         <i class="fa-solid fa-circle-info"></i>
         <span>About</span>
       </div>
-      <div class="error-btn menu-btn" id="error-btn" onclick="displayError()">
+      <div class="error-btn menu-btn no-for-now" id="error-btn" onclick="displayError()">
         <i class="fa-solid fa-circle-info"></i>
         <span>Error</span>
       </div>
@@ -175,7 +175,8 @@
         <p>That’s when it hit us—why not just build our own? <i class="fa-solid fa-fire"></i></p>
         <p>And just like that, Medplay was born. In just seven days, we speedran the first version and launched it. What started as a fun little challenge quickly spiraled into a full-on project as users rolled in with feedback. So, we went all in—adding favorites, a legit queue system, album and artist search, and even full album downloads to make Medplay an absolute win of a music player.</p>
         <p>You might be wondering—why Medplay? <i class="fa-solid fa-face-tired"></i> Well… it’s actually kind of dumb. When we first started, Jeevan was too lazy to come up with a proper repo name, so he just typed "med-play" as a short form for media player—and boom, it just stuck. Zero effort, peak efficiency. What started as a random, half-baked folder name somehow evolved into something way bigger—and here we are.</p>
-        <p>We're always open to new ideas and feedback. <i class="fa-solid fa-comments"></i> If you spot any bugs <i class="fa-solid fa-bug"></i> or have an awesome feature suggestion, don’t hesitate to reach out at mail@gmail.com. Let’s make Medplay even better together.</p>
+        <p class="no-for-now">We're always open to new ideas and feedback. <i class="fa-solid fa-comments"></i> If you spot any bugs <i class="fa-solid fa-bug"></i> or have an awesome feature suggestion, don’t hesitate to reach out at mail@gmail.com. Let’s make Medplay even better together.</p>
+        <br>
         <div class="developers">
           <div class="dev-pfp">
             <img class="dev-img" src="https://avatars.githubusercontent.com/u/83274183?s=96&v=4">
@@ -196,7 +197,7 @@
               <div class="dev-socials">
                 <a href="https://github.com/njeeevan2216" target="_blank"><i class="fa-brands fa-github"></i></a>
                 <a href="https://www.linkedin.com/in/nj2216/" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
-                <a href="https://www.instagram.com/imnotgowtham/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.instagram.com/redchip_offl/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
                 <a href="mailto:njeevan2216@gmail.com" target="_blank"><i class="fa-solid fa-envelope"></i></a>
               </div>
             </div>
@@ -424,4 +425,9 @@
 
   document.addEventListener("DOMContentLoaded", sendTitleBarColor);
 </script> -->
+    {% if show_404 %}
+      <script>
+        displayError();
+      </script>
+    {% endif %}
 </html>

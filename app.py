@@ -20,7 +20,7 @@ API_URL = "https://api-medplay.vercel.app"
 def home():
     songs = []
     
-    return render_template('index.html', songs=[])
+    return render_template("index.html", show_404=False)
 
 @app.route('/search/songs', methods=['GET'])
 def search():
@@ -31,7 +31,7 @@ def search():
 
     #print(query,limit,page)
     if not query:
-        return render_template('index.html', songs=None)
+        return None
     
     try:
         response = requests.get(f"{API_URL}/api/search/songs?query={query}&limit={limit}&page={page}", verify=False)
@@ -215,6 +215,10 @@ def download():
             'Content-Type': 'audio/mpeg'
         }
     )
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("index.html", show_404=True), 404
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")

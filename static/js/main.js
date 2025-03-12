@@ -1529,6 +1529,7 @@ function displayError() {
     setTimeout(() => {
         about.style.display = "none";
     }, 300);
+    history.pushState(null, "", "/");
 }
 
 

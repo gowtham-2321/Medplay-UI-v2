@@ -48,7 +48,6 @@
         <span>Your Playlists</span>
       </div>
       <div class="playlist-list no-for-now">
-        
         <div class="playlist-card">
           <img src="{{ url_for('static', filename="img/song art.jpg")}}" class="playlist-card-art">
           <span class="playlist-card-name">Playlist name can be this</span>
@@ -73,7 +72,6 @@
           <img src="{{ url_for('static', filename="img/song art.jpg")}}" class="playlist-card-art">
           <span class="playlist-card-name">Playlist name can be this</span>
         </div>
-
       </div>
 
     </div>
@@ -95,234 +93,16 @@
               <p> No Songs Found </p>
             </div>
             <div class="artistlist" id="artistlist">
-    
-              <div class="artist-card" onclick="artistSongPage()">
-                <img class="artist-card-img" src="{{ url_for('static', filename="img/song art.jpg")}}">
-                <span class="artist-card-name">Artist Name can be this</span>
-              </div>
-    
-              <div class="artist-card" onclick="artistSongPage()">
-                <img class="artist-card-img" src="{{ url_for('static', filename="img/song art.jpg")}}">
-                <span class="artist-card-name">Artist Name can be this</span>
-              </div>
-    
-              <div class="artist-card" onclick="artistSongPage()">
-                <img class="artist-card-img" src="{{ url_for('static', filename="img/song art.jpg")}}">
-                <span class="artist-card-name">Artist Name can be this</span>
-              </div>
-    
-              <div class="artist-card" onclick="artistSongPage()">
-                <img class="artist-card-img" src="{{ url_for('static', filename="img/song art.jpg")}}">
-                <span class="artist-card-name">Artist Name can be this</span>
-              </div>
-              
-              <div class="artist-card" onclick="artistSongPage()">
-                <img class="artist-card-img" src="{{ url_for('static', filename="img/song art.jpg")}}">
-                <span class="artist-card-name">Artist Name can be this</span>
-              </div>
-  
-              <div class="artist-card" onclick="artistSongPage()">
-                <img class="artist-card-img" src="{{ url_for('static', filename="img/song art.jpg")}}">
-                <span class="artist-card-name">Artist Name can be this</span>
-              </div>
-    
-              <div class="artist-card" onclick="artistSongPage()">
-                <img class="artist-card-img" src="{{ url_for('static', filename="img/song art.jpg")}}">
-                <span class="artist-card-name">Artist Name can be this</span>
-              </div>
-  
-              <div class="artist-card" onclick="artistSongPage()">
-                <img class="artist-card-img" src="{{ url_for('static', filename="img/song art.jpg")}}">
-                <span class="artist-card-name">Artist Name can be this</span>
-              </div>
-  
-              <div class="artist-card" onclick="artistSongPage()">
-                <img class="artist-card-img" src="{{ url_for('static', filename="img/song art.jpg")}}">
-                <span class="artist-card-name">Artist Name can be this</span>
-              </div>
-    
-              <div class="artist-card" onclick="artistSongPage()">
-                <img class="artist-card-img" src="{{ url_for('static', filename="img/song art.jpg")}}">
-                <span class="artist-card-name">Artist Name can be this</span>
-              </div>
-  
-              <div class="artist-card" onclick="artistSongPage()">
-                <img class="artist-card-img" src="{{ url_for('static', filename="img/song art.jpg")}}">
-                <span class="artist-card-name">Artist Name can be this</span>
-              </div>
-  
-              <div class="artist-card" onclick="artistSongPage()">
-                <img class="artist-card-img" src="{{ url_for('static', filename="img/song art.jpg")}}">
-                <span class="artist-card-name">Artist Name can be this</span>
-              </div>
-    
             </div>
             <div class="albumlist" id="albumlist">
-            </div>
-          
-        </div>
-        
-        </div>
-        <div class="artist-page" id="artist-page">
-          <div class="back-icon-holder">
-            <div class="back-icon" id="artist-song-page-back" onclick="artistSongPageBack()">
-              <i class="fa-solid fa-caret-left"></i>
-            </div>
-            <span>Back</span>
-          </div>
-          <div class="artist-info-card-holder">
-            <img class="artist-info-card-image" src="{{ url_for('static', filename="img/song art.jpg")}}">
-            <div class="artist-info-card">
-              <span>Artist</span>
-              <span class="artist-name-artist-card">Artist Name can be this long</span>
-              <div class="artist-card-play">
-                <div class="artist-play-icon">
-                  <i class="fa-solid fa-play"></i>
-                </div>
-                <span>Play all songs</span>
-              </div>
-            </div>
-          </div>
-          <div class="artist-song-list">
-  
-            <div class="song-card">
-              <img class="song-card-art" src="{{ url_for('static', filename="img/song art.jpg")}}" alt="">
-              <span class="song-card-song-name">Song Name will be this long</span>
-              <span class="song-card-artist-name">Artist Name can be this long</span>
-              <span class="song-card-album-name">Album Name can be this long</span>
-              <span class="song-card-timestamp">00:00</span>
-              <div class="song-card-icons">
-                <i class="fa-regular fa-heart"></i>
-                <i class="fa-solid fa-play"></i>
-                <i class="fa-solid fa-download"></i>
-                <i class="fa-solid fa-plus"></i>
-              </div>
-            </div>
-  
-            <div class="song-card">
-              <img class="song-card-art" src="{{ url_for('static', filename="img/song art.jpg")}}" alt="">
-              <span class="song-card-song-name">Song Name will be this long</span>
-              <span class="song-card-artist-name">Artist Name can be this long</span>
-              <span class="song-card-album-name">Album Name can be this long</span>
-              <span class="song-card-timestamp">00:00</span>
-              <div class="song-card-icons">
-                <i class="fa-regular fa-heart"></i>
-                <i class="fa-solid fa-play"></i>
-                <i class="fa-solid fa-download"></i>
-                <i class="fa-solid fa-plus"></i>
-              </div>
-            </div>
-  
-            <div class="song-card">
-              <img class="song-card-art" src="{{ url_for('static', filename="img/song art.jpg")}}" alt="">
-              <span class="song-card-song-name">Song Name will be this long</span>
-              <span class="song-card-artist-name">Artist Name can be this long</span>
-              <span class="song-card-album-name">Album Name can be this long</span>
-              <span class="song-card-timestamp">00:00</span>
-              <div class="song-card-icons">
-                <i class="fa-regular fa-heart"></i>
-                <i class="fa-solid fa-play"></i>
-                <i class="fa-solid fa-download"></i>
-                <i class="fa-solid fa-plus"></i>
-              </div>
-            </div>
-  
-            <div class="song-card">
-              <img class="song-card-art" src="{{ url_for('static', filename="img/song art.jpg")}}" alt="">
-              <span class="song-card-song-name">Song Name will be this long</span>
-              <span class="song-card-artist-name">Artist Name can be this long</span>
-              <span class="song-card-album-name">Album Name can be this long</span>
-              <span class="song-card-timestamp">00:00</span>
-              <div class="song-card-icons">
-                <i class="fa-regular fa-heart"></i>
-                <i class="fa-solid fa-play"></i>
-                <i class="fa-solid fa-download"></i>
-                <i class="fa-solid fa-plus"></i>
-              </div>
-            </div>
-  
+            </div>  
           </div>
         </div>
 
+        <div class="artist-page" id="artist-page">
+        </div>
+
         <div class="album-page" id="album-page">
-          <div class="back-icon-holder">
-            <div class="back-icon" id="album-song-page-back" onclick="albumSongPageBack()">
-              <i class="fa-solid fa-caret-left"></i>
-            </div>
-            <span>Back</span>
-          </div>
-          <div class="album-info-card-holder">
-            <img class="album-info-card-image" src="{{ url_for('static', filename="img/song art.jpg")}}">
-            <div class="album-info-card">
-              <span>Album</span>
-              <span class="album-name-album-card">Album Name can this long</span>
-              <div class="album-card-play">
-                <div class="album-play-icon">
-                  <i class="fa-solid fa-play"></i>
-                </div>
-                <span>Play all songs</span>
-              </div>
-            </div>
-          </div>
-          <div class="album-song-list">
-  
-            <div class="song-card">
-              <img class="song-card-art" src="{{ url_for('static', filename="img/song art.jpg")}}" alt="">
-              <span class="song-card-song-name">Song Name will be this long</span>
-              <span class="song-card-artist-name">Artist Name can be this long</span>
-              <span class="song-card-album-name">Album Name can be this long</span>
-              <span class="song-card-timestamp">00:00</span>
-              <div class="song-card-icons">
-                <i class="fa-regular fa-heart"></i>
-                <i class="fa-solid fa-play"></i>
-                <i class="fa-solid fa-download"></i>
-                <i class="fa-solid fa-plus"></i>
-              </div>
-            </div>
-  
-            <div class="song-card">
-              <img class="song-card-art" src="{{ url_for('static', filename="img/song art.jpg")}}" alt="">
-              <span class="song-card-song-name">Song Name will be this long</span>
-              <span class="song-card-artist-name">Artist Name can be this long</span>
-              <span class="song-card-album-name">Album Name can be this long</span>
-              <span class="song-card-timestamp">00:00</span>
-              <div class="song-card-icons">
-                <i class="fa-regular fa-heart"></i>
-                <i class="fa-solid fa-play"></i>
-                <i class="fa-solid fa-download"></i>
-                <i class="fa-solid fa-plus"></i>
-              </div>
-            </div>
-  
-            <div class="song-card">
-              <img class="song-card-art" src="{{ url_for('static', filename="img/song art.jpg")}}" alt="">
-              <span class="song-card-song-name">Song Name will be this long</span>
-              <span class="song-card-artist-name">Artist Name can be this long</span>
-              <span class="song-card-album-name">Album Name can be this long</span>
-              <span class="song-card-timestamp">00:00</span>
-              <div class="song-card-icons">
-                <i class="fa-regular fa-heart"></i>
-                <i class="fa-solid fa-play"></i>
-                <i class="fa-solid fa-download"></i>
-                <i class="fa-solid fa-plus"></i>
-              </div>
-            </div>
-  
-            <div class="song-card">
-              <img class="song-card-art" src="{{ url_for('static', filename="img/song art.jpg")}}" alt="">
-              <span class="song-card-song-name">Song Name will be this long</span>
-              <span class="song-card-artist-name">Artist Name can be this long</span>
-              <span class="song-card-album-name">Album Name can be this long</span>
-              <span class="song-card-timestamp">00:00</span>
-              <div class="song-card-icons">
-                <i class="fa-regular fa-heart"></i>
-                <i class="fa-solid fa-play"></i>
-                <i class="fa-solid fa-download"></i>
-                <i class="fa-solid fa-plus"></i>
-              </div>
-            </div>
-  
-          </div>
         </div>
 
       </div>
@@ -376,7 +156,6 @@
           </div>
         </div>
         <div class="favlist" id="fav-list">
-
           <span>No songs in favourites</span>
         </div>
       </div>
@@ -398,7 +177,7 @@
   </div>
 
   <div class="music-player-icon">
-    <i class="fas fa-backward"></i>
+    <i class="fas fa-backward no-for-now"></i>
     <div class="music-player-play-icon" onclick="playPause()">
       <i id="play-icon" class="fa-solid fa-play"></i>
     </div>

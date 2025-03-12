@@ -1047,6 +1047,24 @@ a{
     display: flex;
 }
 
+.error-page{
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    opacity: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: opacity .3s ease-in-out, display .3s ease-in-out;
+}
+
+.error-text{
+    font-size: 30px;
+    font-weight: 500;
+    color: var(--primary-text-color);
+}
 
 /*equaliser*/
 .player-eq-btn {
@@ -1350,10 +1368,6 @@ input[type="range"]::-moz-range-thumb {
     overflow-y: auto;
 }
 
-svg {
-    display: none;
-}
-
 svg path{
     fill: var(--accent-color);
 }
@@ -1467,6 +1481,11 @@ svg path{
     }
 
 }
+@media only screen and (max-width: 1000px) {
+    .about{
+        padding: 0px 50px;
+    }
+}
 @media only screen and (max-width: 900px) {
     .song-card-song-name{
         width: 50%;
@@ -1507,6 +1526,8 @@ svg path{
         font-size: 30px;
     }
     /*album info ends*/
+
+
 }
 
 @media only screen and (max-width: 750px) {
@@ -1516,6 +1537,13 @@ svg path{
     }
     .song-card-icons {
         width: 30%;
+    }
+    .developers{
+        flex-direction: column;
+        gap: 20px;
+    }
+    .dev-pfp{
+        width: 100%;
     }
 }
 
@@ -1612,6 +1640,15 @@ svg path{
     .profile-holder{
         display: none;
     }
+    .dev-name{
+        font-size: 15px;
+    }
+    .dev-pfp{
+        padding: 20px;
+    }
+    svg{
+        transform: scale(.8);
+    }
 }
 
 @media only screen and (max-width: 400px){
@@ -1620,6 +1657,14 @@ svg path{
     }
     .theme-choice{
         width: 250px;
+    }
+    .dev-pfp{
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .dev-socials{
+        justify-content: center;
     }
 }
 

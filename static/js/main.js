@@ -29,6 +29,8 @@ let feed = document.getElementById("feed");
 let queue = document.getElementById("queue");
 let fav = document.getElementById("favourites");
 let themes = document.getElementById("themes");
+let about = document.getElementById("about");
+let error = document.getElementById("error");
 let feed_btn = document.getElementById("feed-btn");
 let song_count = document.getElementById("song-count");
 let minute_count = document.getElementById("minute-count");
@@ -1355,6 +1357,16 @@ function displayFeed() {
     setTimeout(() => {
         fav.style.display = "none";
     }, 300);
+
+    about.style.opacity = "0"; 
+    setTimeout(() => {
+        about.style.display = "none";
+    }, 300);
+
+    error.style.opacity = "0"; 
+    setTimeout(() => {
+        error.style.display = "none";
+    }, 300);
 }
 
 function displayQueue() {
@@ -1378,7 +1390,16 @@ function displayQueue() {
     setTimeout(() => {
         fav.style.display = "none";
     }, 300);
-    
+
+    about.style.opacity = "0"; 
+    setTimeout(() => {
+        about.style.display = "none";
+    }, 300);
+
+    error.style.opacity = "0"; 
+    setTimeout(() => {
+        error.style.display = "none";
+    }, 300);
 }
 
 function displayThemes() {
@@ -1400,6 +1421,16 @@ function displayThemes() {
     fav.style.opacity = "0"; 
     setTimeout(() => {
         fav.style.display = "none";
+    }, 300);
+
+    about.style.opacity = "0"; 
+    setTimeout(() => {
+        about.style.display = "none";
+    }, 300);
+
+    error.style.opacity = "0"; 
+    setTimeout(() => {
+        error.style.display = "none";
     }, 300);
 }
 
@@ -1423,8 +1454,82 @@ function displayFavourites() {
     setTimeout(() => {
         themes.style.display = "none";
     }, 300);
+
+    about.style.opacity = "0"; 
+    setTimeout(() => {
+        about.style.display = "none";
+    }, 300);
+
+    error.style.opacity = "0"; 
+    setTimeout(() => {
+        error.style.display = "none";
+    }, 300);
 }
 
+function displayAbout() {
+    about.style.display = "block"; 
+    setTimeout(() => {
+        about.style.opacity = "1";
+    }, 300);
+
+    feed.style.opacity = "0"; 
+    setTimeout(() => {
+        feed.style.display = "none";
+    }, 300);
+
+    queue.style.opacity = "0"; 
+    setTimeout(() => {
+        queue.style.display = "none";
+    }, 300);
+
+    themes.style.opacity = "0"; 
+    setTimeout(() => {
+        themes.style.display = "none";
+    }, 300);
+
+    fav.style.opacity = "0"; 
+    setTimeout(() => {
+        fav.style.display = "none";
+    }, 300);
+
+    error.style.opacity = "0"; 
+    setTimeout(() => {
+        error.style.display = "none";
+    }, 300);
+}
+
+function displayError() {
+
+    error.style.display = "flex"; 
+    setTimeout(() => {
+        error.style.opacity = "1";
+    }, 300);
+
+    feed.style.opacity = "0"; 
+    setTimeout(() => {
+        feed.style.display = "none";
+    }, 300);
+
+    queue.style.opacity = "0"; 
+    setTimeout(() => {
+        queue.style.display = "none";
+    }, 300);
+
+    themes.style.opacity = "0"; 
+    setTimeout(() => {
+        themes.style.display = "none";
+    }, 300);
+
+    fav.style.opacity = "0"; 
+    setTimeout(() => {
+        fav.style.display = "none";
+    }, 300);
+
+    about.style.opacity = "0"; 
+    setTimeout(() => {
+        about.style.display = "none";
+    }, 300);
+}
 
 
 let songQueue = [];

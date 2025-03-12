@@ -29,6 +29,8 @@ let feed = document.getElementById("feed");
 let queue = document.getElementById("queue");
 let fav = document.getElementById("favourites");
 let themes = document.getElementById("themes");
+let about = document.getElementById("about");
+let error = document.getElementById("error");
 let feed_btn = document.getElementById("feed-btn");
 let song_count = document.getElementById("song-count");
 let minute_count = document.getElementById("minute-count");
@@ -56,18 +58,9 @@ function updateScreenSize() {
     let screenHeight = window.innerHeight - 210;
     wholePage.style.height = `${screenHeight}px`;
     let maxScreenHeight = screenHeight - 100;
-    let albumArtistSongHeight = screenHeight - 450;
-    let queueFavHeight = screenHeight - 340;
-    let shrinkedQueueFavHeight = screenHeight - 470;
-    let shrinkedAlbumArtistSongHeight = albumArtistSongHeight + 60;
+    let queueFavHeight = screenHeight-60;
     document.documentElement.style.setProperty('--max-height', `${maxScreenHeight}px`);
-    document.documentElement.style.setProperty('--album-artist-song-list-height', `${albumArtistSongHeight}px`);
-    document.documentElement.style.setProperty('--shrinked-album-artist-song-list-height', `${shrinkedAlbumArtistSongHeight}px`);
-    document.documentElement.style.setProperty('--queue-fav-height', `${queueFavHeight}px`);
-    document.documentElement.style.setProperty('--shrinked-queue-fav-height', `${shrinkedQueueFavHeight}px`);
-
-    //song_list.style.height = `${screenHeight}px`;
-}
+    document.documentElement.style.setProperty('--queue-fav-height', `${queueFavHeight}px`);}
 
 window.addEventListener('resize', () => {
     updateScreenSize();
@@ -870,6 +863,7 @@ function artUpdater() {
 
 function playmySong(song) {
     currentSong = song;
+    playerHeart();
     const player = document.getElementById("audio-player");
     const nowPlaying = document.getElementById("player-song-name");
     const nowArtist = document.getElementById("player-artist-name");
@@ -1363,6 +1357,16 @@ function displayFeed() {
     setTimeout(() => {
         fav.style.display = "none";
     }, 300);
+
+    about.style.opacity = "0"; 
+    setTimeout(() => {
+        about.style.display = "none";
+    }, 300);
+
+    error.style.opacity = "0"; 
+    setTimeout(() => {
+        error.style.display = "none";
+    }, 300);
 }
 
 function displayQueue() {
@@ -1386,7 +1390,16 @@ function displayQueue() {
     setTimeout(() => {
         fav.style.display = "none";
     }, 300);
-    
+
+    about.style.opacity = "0"; 
+    setTimeout(() => {
+        about.style.display = "none";
+    }, 300);
+
+    error.style.opacity = "0"; 
+    setTimeout(() => {
+        error.style.display = "none";
+    }, 300);
 }
 
 function displayThemes() {
@@ -1408,6 +1421,16 @@ function displayThemes() {
     fav.style.opacity = "0"; 
     setTimeout(() => {
         fav.style.display = "none";
+    }, 300);
+
+    about.style.opacity = "0"; 
+    setTimeout(() => {
+        about.style.display = "none";
+    }, 300);
+
+    error.style.opacity = "0"; 
+    setTimeout(() => {
+        error.style.display = "none";
     }, 300);
 }
 
@@ -1431,8 +1454,83 @@ function displayFavourites() {
     setTimeout(() => {
         themes.style.display = "none";
     }, 300);
+
+    about.style.opacity = "0"; 
+    setTimeout(() => {
+        about.style.display = "none";
+    }, 300);
+
+    error.style.opacity = "0"; 
+    setTimeout(() => {
+        error.style.display = "none";
+    }, 300);
 }
 
+function displayAbout() {
+    about.style.display = "block"; 
+    setTimeout(() => {
+        about.style.opacity = "1";
+    }, 300);
+
+    feed.style.opacity = "0"; 
+    setTimeout(() => {
+        feed.style.display = "none";
+    }, 300);
+
+    queue.style.opacity = "0"; 
+    setTimeout(() => {
+        queue.style.display = "none";
+    }, 300);
+
+    themes.style.opacity = "0"; 
+    setTimeout(() => {
+        themes.style.display = "none";
+    }, 300);
+
+    fav.style.opacity = "0"; 
+    setTimeout(() => {
+        fav.style.display = "none";
+    }, 300);
+
+    error.style.opacity = "0"; 
+    setTimeout(() => {
+        error.style.display = "none";
+    }, 300);
+}
+
+function displayError() {
+
+    error.style.display = "flex"; 
+    setTimeout(() => {
+        error.style.opacity = "1";
+    }, 300);
+
+    feed.style.opacity = "0"; 
+    setTimeout(() => {
+        feed.style.display = "none";
+    }, 300);
+
+    queue.style.opacity = "0"; 
+    setTimeout(() => {
+        queue.style.display = "none";
+    }, 300);
+
+    themes.style.opacity = "0"; 
+    setTimeout(() => {
+        themes.style.display = "none";
+    }, 300);
+
+    fav.style.opacity = "0"; 
+    setTimeout(() => {
+        fav.style.display = "none";
+    }, 300);
+
+    about.style.opacity = "0"; 
+    setTimeout(() => {
+        about.style.display = "none";
+    }, 300);
+    history.pushState(null, "", "/");
+}
 
 
 let songQueue = [];

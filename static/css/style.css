@@ -11,9 +11,7 @@
     --heart: #f05542;
     --max-height: 0px;
     --album-artist-song-list-height: 0px;
-    --shrinked-album-artist-song-list-height: 0px;
     --queue-fav-height: 0px;
-    --shrinked-queue-fav-height: 0px;
 } 
 
 *{
@@ -757,7 +755,7 @@ i {
     padding-top: 20px;
     overflow-y: auto;
     overflow-x: hidden;
-    height: var(--album-artist-song-list-height);
+    height: fit-content;
     padding-bottom: 30px;
     padding: 10px;
 }
@@ -797,7 +795,9 @@ i {
     display: none;
     opacity: 0;
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
-    height: 100%;
+    height: var(--queue-fav-height);
+    padding: 10px;
+    overflow-y: auto;
     width: 100%;
 }
 
@@ -864,9 +864,7 @@ i {
     position: relative;
     display: block;
     padding: 10px;
-    overflow-y: auto;
     overflow-x: hidden;
-    height: var(--queue-fav-height);
 }
 
 .queue-Item:hover {
@@ -880,7 +878,10 @@ i {
     display: none;
     opacity: 0;
     transition: opacity .3s ease-in-out, display .3s ease-in-out;
-    height: 100%;
+    /* height: var(--max-height); */
+    height: var(--queue-fav-height);
+    padding: 10px;
+    overflow-y: auto;
     width: 100%;
 }
 
@@ -941,9 +942,7 @@ i {
     position: relative;
     display: block;
     padding: 10px;
-    overflow-y: auto;
     overflow-x: hidden;
-    height: var(--queue-fav-height);
 }
 
 /*favourite ends*/
@@ -967,7 +966,6 @@ i {
     width: 300px;
     height: 40px;
     border-radius: 10px;
-    background: #000;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -983,6 +981,89 @@ i {
     width: 15px;
     height: 15px;
     border-radius: 50%;
+}
+
+.about{
+    display: none;
+    position: absolute;
+    opacity: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: opacity .3s ease-in-out, display .3s ease-in-out;
+    width: 100%;
+    padding: 0px 150px;
+    box-sizing: border-box;
+    text-align: justify;
+    overflow-y: auto;
+    height: var(--queue-fav-height);
+}
+p{
+    color: var(--secondary-text-color);
+}
+
+a{
+    text-decoration: none;
+    color: var(--accent-color);
+}
+.fa-link{
+    color: var(--accent-color);
+}
+
+.developers{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.dev-pfp{
+    box-sizing: border-box;
+    padding: 30px;
+    width: 48%;
+    height: fit-content;
+    display: flex;
+    border-radius: 20px;
+    background: var(--secondary-bg-color);
+    gap: 20px;
+}
+
+.dev-img{
+    border-radius: 10px;
+    width: 70px;
+    height: 70px;
+}
+
+.dev-details{
+    display: flex;
+    flex-direction: column;
+    height: 70px;
+    justify-content: center;
+    font-size: 20px;
+    gap: 5px;
+}
+
+.dev-socials{
+    font-size: 15px;
+    gap: 10px;
+    display: flex;
+}
+
+.error-page{
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    opacity: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: opacity .3s ease-in-out, display .3s ease-in-out;
+}
+
+.error-text{
+    font-size: 30px;
+    font-weight: 500;
+    color: var(--primary-text-color);
 }
 
 /*equaliser*/
@@ -1281,6 +1362,16 @@ input[type="range"]::-moz-range-thumb {
     cursor: pointer;
 }
 
+.album-disp-songs, .artist-disp-songs{
+    height: var(--max-height);
+    padding: 10px;
+    overflow-y: auto;
+}
+
+svg path{
+    fill: var(--accent-color);
+}
+
 @media only screen and (max-width: 700px){
 
         input[type="range"] {
@@ -1313,8 +1404,6 @@ input[type="range"]::-moz-range-thumb {
         }
 }
 
-/*eq ends here*/
-
 @media only screen and (max-width: 1590px) {
     .song-card-album-name{
         display: none;
@@ -1335,7 +1424,7 @@ input[type="range"]::-moz-range-thumb {
 
     .main-center{
         width: 85%;
-    }
+    } 
     .menu-btn span{
         display: none;
     }
@@ -1392,6 +1481,11 @@ input[type="range"]::-moz-range-thumb {
     }
 
 }
+@media only screen and (max-width: 1000px) {
+    .about{
+        padding: 0px 50px;
+    }
+}
 @media only screen and (max-width: 900px) {
     .song-card-song-name{
         width: 50%;
@@ -1431,10 +1525,9 @@ input[type="range"]::-moz-range-thumb {
     .album-name-album-card, .artist-name-artist-card{
         font-size: 30px;
     }
-    .artist-song-list, .album-song-list {
-        height: var(--shrinked-album-artist-song-list-height);
-    }
     /*album info ends*/
+
+
 }
 
 @media only screen and (max-width: 750px) {
@@ -1444,6 +1537,13 @@ input[type="range"]::-moz-range-thumb {
     }
     .song-card-icons {
         width: 30%;
+    }
+    .developers{
+        flex-direction: column;
+        gap: 20px;
+    }
+    .dev-pfp{
+        width: 100%;
     }
 }
 
@@ -1474,14 +1574,10 @@ input[type="range"]::-moz-range-thumb {
         height: 160px;
     }
     .queuelist, .favlist{
-        height: var(--shrinked-queue-fav-height);
         margin-bottom: 100px;
     }
     .music-player-timestamp > .slash-line, #duration{
         display: none;
-    }
-    .queue, .favourites{
-        height: 75vh;
     }
     .artist-info-card-image, .album-info-card-image{
         display: none;
@@ -1544,6 +1640,15 @@ input[type="range"]::-moz-range-thumb {
     .profile-holder{
         display: none;
     }
+    .dev-name{
+        font-size: 15px;
+    }
+    .dev-pfp{
+        padding: 20px;
+    }
+    svg{
+        transform: scale(.8);
+    }
 }
 
 @media only screen and (max-width: 400px){
@@ -1553,25 +1658,13 @@ input[type="range"]::-moz-range-thumb {
     .theme-choice{
         width: 250px;
     }
-}
-
-@media only screen and (max-height: 900px){
-    .queue, .favourites{
-        padding: 10px;
-        overflow-y: auto;
+    .dev-pfp{
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
     }
-    .album-disp-songs, .artist-disp-songs{
-        height: var(--max-height);
-        overflow-y: auto;
-    }
-}
-
-@media only screen and (max-height: 750px){
-    .queue, .favourites{
-        overflow-y: auto;
-    }
-    .queuelist, .favlist{
-        height: fit-content;
+    .dev-socials{
+        justify-content: center;
     }
 }
 

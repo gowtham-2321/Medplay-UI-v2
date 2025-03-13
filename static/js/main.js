@@ -1323,7 +1323,7 @@ async function downloadSong(song) {
     }
     // slicing end
     //showNotif(song.image[2].link, new_name);
-    const downloadUrl = `/download/?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0])}`;
+    const downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
     const filename = `${song.name || "Unknown_Song"}`;
     const imageUrl = song.image[2].url;
     let artist= [];
@@ -2267,7 +2267,7 @@ async function downloadSongsAsZip(songsList, zipName) {
             break;
         }
 
-        const downloadUrl = `/download/?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0])}`;
+        const downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
         const imageUrl = song.image[2].url;
         const artist = song.artists.primary.map(a => a.name);
         const title = song.name;

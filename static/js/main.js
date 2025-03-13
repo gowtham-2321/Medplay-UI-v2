@@ -1605,8 +1605,7 @@ function addToQueue(song) {
     songQueue.push(song);
     songCountTime();
     updateQueueDisplay();
-
-
+    shortNotif();
 }
 
 function removeFromQueue(index) {
@@ -1630,6 +1629,9 @@ function playNextInQueue() {
             bla.innerHTML = `<span>No songs in queue</span>`;
     
         }
+    }
+    else {
+        nextSongNotif();    
     }
     songCountTime();
 }

@@ -308,9 +308,9 @@ async function searchSongs(isNew, q) {
             songPageNo = 1;
             songList.innerHTML =``;
         }
-        const response = await fetch(`/search/songs?query=${query}&limit=24&page=${songPageNo}`);
+        const response = await fetch(`https://api-medplay.vercel.app/api/search/songs?query=${query}&limit=24&page=${songPageNo}`);
         const data = await response.json();
-        songs = data;
+        songs = data.data.results;
         console.log(songs);
 
         
@@ -361,9 +361,9 @@ async function searchAlbums(isNew, q) {
             albumPageNo = 1;
             album_list.innerHTML =``;
         }
-        const response = await fetch(`/search/albums?q=${query}&limit=18&page=${albumPageNo}`);
+        const response = await fetch(`https://api-medplay.vercel.app/api/search/albums?query=${query}&limit=18&page=${albumPageNo}`);
         const data = await response.json();
-        albums = data;
+        albums = data.data.results;
         console.log(albums);
 
         if (albums.length === 0) {
@@ -435,8 +435,9 @@ async function albumSongPager(albumId) {
     `;
     const albumInfo = document.createElement("div");
     albumInfo.classList.add("album-info-card-holder");
-    const response = await fetch(`/albums?id=${albumId}`);
-    const data = await response.json();
+    const response = await fetch(`https://api-medplay.vercel.app/api/albums?id=${albumId}`);
+    const respDat = await response.json();
+    const data = respDat.data;  
     const imageUrl = `/image/?url=${encodeURIComponent(data.image[2].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
     console.log(data);
     currentViewingAlbum = data;
@@ -686,9 +687,9 @@ async function searchArtists(isNew, q) {
             artistPageNo = 1;
             artist_list.innerHTML =``;
         }
-        const response = await fetch(`/search/artists?q=${query}&limit=10&page=${artistPageNo}`);
+        const response = await fetch(`https://api-medplay.vercel.app/api/search/artists?query=${query}&limit=10&page=${artistPageNo}`);
         const data = await response.json();
-        artists = data;
+        artists = data.data.results;
         console.log("artists");
         console.log(artists);
 
@@ -749,10 +750,12 @@ async function artistSongPager(artistId) {
     `;
     const artistInfo = document.createElement("div");
     artistInfo.classList.add("artist-info-card-holder");
-    const response = await fetch(`/artists?id=${artistId}`);
-    const data = await response.json();
-    const songResponse = await fetch(`/artists/songs?id=${artistId}`);
-    const songsData = await songResponse.json();
+    const response = await fetch(`https://api-medplay.vercel.app/api/artists/${artistId}`);
+    const respData = await response.json();
+    const data = respData.data;
+    const songResponse = await fetch(`https://api-medplay.vercel.app/api/artists/${artistId}/songs`);
+    const songRespData = await songResponse.json();
+    const songsData = songRespData.data.songs;
     const imageUrl = `/image/?url=${encodeURIComponent(data.image[2].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
     console.log(data);
     artistInfo.innerHTML = `

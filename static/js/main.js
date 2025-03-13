@@ -2259,7 +2259,7 @@ async function downloadSongsAsZip(songsList, zipName) {
             break;
         }
 
-        const downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
+        const downloadUrl = `/download/?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0])}`;
         const imageUrl = song.image[2].url;
         const artist = song.artists.primary.map(a => a.name);
         const title = song.name;

@@ -352,7 +352,7 @@ async function searchAlbums(isNew, q) {
     try {
         if (!isNew) {
             albumPageNo= albumPageNo + 1;
-            let rem = album_list.querySelector(".more-btn");
+            let rem = album_list.querySelector(".more_btn");
             if (rem) {
                 album_list.removeChild(rem);
             }
@@ -374,9 +374,12 @@ async function searchAlbums(isNew, q) {
             createAlbumCard(albums[i], album_list);
         }
 
-        const more_btn = document.createElement("span");
-        more_btn.classList.add("more-btn");
-        more_btn.innerHTML = "more..";
+        const more_btn = document.createElement("div");
+        more_btn.classList.add("album-card-more");
+        more_btn.classList.add("more_btn");
+        more_btn.innerHTML = `
+            <span>More Albums</span>
+        `
         more_btn.addEventListener('click', () => {
             searchAlbums(false);
             }
@@ -701,7 +704,7 @@ async function searchArtists(isNew, q) {
         more_btn.classList.add("artist-card");
         more_btn.classList.add("more_btn");
         more_btn.innerHTML = `
-            <span>More</n>Artists</span>
+            <span>More Artists</span>
         `
 
         more_btn.addEventListener('click', () => {

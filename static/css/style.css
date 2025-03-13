@@ -374,6 +374,19 @@ i {
     gap: 5px;
 }
 
+.album-card-more {
+    display: flex;
+    flex-direction: column;
+    width: 160px;
+    height: 240px;
+    cursor: pointer;
+    border-radius: 20px;
+    padding: 30px;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+}
+
 .album-card-disp {
     position: relative;
     display: flex;
@@ -403,7 +416,7 @@ i {
 }
 
 
-.album-card:hover {
+.album-card:hover, .album-card-more:hover{
     background: var(--secondary-bg-color);
 }
 

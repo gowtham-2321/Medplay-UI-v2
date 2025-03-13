@@ -4,6 +4,7 @@ let songs = [];
 let artists = [];
 const songList = document.getElementById("songlist");
 let favourites = JSON.parse(localStorage.getItem("favourites")) || [];
+let songQueue = JSON.parse(localStorage.getItem("SongQueue")) || [];
 let noOfSongs = 0;
 let duration = 0;
 let song_selected = true;
@@ -1571,9 +1572,6 @@ function displayError() {
     history.pushState(null, "", "/");
 }
 
-
-let songQueue = [];
-
 function songCountTime()
 {
     noOfSongs = songQueue.length;
@@ -1606,6 +1604,7 @@ function addToQueue(song) {
     songCountTime();
     updateQueueDisplay();
     shortNotif();
+    localStorage.setItem("SongQueue", JSON.stringify(songQueue));
 }
 
 function removeFromQueue(index) {
@@ -1616,6 +1615,7 @@ function removeFromQueue(index) {
         bla.innerHTML = `<span>No songs in queue</span>`;
     }
     songCountTime();
+    localStorage.setItem("SongQueue", JSON.stringify(songQueue));
 }
 
 
@@ -1896,6 +1896,7 @@ function moveQueueItem(oldIndex, newIndex) {
     }
     songQueue.splice(newIndex, 0, songQueue.splice(oldIndex, 1)[0]);
     updateQueueDisplay();
+    localStorage.setItem("SongQueue", JSON.stringify(songQueue));
 }
 
 
@@ -2015,6 +2016,7 @@ document.addEventListener("DOMContentLoaded", () => {
     retrieve();
     getFavourites();
     updateScreenSize();
+    updateQueueDisplay();
 });
 
 //equalizer

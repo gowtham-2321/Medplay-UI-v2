@@ -2514,6 +2514,12 @@ function removeAlertNotifQuick(){
 
 function shortNotif(){
     let notif = document.getElementById("notif-holder");
+    notif.innerHTML = ``;
+    notif.innerHTML = `
+         <div class="short-notif" id="short-notif">
+            <span>Added to Queue!</span>
+        </div>
+    `
     notif.style.display = "flex";
     setTimeout(() => {
         notif.style.opacity = "1";
@@ -2530,6 +2536,12 @@ function shortNotif(){
 
 function nextSongNotif(){
     let notif = document.getElementById("no-next-song-holder");
+    notif.innerHTML = ``;
+    notif.innerHTML = `
+        <div class="next-short-notif" id="next-short-notif">
+            <span>No song in queue</span>
+        </div>
+    `
     notif.style.display = "flex";
     setTimeout(() => {
         notif.style.opacity = "1";

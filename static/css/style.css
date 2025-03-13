@@ -1371,6 +1371,47 @@ input[type="range"]::-moz-range-thumb {
 svg path{
     fill: var(--accent-color);
 }
+.notif-holder{
+    position: fixed;
+    top: 10px;
+    display: none;
+    transform: translateX(-50%);
+    left: 50%;
+    opacity: 0;
+    transition: opacity .2s ease, display .2s ease;
+}
+
+.short-notif{
+    display: flex;
+    height: 35px;
+    width: 200px;
+    background: var(--secondary-bg-color);
+    color: var(--primary-text-color);
+    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
+}
+
+.no-next-song-holder{
+    position: fixed;
+    top: 10px;
+    display: none;
+    transform: translateX(-50%);
+    left: 50%;
+    opacity: 0;
+    transition: opacity .2s ease, display .2s ease;
+}
+
+.next-short-notif{
+    display: flex;
+    height: 35px;
+    width: 210px;
+    background: var(--secondary-bg-color);
+    color: var(--primary-text-color);
+    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
+}
 
 @media only screen and (max-width: 700px){
 
@@ -1634,7 +1675,7 @@ svg path{
     #audio-icon{
         display: none;
     }
-    .artist-info-card-holder, .album-info-card-holder {
+    .artist-info-card-holder, .aldbum-info-card-holder {
         width: 90%;
     }
     .profile-holder{

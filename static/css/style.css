@@ -196,6 +196,12 @@ i {
     overflow-x: hidden;
     
 }
+
+.more-btn{
+    margin: 0px 48%;
+    cursor: pointer;
+}
+
 .song-card {
     display: flex;
     align-items: center;

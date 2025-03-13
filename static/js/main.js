@@ -293,15 +293,19 @@ async function searchSongs(isNew, q) {
 
     const query = document.getElementById("search-query").value || q;
     songQuery = query;
-    songList.innerHTML =``;
     
     //console.log(isNew);
     try {
         if (!isNew) {
             songPageNo= songPageNo + 1;
+            const rem = songList.querySelector(".more-btn");
+            if (rem) {
+                songList.removeChild(rem);
+            }
         }
         else {
             songPageNo = 1;
+            songList.innerHTML =``;
         }
         const response = await fetch(`/search/songs?query=${query}&limit=24&page=${songPageNo}`);
         const data = await response.json();
@@ -316,6 +320,15 @@ async function searchSongs(isNew, q) {
         for (let i = 0; i < 25 && i < songs.length; i++) {
             createSongCard(songs[i], songList);
         }
+        
+        const more_btn = document.createElement("span");
+        more_btn.classList.add("more-btn");
+        more_btn.innerHTML = "more..";
+        more_btn.addEventListener('click', () => {
+            searchSongs(false);
+            }
+        );
+        songList.appendChild(more_btn);
     } catch (error) {
         console.error("Error fetching songs", error);
         songList.innerHTML = "<p>No songs found</p>";
@@ -333,15 +346,19 @@ async function searchSongs(isNew, q) {
 
 async function searchAlbums(isNew, q) {
     const query = document.getElementById("search-query").value || q;
-    album_list.innerHTML =``;
     albumQuery = query;
 
     try {
         if (!isNew) {
             albumPageNo= albumPageNo + 1;
+            let rem = album_list.querySelector(".more-btn");
+            if (rem) {
+                album_list.removeChild(rem);
+            }
         }
         else {
             albumPageNo = 1;
+            album_list.innerHTML =``;
         }
         const response = await fetch(`/search/albums?q=${query}&limit=18&page=${albumPageNo}`);
         const data = await response.json();
@@ -355,6 +372,15 @@ async function searchAlbums(isNew, q) {
         for (let i = 0; i < 18 && i < albums.length; i++) {
             createAlbumCard(albums[i], album_list);
         }
+
+        const more_btn = document.createElement("span");
+        more_btn.classList.add("more-btn");
+        more_btn.innerHTML = "more..";
+        more_btn.addEventListener('click', () => {
+            searchAlbums(false);
+            }
+        );
+        album_list.appendChild(more_btn);
 
     }   catch (error) {
         console.error("Error fetching albums", error);
@@ -642,15 +668,19 @@ function createSongCard(song, songList) {
 
 async function searchArtists(isNew, q) {
     const query = document.getElementById("search-query").value || q;
-    artist_list.innerHTML =``;
     artistQuery = query;
 
     try {
         if(!isNew)
         {
             artistPageNo = artistPageNo + 1;
+            let rem = artist_list.querySelector(".more-btn");
+            if (rem) {
+                artist_list.removeChild(rem);
+            }
         } else {
             artistPageNo = 1;
+            artist_list.innerHTML =``;
         }
         const response = await fetch(`/search/artists?q=${query}&limit=10&page=${artistPageNo}`);
         const data = await response.json();
@@ -665,6 +695,15 @@ async function searchArtists(isNew, q) {
         for (let i = 0; i < 10 && i < artists.length; i++) {
             createArtistCard(artists[i], artist_list);
         }
+
+        const more_btn = document.createElement("span");
+        more_btn.classList.add("more-btn");
+        more_btn.innerHTML = "more..";
+        more_btn.addEventListener('click', () => {
+            searchArtists(false);
+        });
+        artist_list.appendChild(more_btn);
+
     }  catch (error) {
         console.error("Error fetching artists", error);
         artist_list.innerHTML = "<p>No artists found</p>";

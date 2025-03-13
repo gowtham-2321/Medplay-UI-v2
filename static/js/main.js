@@ -1258,12 +1258,13 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
 
         ffmpeg.FS("writeFile", "input.mp4", new Uint8Array(mp4Buffer));
         ffmpeg.setProgress(({ ratio }) => {
+            let safeRatio = Math.max(0, ratio);
             let downPer = document.getElementById("download-percent");
             let dowBar = document.getElementById("download-update");
-            downPer.innerHTML = `${(50 + ratio * 50).toFixed(0)}%`;
-            dowBar.style.width = `${(50 + ratio * 50) * 1.2}px`;
-            console.log(`Processing progress: ${(ratio * 100).toFixed(2)}%`);
-            if (ratio * 100 == 100) {
+            downPer.innerHTML = `${(50 + safeRatio * 50).toFixed(0)}%`;
+            dowBar.style.width = `${(50 + safeRatio * 50) * 1.2}px`;
+            console.log(`Processing progress: ${(safeRatio * 100).toFixed(2)}%`);
+            if (safeRatio * 100 == 100) {
                 removeDownloadNotif();
             }
         });
@@ -2272,10 +2273,11 @@ async function downloadSongsAsZip(songsList, zipName) {
         const genre = Array.isArray(song.genre) ? song.genre : [song.genre];
 
         const mp3Blob = await convertMp4ToMp3BlobWithProgress(downloadUrl, imageUrl, artist, title, album, year, genre, (songProgress) => {
-            if(songProgress > 0){
+            let safeRatio = Math.max(0, songProgress);
+            if(safeRatio > 0){
                 // Calculate and log progress for each song
 
-                const progress = ((index + (songProgress/10)) / songsList.length);
+                const progress = ((index + (safeRatio/10)) / songsList.length);
                 console.log(`Download index: ${index} out of ${songsList.length}`);
                 console.log(`Download progress: ${progress.toFixed(2)}%`);
                 let downPer = document.getElementById("download-percent");

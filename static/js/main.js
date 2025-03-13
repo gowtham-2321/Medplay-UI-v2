@@ -675,7 +675,7 @@ async function searchArtists(isNew, q) {
         if(!isNew)
         {
             artistPageNo = artistPageNo + 1;
-            let rem = artist_list.querySelector(".more-btn");
+            let rem = artist_list.querySelector(".more_btn");
             if (rem) {
                 artist_list.removeChild(rem);
             }
@@ -697,9 +697,13 @@ async function searchArtists(isNew, q) {
             createArtistCard(artists[i], artist_list);
         }
 
-        const more_btn = document.createElement("span");
-        more_btn.classList.add("more-btn");
-        more_btn.innerHTML = "more..";
+        const more_btn = document.createElement("div");
+        more_btn.classList.add("artist-card");
+        more_btn.classList.add("more_btn");
+        more_btn.innerHTML = `
+            <span>More</n>Artists</span>
+        `
+
         more_btn.addEventListener('click', () => {
             searchArtists(false);
         });

@@ -1645,6 +1645,7 @@ function playNextInQueue() {
         nextSongNotif();    
     }
     songCountTime();
+    localStorage.setItem("SongQueue", JSON.stringify(songQueue));
 }
 
 function updateQueueDisplay() {

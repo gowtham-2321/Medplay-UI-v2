@@ -2532,6 +2532,7 @@ function shortNotif(){
     notif.innerHTML = `
          <div class="short-notif" id="short-notif">
             <span>Added to Queue!</span>
+            <i class="fa-solid fa-circle-check"></i>
         </div>
     `
     notif.style.display = "flex";
@@ -2554,6 +2555,7 @@ function nextSongNotif(){
     notif.innerHTML = `
         <div class="next-short-notif" id="next-short-notif">
             <span>No song in queue</span>
+            <i class="fa-solid fa-triangle-exclamation"></i>
         </div>
     `
     notif.style.display = "flex";

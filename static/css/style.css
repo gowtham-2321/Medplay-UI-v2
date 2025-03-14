@@ -1409,6 +1409,12 @@ svg path{
     border-radius: 8px;
     align-items: center;
     justify-content: center;
+    gap: 10px;
+    border: 2px solid var(--accent-color);
+}
+
+.short-notif > i{
+    color: var(--accent-color);
 }
 
 .no-next-song-holder{
@@ -1427,7 +1433,9 @@ svg path{
     width: 210px;
     background: var(--secondary-bg-color);
     color: var(--primary-text-color);
+    border: 2px solid var(--accent-color);
     border-radius: 8px;
+    gap: 10px;
     align-items: center;
     justify-content: center;
 }

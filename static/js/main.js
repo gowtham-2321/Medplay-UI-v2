@@ -1089,7 +1089,7 @@ function formatTime(seconds) {
 
 function playPause() {
     const audioPlayer = document.getElementById("audio-player");
-    console.log("didoce");
+    // console.log("didoce");
     let icon = document.getElementById("play-icon");
     if (icon.classList.contains("fa-play")) {
         icon.classList.replace("fa-play", "fa-pause");
@@ -2048,7 +2048,7 @@ document.addEventListener("DOMContentLoaded", () => {
 async function blockChecker() {
     const respCode = (await fetch("https://aac.saavncdn.com/060/05bb6ae7a01edcbd8e0d859d2fa1d83d_12.mp4")).status;
     isBlocked = !(respCode == '200');
-    console.log(isBlocked);
+    // console.log(isBlocked);
 }
 
 //equalizer

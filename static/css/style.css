@@ -9,9 +9,11 @@
     --primary-bg-color: #242424;
     --secondary-bg-color: #303030;
     --heart: #f05542;
+    --shadow: 0px -65px 161px 200px rgba(3, 3, 3, 0.158);
     --max-height: 0px;
     --album-artist-song-list-height: 0px;
     --queue-fav-height: 0px;
+
 } 
 
 *{
@@ -534,7 +536,8 @@ i {
     padding: 20px;
     box-sizing: border-box;
     gap: 20px;
-    box-shadow: 0px -65px 161px 200px rgba(3, 3, 3, 0.158);
+    /* box-shadow: 0px -65px 161px 200px rgba(3, 3, 3, 0.158); */
+    box-shadow: 0px -60px 300px 100px rgba(0, 0, 0, 0.200);
     overflow: hidden;
     z-index: 3;
 }

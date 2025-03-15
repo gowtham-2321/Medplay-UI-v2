@@ -51,7 +51,6 @@ let albumQuery = "";
 let artistQuery = "";
 let isDownloading = false;
 let ffmpeg = null;
-let isBlocked = false;
 
 function load(){
     location.reload();
@@ -923,18 +922,12 @@ function playmySong(song) {
     let icon = document.getElementById("play-icon");
     icon.classList.replace("fa-play", "fa-pause");
     const artLink = `/image/?url=${encodeURIComponent(song.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
-    let Url = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
+    let URL = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
     albumArt.src = artLink;
     //console.log(URL);
-    let downloadUrl = null;  
-    if (isBlocked){
-        downloadUrl = `/stream/?url=${encodeURIComponent(Url)}`;
-    }
-    else {
-        downloadUrl = Url;
-    }
-    console.log(downloadUrl);
-    player.src = `${downloadUrl}` || "";
+    const downloadUrl = `/stream/?url=${encodeURIComponent(URL)}`;
+    //console.log(downloadUrl);
+    player.src = downloadUrl || "";
     player.play();
     // name slicing
     let new_name = song.name;
@@ -1333,13 +1326,7 @@ async function downloadSong(song) {
     }
     // slicing end
     //showNotif(song.image[2].link, new_name);
-    let downloadUrl = null;
-    if (isBlocked) {
-        downloadUrl = `/download?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0])}`;
-    }
-    else {
-        downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
-    }
+    const downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
     const filename = `${song.name || "Unknown_Song"}`;
     const imageUrl = song.image[2].url;
     let artist= [];
@@ -2038,18 +2025,11 @@ function retrieve() {
         });
 }
 document.addEventListener("DOMContentLoaded", () => {
-    blockChecker();
     retrieve();
     getFavourites();
     updateScreenSize();
     updateQueueDisplay();
 });
-
-async function blockChecker() {
-    const respCode = (await fetch("https://aac.saavncdn.com/060/05bb6ae7a01edcbd8e0d859d2fa1d83d_12.mp4")).status;
-    isBlocked = !(respCode == '200');
-    console.log(isBlocked);
-}
 
 //equalizer
 let isEqOpen = false;
@@ -2291,13 +2271,7 @@ async function downloadSongsAsZip(songsList, zipName) {
             break;
         }
 
-        let downloadUrl = null;
-        if (!isBlocked) {
-            downloadUrl = `/download?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0])}`;
-        }
-        else {
-            downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
-        }
+        const downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
         const imageUrl = song.image[2].url;
         const artist = song.artists.primary.map(a => a.name);
         const title = song.name;

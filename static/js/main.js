@@ -51,6 +51,7 @@ let albumQuery = "";
 let artistQuery = "";
 let isDownloading = false;
 let ffmpeg = null;
+let isBlocked = false;
 
 function load(){
     location.reload();
@@ -925,8 +926,15 @@ function playmySong(song) {
     let URL = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
     albumArt.src = artLink;
     //console.log(URL);
-    const downloadUrl = `/stream/?url=${encodeURIComponent(URL)}`;
-    //console.log(downloadUrl);
+    let downloadUrl = null;
+    if(isBlocked){
+        downloadUrl = `/stream?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0])}`;
+
+    } 
+    else{
+        downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
+
+    }    //console.log(downloadUrl);
     player.src = downloadUrl || "";
     player.play();
     // name slicing
@@ -1326,9 +1334,17 @@ async function downloadSong(song) {
     }
     // slicing end
     //showNotif(song.image[2].link, new_name);
-    const downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
+    let downloadUrl = null;
+    if(isBlocked){
+        downloadUrl = `/streamer?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0])}`;
+
+    } 
+    else{
+        downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
+
+    }
     const filename = `${song.name || "Unknown_Song"}`;
-    const imageUrl = song.image[2].url;
+    const imageUrl = `/image?url=${encodeURIComponent(song.image[2].url)}`;
     let artist= [];
     song.artists.primary.forEach(a => {
         artist.push(a.name)
@@ -1347,38 +1363,44 @@ async function downloadSong(song) {
 }
 
 async function fetchAsArrayBufferWithProgress(url, progressCallback) {
-    const response = await fetch(url, {signal: abortController.signal});
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const reader = response.body.getReader();
-    const contentLength = +response.headers.get('Content-Length');
-    let receivedLength = 0;
-    const chunks = [];
-
-    while (true) {
-        const { done, value } = await reader.read();
-        if (done) {
-            break;
+    try {
+        const response = await fetch(url, {signal: abortController.signal});
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-        chunks.push(value);
-        receivedLength += value.length;
 
-        if (contentLength) {
-            const percentage = (receivedLength / contentLength) * 100;
-            progressCallback(percentage.toFixed(2));
+        const reader = response.body.getReader();
+        const contentLength = +response.headers.get('Content-Length');
+        let receivedLength = 0;
+        const chunks = [];
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+                break;
+            }
+            chunks.push(value);
+            receivedLength += value.length;
+
+            if (contentLength) {
+                const percentage = (receivedLength / contentLength) * 100;
+                progressCallback(percentage.toFixed(2));
+            }
         }
-    }
 
-    const chunksAll = new Uint8Array(receivedLength);
-    let position = 0;
-    for (let chunk of chunks) {
-        chunksAll.set(chunk, position);
-        position += chunk.length;
-    }
+        const chunksAll = new Uint8Array(receivedLength);
+        let position = 0;
+        for (let chunk of chunks) {
+            chunksAll.set(chunk, position);
+            position += chunk.length;
+        }
 
-    return chunksAll.buffer;
+        return chunksAll.buffer;
+    }
+    catch{
+        removeDownloadNotif();
+        abortController = new AbortController();
+    }
 }
 
 function displayFeed() {
@@ -2025,6 +2047,7 @@ function retrieve() {
         });
 }
 document.addEventListener("DOMContentLoaded", () => {
+    checkSara();
     retrieve();
     getFavourites();
     updateScreenSize();
@@ -2281,8 +2304,15 @@ async function downloadSongsAsZip(songsList, zipName) {
             break;
         }
 
-        const downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
-        const imageUrl = song.image[2].url;
+        let downloadUrl = null;
+        if(isBlocked){
+            downloadUrl = `/streamer?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0])}`;
+    
+        } 
+        else{
+            downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
+    
+        }        const imageUrl =`/image?url=${encodeURIComponent(song.image[2].url)}`;
         const artist = song.artists.primary.map(a => a.name);
         const title = song.name;
         const album = song.album.name;

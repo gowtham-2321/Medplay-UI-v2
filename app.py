@@ -45,6 +45,29 @@ def stream():
     response.headers['Content-Length'] = upstream_response.headers.get('Content-Length')
     return response
 
+@app.route('/streamer/')
+def streamer():
+    url = request.args.get('url', '')
+    if not url:
+        return "No URL provided", 400
+
+    headers = {
+        'Range': request.headers.get('Range', '')
+    }
+
+    upstream_response = requests.get(url, headers=headers, stream=True)
+
+    def generate():
+        for chunk in upstream_response.iter_content(chunk_size=1024):
+            if chunk:
+                yield chunk
+
+    response = Response(stream_with_context(generate()), status=upstream_response.status_code, content_type=upstream_response.headers.get('Content-Type'))
+    response.headers['Content-Range'] = upstream_response.headers.get('Content-Range')
+    response.headers['Accept-Ranges'] = 'bytes'
+    response.headers['Content-Length'] = upstream_response.headers.get('Content-Length')
+    return response
+
 @app.route('/image/')
 def image():
     url = request.args.get('url', '')

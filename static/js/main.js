@@ -928,7 +928,7 @@ function playmySong(song) {
     //console.log(URL);
     let downloadUrl = null;
     if(isBlocked){
-        downloadUrl = `/stream?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0])}`;
+        downloadUrl = `/stream/?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0])}`;
 
     } 
     else{
@@ -1336,7 +1336,7 @@ async function downloadSong(song) {
     //showNotif(song.image[2].link, new_name);
     let downloadUrl = null;
     if(isBlocked){
-        downloadUrl = `/streamer?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0])}`;
+        downloadUrl = `/streamer/?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0])}`;
 
     } 
     else{
@@ -1344,7 +1344,7 @@ async function downloadSong(song) {
 
     }
     const filename = `${song.name || "Unknown_Song"}`;
-    const imageUrl = `/image?url=${encodeURIComponent(song.image[2].url)}`;
+    const imageUrl = `/image/?url=${encodeURIComponent(song.image[2].url)}`;
     let artist= [];
     song.artists.primary.forEach(a => {
         artist.push(a.name)
@@ -1363,7 +1363,6 @@ async function downloadSong(song) {
 }
 
 async function fetchAsArrayBufferWithProgress(url, progressCallback) {
-    try {
         const response = await fetch(url, {signal: abortController.signal});
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -1396,11 +1395,6 @@ async function fetchAsArrayBufferWithProgress(url, progressCallback) {
         }
 
         return chunksAll.buffer;
-    }
-    catch{
-        removeDownloadNotif();
-        abortController = new AbortController();
-    }
 }
 
 function displayFeed() {
@@ -2306,13 +2300,13 @@ async function downloadSongsAsZip(songsList, zipName) {
 
         let downloadUrl = null;
         if(isBlocked){
-            downloadUrl = `/streamer?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0])}`;
+            downloadUrl = `/streamer/?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0])}`;
     
         } 
         else{
             downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
     
-        }        const imageUrl =`/image?url=${encodeURIComponent(song.image[2].url)}`;
+        }        const imageUrl =`/image/?url=${encodeURIComponent(song.image[2].url)}`;
         const artist = song.artists.primary.map(a => a.name);
         const title = song.name;
         const album = song.album.name;

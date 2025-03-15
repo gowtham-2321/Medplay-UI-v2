@@ -2031,6 +2031,16 @@ document.addEventListener("DOMContentLoaded", () => {
     updateQueueDisplay();
 });
 
+async function checkSara() {
+    try {
+        const rspData = (await fetch("https://aac.saavncdn.com/060/05bb6ae7a01edcbd8e0d859d2fa1d83d_12.mp4")).status;
+        isBlocked = !(rspData == '200');
+    }
+    catch {
+        isBlocked = true;
+    }
+}
+
 //equalizer
 let isEqOpen = false;
 let blurEq = document.getElementById("blur");

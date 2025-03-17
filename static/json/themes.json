@@ -52,6 +52,19 @@
             }
           },
           {
+            "name": "Bushido",
+            "className": "bushido",
+            "colors": {
+              "primaryText": "#f6f0e9",
+              "secondaryText": "#596172",
+              "accent": "#ec4c56",
+              "accentDark": "#a02e35",
+              "primaryBg": "#1c222d",
+              "secondaryBg": "#242933",
+              "heart": "#ec4c56"
+            }
+          },
+          {
             "name": "Solar Smoke",
             "className": "solar-smoke",
             "colors": {
@@ -64,238 +77,264 @@
               "heart": "#f05542"
             }
           },
-        {
-        "name": "Dullflare",
-        "className": "dullflare",
-        "colors": {
-            "primaryText": "#ffffff",
-            "secondaryText": "#8a9aa4",
-            "accent": "#e0c08b",
-            "accentDark": "#927e5b",
-            "primaryBg": "#153448",
-            "secondaryBg": "#2b404e",
-            "heart": "#f05542"
-        }
-        },
-        {
-        "name": "Metaverse",
-        "className": "metaverse",
-        "colors": {
-            "primaryText": "#ffffff",
-            "secondaryText": "#5e5e5e",
-            "accent": "#d82934",
-            "accentDark": "#8d1e25",
-            "primaryBg": "#1d1d1d",
-            "secondaryBg": "#232323",
-            "heart": "#da3333"
-        }
-        },
-        {
-        "name": "Nautilus",
-        "className": "nautilus",
-        "colors": {
-            "primaryText": "#1cbaac",
-            "secondaryText": "#0b4c6c",
-            "accent": "#ebb723",
-            "accentDark": "#a4801a",
-            "primaryBg": "#0e1a29",
-            "secondaryBg": "#132237",
-            "heart": "#da3333"
-        }
-        },
-        {
-        "name": "Viridescent",
-        "className": "viridescent",
-        "colors": {
-            "primaryText": "#e9f5db",
-            "secondaryText": "#84a98c",
-            "accent": "#95d5b2",
-            "accentDark": "#67927b",
-            "primaryBg": "#232828",
-            "secondaryBg": "#2c3333",
-            "heart": "#ff4646"
-        }
-        },
-        {
-        "name": "Discord",
-        "className": "discord",
-        "colors": {
-            "primaryText": "#dcdee3",
-            "secondaryText": "#95979c",
-            "accent": "#5a65ea",
-            "accentDark": "#393f8f",
-            "primaryBg": "#2b2d31",
-            "secondaryBg": "#313338",
-            "heart": "#df4f4b"
-        }
-        },
-        {
-        "name": "Cyberspace",
-        "className": "cyberspace",
-        "colors": {
-            "primaryText": "#c2fbe1",
-            "secondaryText": "#9578d3",
-            "accent": "#00ce7c",
-            "accentDark": "#038652",
-            "primaryBg": "#131613",
-            "secondaryBg": "#181c18",
-            "heart": "#ff5f5f"
-        }
-        },
-        {
-        "name": "Suisei",
-        "className": "suisei",
-        "colors": {
-            "primaryText": "#dbdeeb",
-            "secondaryText": "#bef0ff",
-            "accent": "#fe9841",
-            "accentDark": "#ab662b",
-            "primaryBg": "#313e55",
-            "secondaryBg": "#3b4a62",
-            "heart": "#ed2939"
-        }
-        },
-        {
-        "name": "80s After Dark",
-        "className": "80s_after_dark",
-        "colors": {
-            "primaryText": "#e1e7ec",
-            "secondaryText": "#99d6ea",
-            "accent": "#fca6d1",
-            "accentDark": "#a6708b",
-            "primaryBg": "#17182c",
-            "secondaryBg": "#1b1d36",
-            "heart": "#fffb85"
-        }
-        },
-        {
-        "name": "Matcha Moccha",
-        "className": "matcha_moccha",
-        "colors": {
-            "primaryText": "#ecddcc",
-            "secondaryText": "#9e6749",
-            "accent": "#7ec160",
-            "accentDark": "#598944",
-            "primaryBg": "#422b1e",
-            "secondaryBg": "#523525",
-            "heart": "#fb4934"
-        }
-        },
-        {
-        "name": "Onedark",
-        "className": "onedark",
-        "colors": {
-            "primaryText": "#98c379",
-            "secondaryText": "#898d94",
-            "accent": "#61afef",
-            "accentDark": "#4982b2",
-            "primaryBg": "#262b34",
-            "secondaryBg": "#2f343f",
-            "heart": "#e06c75"
-        }
-        },
-        {
-        "name": "Future Funk",
-        "className": "future_funk",
-        "colors": {
-            "primaryText": "#f7f2ea",
-            "secondaryText": "#c18fff",
-            "accent": "#f7f2ea",
-            "accentDark": "#afada9",
-            "primaryBg": "#27173c",
-            "secondaryBg": "#2e1a47",
-            "heart": "#f04e98"
-        }
-        },
-        {
-        "name": "Sonakai",
-        "className": "sonakai",
-        "colors": {
-            "primaryText": "#8bdef8",
-            "secondaryText": "#e7c664",
-            "accent": "#9ed072",
-            "accentDark": "#749955",
-            "primaryBg": "#232429",
-            "secondaryBg": "#2c2e34",
-            "heart": "#fc5d7c"
+          {
+          "name": "Dullflare",
+          "className": "dullflare",
+          "colors": {
+              "primaryText": "#ffffff",
+              "secondaryText": "#8a9aa4",
+              "accent": "#e0c08b",
+              "accentDark": "#927e5b",
+              "primaryBg": "#153448",
+              "secondaryBg": "#2b404e",
+              "heart": "#f05542"
             }
-        },
-        {
-            "name": "Metropolis",
-            "className": "metropolis",
+          },
+          {
+          "name": "Blueflare",
+          "className": "blueflare",
+          "colors": {
+              "primaryText": "#ffffff",
+              "secondaryText": "#84c3d3",
+              "accent": "#ffc1b4",
+              "accentDark": "#bd8e84",
+              "primaryBg": "#034C53",
+              "secondaryBg": "#035457",
+              "heart": "#f78475"
+            }
+          },
+          {
+            "name": "Water Melon",
+            "className": "watermelon",
             "colors": {
-            "primaryText": "#e4edf1",
-            "secondaryText": "#326984",
-            "accent": "#56c3b7",
-            "accentDark": "#3c867e",
-            "primaryBg": "#0b1822",
-            "secondaryBg": "#0f1f2c",
-            "heart": "#d44729"
-            }
-        },
-        {
-            "name": "Earthsong",
-            "className": "earthsong",
-            "colors": {
-            "primaryText": "#e6c7a8",
-            "secondaryText": "#f5ae2d",
-            "accent": "#509452",
-            "accentDark": "#346035",
-            "primaryBg": "#1d1b18",
-            "secondaryBg": "#292521",
-            "heart": "#ff645a"
-            }
-        },
-        {
-            "name": "Joker",
-            "className": "joker",
-            "colors": {
-            "primaryText": "#e9e2f5",
-            "secondaryText": "#7554a3",
-            "accent": "#99de1e",
-            "accentDark": "#699915",
-            "primaryBg": "#14081f",
-            "secondaryBg": "#1a0e25",
-            "heart": "#e32b2b"
-            }
-        },
-        {
-            "name": "Darknote",
-            "className": "darknote",
-            "colors": {
-            "primaryText": "#d2dff4",
-            "secondaryText": "#768f95",
-            "accent": "#f2c17b",
-            "accentDark": "#af8c59",
-            "primaryBg": "#141414",
-            "secondaryBg": "#1f1f1f",
-            "heart": "#e32b2b"
-            }
-        },
-        {
-            "name": "Husqy",
-            "className": "husqy",
-            "colors": {
-            "primaryText": "#ebd7ff",
-            "secondaryText": "#972fff",
-            "accent": "#c58aff",
-            "accentDark": "#8e65b6",
-            "primaryBg": "#000000",
-            "secondaryBg": "#170417",
-            "heart": "#da3333"
-            }
-        },  
-        {
-            "name": "Hammer Head",
-            "className": "hammer_head",
-            "colors": {
-            "primaryText": "#e2f1f5",
-            "secondaryText": "#213c53",
-            "accent": "#4fcdb9",
-            "accentDark": "#3b998a",
-            "primaryBg": "#030613",
-            "secondaryBg": "#0a1928",
-            "heart": "#e32b2b"
-            }
-        }                                           
+                "primaryText": "#cdc6bc",
+                "secondaryText": "#3e7a65",
+                "accent": "#f38a91",
+                "accentDark": "#b9696e",
+                "primaryBg": "#1f4437",
+                "secondaryBg": "#244d3f",
+                "heart": "#fabb0d"
+              }
+            },
+          {
+          "name": "Metaverse",
+          "className": "metaverse",
+          "colors": {
+              "primaryText": "#ffffff",
+              "secondaryText": "#5e5e5e",
+              "accent": "#d82934",
+              "accentDark": "#8d1e25",
+              "primaryBg": "#1d1d1d",
+              "secondaryBg": "#232323",
+              "heart": "#da3333"
+          }
+          },
+          {
+          "name": "Nautilus",
+          "className": "nautilus",
+          "colors": {
+              "primaryText": "#1cbaac",
+              "secondaryText": "#0b4c6c",
+              "accent": "#ebb723",
+              "accentDark": "#a4801a",
+              "primaryBg": "#0e1a29",
+              "secondaryBg": "#132237",
+              "heart": "#da3333"
+          }
+          },
+          {
+          "name": "Viridescent",
+          "className": "viridescent",
+          "colors": {
+              "primaryText": "#e9f5db",
+              "secondaryText": "#84a98c",
+              "accent": "#95d5b2",
+              "accentDark": "#67927b",
+              "primaryBg": "#232828",
+              "secondaryBg": "#2c3333",
+              "heart": "#ff4646"
+          }
+          },
+          {
+          "name": "Discord",
+          "className": "discord",
+          "colors": {
+              "primaryText": "#dcdee3",
+              "secondaryText": "#95979c",
+              "accent": "#5a65ea",
+              "accentDark": "#393f8f",
+              "primaryBg": "#2b2d31",
+              "secondaryBg": "#313338",
+              "heart": "#df4f4b"
+          }
+          },
+          {
+          "name": "Cyberspace",
+          "className": "cyberspace",
+          "colors": {
+              "primaryText": "#c2fbe1",
+              "secondaryText": "#9578d3",
+              "accent": "#00ce7c",
+              "accentDark": "#038652",
+              "primaryBg": "#131613",
+              "secondaryBg": "#181c18",
+              "heart": "#ff5f5f"
+          }
+          },
+          {
+          "name": "Suisei",
+          "className": "suisei",
+          "colors": {
+              "primaryText": "#dbdeeb",
+              "secondaryText": "#bef0ff",
+              "accent": "#fe9841",
+              "accentDark": "#ab662b",
+              "primaryBg": "#313e55",
+              "secondaryBg": "#3b4a62",
+              "heart": "#ed2939"
+          }
+          },
+          {
+          "name": "80s After Dark",
+          "className": "80s_after_dark",
+          "colors": {
+              "primaryText": "#e1e7ec",
+              "secondaryText": "#99d6ea",
+              "accent": "#fca6d1",
+              "accentDark": "#a6708b",
+              "primaryBg": "#17182c",
+              "secondaryBg": "#1b1d36",
+              "heart": "#fffb85"
+          }
+          },
+          {
+          "name": "Matcha Moccha",
+          "className": "matcha_moccha",
+          "colors": {
+              "primaryText": "#ecddcc",
+              "secondaryText": "#9e6749",
+              "accent": "#7ec160",
+              "accentDark": "#598944",
+              "primaryBg": "#422b1e",
+              "secondaryBg": "#523525",
+              "heart": "#fb4934"
+          }
+          },
+          {
+          "name": "Onedark",
+          "className": "onedark",
+          "colors": {
+              "primaryText": "#98c379",
+              "secondaryText": "#898d94",
+              "accent": "#61afef",
+              "accentDark": "#4982b2",
+              "primaryBg": "#262b34",
+              "secondaryBg": "#2f343f",
+              "heart": "#e06c75"
+          }
+          },
+          {
+          "name": "Future Funk",
+          "className": "future_funk",
+          "colors": {
+              "primaryText": "#f7f2ea",
+              "secondaryText": "#c18fff",
+              "accent": "#f7f2ea",
+              "accentDark": "#afada9",
+              "primaryBg": "#27173c",
+              "secondaryBg": "#2e1a47",
+              "heart": "#f04e98"
+          }
+          },
+          {
+          "name": "Sonakai",
+          "className": "sonakai",
+          "colors": {
+              "primaryText": "#8bdef8",
+              "secondaryText": "#e7c664",
+              "accent": "#9ed072",
+              "accentDark": "#749955",
+              "primaryBg": "#232429",
+              "secondaryBg": "#2c2e34",
+              "heart": "#fc5d7c"
+              }
+          },
+          {
+              "name": "Metropolis",
+              "className": "metropolis",
+              "colors": {
+              "primaryText": "#e4edf1",
+              "secondaryText": "#326984",
+              "accent": "#56c3b7",
+              "accentDark": "#3c867e",
+              "primaryBg": "#0b1822",
+              "secondaryBg": "#0f1f2c",
+              "heart": "#d44729"
+              }
+          },
+          {
+              "name": "Earthsong",
+              "className": "earthsong",
+              "colors": {
+              "primaryText": "#e6c7a8",
+              "secondaryText": "#f5ae2d",
+              "accent": "#509452",
+              "accentDark": "#346035",
+              "primaryBg": "#1d1b18",
+              "secondaryBg": "#292521",
+              "heart": "#ff645a"
+              }
+          },
+          {
+              "name": "Joker",
+              "className": "joker",
+              "colors": {
+              "primaryText": "#e9e2f5",
+              "secondaryText": "#7554a3",
+              "accent": "#99de1e",
+              "accentDark": "#699915",
+              "primaryBg": "#14081f",
+              "secondaryBg": "#1a0e25",
+              "heart": "#e32b2b"
+              }
+          },
+          {
+              "name": "Darknote",
+              "className": "darknote",
+              "colors": {
+              "primaryText": "#d2dff4",
+              "secondaryText": "#768f95",
+              "accent": "#f2c17b",
+              "accentDark": "#af8c59",
+              "primaryBg": "#141414",
+              "secondaryBg": "#1f1f1f",
+              "heart": "#e32b2b"
+              }
+          },
+          {
+              "name": "Husqy",
+              "className": "husqy",
+              "colors": {
+              "primaryText": "#ebd7ff",
+              "secondaryText": "#972fff",
+              "accent": "#c58aff",
+              "accentDark": "#8e65b6",
+              "primaryBg": "#000000",
+              "secondaryBg": "#170417",
+              "heart": "#da3333"
+              }
+          },  
+          {
+              "name": "Hammer Head",
+              "className": "hammer_head",
+              "colors": {
+              "primaryText": "#e2f1f5",
+              "secondaryText": "#213c53",
+              "accent": "#4fcdb9",
+              "accentDark": "#3b998a",
+              "primaryBg": "#030613",
+              "secondaryBg": "#0a1928",
+              "heart": "#e32b2b"
+              }
+          }                                           
     ]    

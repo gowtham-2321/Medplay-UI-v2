@@ -4,6 +4,7 @@ let songs = [];
 let artists = [];
 const songList = document.getElementById("songlist");
 let favourites = JSON.parse(localStorage.getItem("favourites")) || [];
+let songQueue = JSON.parse(localStorage.getItem("SongQueue")) || [];
 let noOfSongs = 0;
 let duration = 0;
 let song_selected = true;
@@ -50,6 +51,7 @@ let albumQuery = "";
 let artistQuery = "";
 let isDownloading = false;
 let ffmpeg = null;
+let isBlocked = false;
 
 function load(){
     location.reload();
@@ -293,19 +295,23 @@ async function searchSongs(isNew, q) {
 
     const query = document.getElementById("search-query").value || q;
     songQuery = query;
-    songList.innerHTML =``;
     
     //console.log(isNew);
     try {
         if (!isNew) {
             songPageNo= songPageNo + 1;
+            const rem = songList.querySelector(".more-btn");
+            if (rem) {
+                songList.removeChild(rem);
+            }
         }
         else {
             songPageNo = 1;
+            songList.innerHTML =``;
         }
-        const response = await fetch(`/search/songs?query=${query}&limit=24&page=${songPageNo}`);
+        const response = await fetch(`https://api-medplay.vercel.app/api/search/songs?query=${query}&limit=24&page=${songPageNo}`);
         const data = await response.json();
-        songs = data;
+        songs = data.data.results;
         console.log(songs);
 
         
@@ -316,6 +322,15 @@ async function searchSongs(isNew, q) {
         for (let i = 0; i < 25 && i < songs.length; i++) {
             createSongCard(songs[i], songList);
         }
+        
+        const more_btn = document.createElement("span");
+        more_btn.classList.add("more-btn");
+        more_btn.innerHTML = "more..";
+        more_btn.addEventListener('click', () => {
+            searchSongs(false);
+            }
+        );
+        songList.appendChild(more_btn);
     } catch (error) {
         console.error("Error fetching songs", error);
         songList.innerHTML = "<p>No songs found</p>";
@@ -333,19 +348,23 @@ async function searchSongs(isNew, q) {
 
 async function searchAlbums(isNew, q) {
     const query = document.getElementById("search-query").value || q;
-    album_list.innerHTML =``;
     albumQuery = query;
 
     try {
         if (!isNew) {
             albumPageNo= albumPageNo + 1;
+            let rem = album_list.querySelector(".more_btn");
+            if (rem) {
+                album_list.removeChild(rem);
+            }
         }
         else {
             albumPageNo = 1;
+            album_list.innerHTML =``;
         }
-        const response = await fetch(`/search/albums?q=${query}&limit=18&page=${albumPageNo}`);
+        const response = await fetch(`https://api-medplay.vercel.app/api/search/albums?query=${query}&limit=18&page=${albumPageNo}`);
         const data = await response.json();
-        albums = data;
+        albums = data.data.results;
         console.log(albums);
 
         if (albums.length === 0) {
@@ -355,6 +374,18 @@ async function searchAlbums(isNew, q) {
         for (let i = 0; i < 18 && i < albums.length; i++) {
             createAlbumCard(albums[i], album_list);
         }
+
+        const more_btn = document.createElement("div");
+        more_btn.classList.add("album-card-more");
+        more_btn.classList.add("more_btn");
+        more_btn.innerHTML = `
+            <span>More Albums</span>
+        `
+        more_btn.addEventListener('click', () => {
+            searchAlbums(false);
+            }
+        );
+        album_list.appendChild(more_btn);
 
     }   catch (error) {
         console.error("Error fetching albums", error);
@@ -405,8 +436,9 @@ async function albumSongPager(albumId) {
     `;
     const albumInfo = document.createElement("div");
     albumInfo.classList.add("album-info-card-holder");
-    const response = await fetch(`/albums?id=${albumId}`);
-    const data = await response.json();
+    const response = await fetch(`https://api-medplay.vercel.app/api/albums?id=${albumId}`);
+    const respDat = await response.json();
+    const data = respDat.data;  
     const imageUrl = `/image/?url=${encodeURIComponent(data.image[2].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
     console.log(data);
     currentViewingAlbum = data;
@@ -642,19 +674,23 @@ function createSongCard(song, songList) {
 
 async function searchArtists(isNew, q) {
     const query = document.getElementById("search-query").value || q;
-    artist_list.innerHTML =``;
     artistQuery = query;
 
     try {
         if(!isNew)
         {
             artistPageNo = artistPageNo + 1;
+            let rem = artist_list.querySelector(".more_btn");
+            if (rem) {
+                artist_list.removeChild(rem);
+            }
         } else {
             artistPageNo = 1;
+            artist_list.innerHTML =``;
         }
-        const response = await fetch(`/search/artists?q=${query}&limit=10&page=${artistPageNo}`);
+        const response = await fetch(`https://api-medplay.vercel.app/api/search/artists?query=${query}&limit=10&page=${artistPageNo}`);
         const data = await response.json();
-        artists = data;
+        artists = data.data.results;
         console.log("artists");
         console.log(artists);
 
@@ -665,6 +701,19 @@ async function searchArtists(isNew, q) {
         for (let i = 0; i < 10 && i < artists.length; i++) {
             createArtistCard(artists[i], artist_list);
         }
+
+        const more_btn = document.createElement("div");
+        more_btn.classList.add("artist-card");
+        more_btn.classList.add("more_btn");
+        more_btn.innerHTML = `
+            <span>More Artists</span>
+        `
+
+        more_btn.addEventListener('click', () => {
+            searchArtists(false);
+        });
+        artist_list.appendChild(more_btn);
+
     }  catch (error) {
         console.error("Error fetching artists", error);
         artist_list.innerHTML = "<p>No artists found</p>";
@@ -702,10 +751,12 @@ async function artistSongPager(artistId) {
     `;
     const artistInfo = document.createElement("div");
     artistInfo.classList.add("artist-info-card-holder");
-    const response = await fetch(`/artists?id=${artistId}`);
-    const data = await response.json();
-    const songResponse = await fetch(`/artists/songs?id=${artistId}`);
-    const songsData = await songResponse.json();
+    const response = await fetch(`https://api-medplay.vercel.app/api/artists/${artistId}`);
+    const respData = await response.json();
+    const data = respData.data;
+    const songResponse = await fetch(`https://api-medplay.vercel.app/api/artists/${artistId}/songs`);
+    const songRespData = await songResponse.json();
+    const songsData = songRespData.data.songs;
     const imageUrl = `/image/?url=${encodeURIComponent(data.image[2].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
     console.log(data);
     artistInfo.innerHTML = `
@@ -875,8 +926,15 @@ function playmySong(song) {
     let URL = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
     albumArt.src = artLink;
     //console.log(URL);
-    const downloadUrl = `/stream/?url=${encodeURIComponent(URL)}`;
-    //console.log(downloadUrl);
+    let downloadUrl = null;
+    if(isBlocked){
+        downloadUrl = `/stream/?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0])}`;
+
+    } 
+    else{
+        downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
+
+    }    //console.log(downloadUrl);
     player.src = downloadUrl || "";
     player.play();
     // name slicing
@@ -1032,7 +1090,7 @@ function formatTime(seconds) {
 
 function playPause() {
     const audioPlayer = document.getElementById("audio-player");
-    console.log("didoce");
+    // console.log("didoce");
     let icon = document.getElementById("play-icon");
     if (icon.classList.contains("fa-play")) {
         icon.classList.replace("fa-play", "fa-pause");
@@ -1214,12 +1272,13 @@ async function convertMp4ToMp3(mp4Url, imageUrl, artist, title, album, year, gen
 
         ffmpeg.FS("writeFile", "input.mp4", new Uint8Array(mp4Buffer));
         ffmpeg.setProgress(({ ratio }) => {
+            let safeRatio = Math.max(0, ratio);
             let downPer = document.getElementById("download-percent");
             let dowBar = document.getElementById("download-update");
-            downPer.innerHTML = `${(50 + ratio * 50).toFixed(0)}%`;
-            dowBar.style.width = `${(50 + ratio * 50) * 1.2}px`;
-            console.log(`Processing progress: ${(ratio * 100).toFixed(2)}%`);
-            if (ratio * 100 == 100) {
+            downPer.innerHTML = `${(50 + safeRatio * 50).toFixed(0)}%`;
+            dowBar.style.width = `${(50 + safeRatio * 50) * 1.2}px`;
+            console.log(`Processing progress: ${(safeRatio * 100).toFixed(2)}%`);
+            if (safeRatio * 100 == 100) {
                 removeDownloadNotif();
             }
         });
@@ -1275,9 +1334,17 @@ async function downloadSong(song) {
     }
     // slicing end
     //showNotif(song.image[2].link, new_name);
-    const downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
+    let downloadUrl = null;
+    if(isBlocked){
+        downloadUrl = `/streamer/?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0])}`;
+
+    } 
+    else{
+        downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
+
+    }
     const filename = `${song.name || "Unknown_Song"}`;
-    const imageUrl = song.image[2].url;
+    const imageUrl = `/image/?url=${encodeURIComponent(song.image[2].url)}`;
     let artist= [];
     song.artists.primary.forEach(a => {
         artist.push(a.name)
@@ -1296,38 +1363,38 @@ async function downloadSong(song) {
 }
 
 async function fetchAsArrayBufferWithProgress(url, progressCallback) {
-    const response = await fetch(url, {signal: abortController.signal});
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const reader = response.body.getReader();
-    const contentLength = +response.headers.get('Content-Length');
-    let receivedLength = 0;
-    const chunks = [];
-
-    while (true) {
-        const { done, value } = await reader.read();
-        if (done) {
-            break;
+        const response = await fetch(url, {signal: abortController.signal});
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-        chunks.push(value);
-        receivedLength += value.length;
 
-        if (contentLength) {
-            const percentage = (receivedLength / contentLength) * 100;
-            progressCallback(percentage.toFixed(2));
+        const reader = response.body.getReader();
+        const contentLength = +response.headers.get('Content-Length');
+        let receivedLength = 0;
+        const chunks = [];
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+                break;
+            }
+            chunks.push(value);
+            receivedLength += value.length;
+
+            if (contentLength) {
+                const percentage = (receivedLength / contentLength) * 100;
+                progressCallback(percentage.toFixed(2));
+            }
         }
-    }
 
-    const chunksAll = new Uint8Array(receivedLength);
-    let position = 0;
-    for (let chunk of chunks) {
-        chunksAll.set(chunk, position);
-        position += chunk.length;
-    }
+        const chunksAll = new Uint8Array(receivedLength);
+        let position = 0;
+        for (let chunk of chunks) {
+            chunksAll.set(chunk, position);
+            position += chunk.length;
+        }
 
-    return chunksAll.buffer;
+        return chunksAll.buffer;
 }
 
 function displayFeed() {
@@ -1532,9 +1599,6 @@ function displayError() {
     history.pushState(null, "", "/");
 }
 
-
-let songQueue = [];
-
 function songCountTime()
 {
     noOfSongs = songQueue.length;
@@ -1566,8 +1630,8 @@ function addToQueue(song) {
     songQueue.push(song);
     songCountTime();
     updateQueueDisplay();
-
-
+    shortNotif();
+    localStorage.setItem("SongQueue", JSON.stringify(songQueue));
 }
 
 function removeFromQueue(index) {
@@ -1578,6 +1642,7 @@ function removeFromQueue(index) {
         bla.innerHTML = `<span>No songs in queue</span>`;
     }
     songCountTime();
+    localStorage.setItem("SongQueue", JSON.stringify(songQueue));
 }
 
 
@@ -1592,7 +1657,11 @@ function playNextInQueue() {
     
         }
     }
+    else {
+        nextSongNotif();    
+    }
     songCountTime();
+    localStorage.setItem("SongQueue", JSON.stringify(songQueue));
 }
 
 function updateQueueDisplay() {
@@ -1855,6 +1924,7 @@ function moveQueueItem(oldIndex, newIndex) {
     }
     songQueue.splice(newIndex, 0, songQueue.splice(oldIndex, 1)[0]);
     updateQueueDisplay();
+    localStorage.setItem("SongQueue", JSON.stringify(songQueue));
 }
 
 
@@ -1971,10 +2041,22 @@ function retrieve() {
         });
 }
 document.addEventListener("DOMContentLoaded", () => {
+    checkSara();
     retrieve();
     getFavourites();
     updateScreenSize();
+    updateQueueDisplay();
 });
+
+async function checkSara() {
+    try {
+        const rspData = (await fetch("https://aac.saavncdn.com/060/05bb6ae7a01edcbd8e0d859d2fa1d83d_12.mp4")).status;
+        isBlocked = !(rspData == '200');
+    }
+    catch {
+        isBlocked = true;
+    }
+}
 
 //equalizer
 let isEqOpen = false;
@@ -2216,8 +2298,15 @@ async function downloadSongsAsZip(songsList, zipName) {
             break;
         }
 
-        const downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
-        const imageUrl = song.image[2].url;
+        let downloadUrl = null;
+        if(isBlocked){
+            downloadUrl = `/streamer/?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0])}`;
+    
+        } 
+        else{
+            downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
+    
+        }        const imageUrl =`/image/?url=${encodeURIComponent(song.image[2].url)}`;
         const artist = song.artists.primary.map(a => a.name);
         const title = song.name;
         const album = song.album.name;
@@ -2225,10 +2314,11 @@ async function downloadSongsAsZip(songsList, zipName) {
         const genre = Array.isArray(song.genre) ? song.genre : [song.genre];
 
         const mp3Blob = await convertMp4ToMp3BlobWithProgress(downloadUrl, imageUrl, artist, title, album, year, genre, (songProgress) => {
-            if(songProgress > 0){
+            let safeRatio = Math.max(0, songProgress);
+            if(safeRatio > 0){
                 // Calculate and log progress for each song
 
-                const progress = ((index + (songProgress/10)) / songsList.length);
+                const progress = ((index + (safeRatio/10)) / songsList.length);
                 console.log(`Download index: ${index} out of ${songsList.length}`);
                 console.log(`Download progress: ${progress.toFixed(2)}%`);
                 let downPer = document.getElementById("download-percent");
@@ -2469,4 +2559,50 @@ function removeAlertNotifQuick(){
     setTimeout(() => {
         notif.style.display = "none";
     }, 100); 
+}
+
+function shortNotif(){
+    let notif = document.getElementById("notif-holder");
+    notif.innerHTML = ``;
+    notif.innerHTML = `
+         <div class="short-notif" id="short-notif">
+            <span>Added to Queue!</span>
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+    `
+    notif.style.display = "flex";
+    setTimeout(() => {
+        notif.style.opacity = "1";
+    }, 100); 
+
+    setTimeout(() => {
+        notif.style.opacity = "0"; 
+        setTimeout(() => {
+            notif.style.display = "none";
+            notif.innerHTML = ``;
+        }, 100);
+    }, 1500);
+}
+
+function nextSongNotif(){
+    let notif = document.getElementById("no-next-song-holder");
+    notif.innerHTML = ``;
+    notif.innerHTML = `
+        <div class="next-short-notif" id="next-short-notif">
+            <span>No song in queue</span>
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+    `
+    notif.style.display = "flex";
+    setTimeout(() => {
+        notif.style.opacity = "1";
+    }, 100); 
+
+    setTimeout(() => {
+        notif.style.opacity = "0"; 
+        setTimeout(() => {
+            notif.style.display = "none";
+            notif.innerHTML = ``;
+        }, 100);
+    }, 1500);
 }

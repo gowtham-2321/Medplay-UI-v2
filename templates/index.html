@@ -96,7 +96,7 @@
               <div class="classi" id="class-album" onclick="albumPage()">Albums</div>
             </div>
           </div>
-          <div class="list-holder" id="list-holder">            
+          <div class="list-holder" id="list-holder">     
             <div class="songlist" id="songlist">
               <p> No Songs Found </p>
             </div>
@@ -186,7 +186,7 @@
                 <a href="https://github.com/gowtham-2321" target="_blank"><i class="fa-brands fa-github"></i></a>
                 <a href="https://www.linkedin.com/in/gowtham-jegathesan/" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
                 <a href="https://www.instagram.com/imnotgowtham/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
-                <a href="mailto:gowthamjega200%@gmail.com" target="_blank"><i class="fa-solid fa-envelope"></i></a>
+                <a href="mailto:gowthamjega2005@gmail.com" target="_blank"><i class="fa-solid fa-envelope"></i></a>
               </div>
             </div>
           </div>
@@ -203,7 +203,7 @@
             </div>
           </div>
         </div>
-        <p>Access the old Medplay at <a href="https://medplay.vercel.app" target="_blank"><i class="fas fa-link"></i>medplay-lite.vercel.app</a></p>
+        <p>Access the old Medplay at <a href="https://medplay-lite.vercel.app" target="_blank"><i class="fas fa-link"></i>medplay-lite.vercel.app</a></p>
       </div>
       <div class="error-page" id="error">
         <span class="error-text">Page Not Found</span>
@@ -404,27 +404,24 @@
   </div>
   <div class="alert-ok" onclick="removeAlertNotifQuick()"><span>Got it!</span></div>
 </div>
+<div class="notif-holder" id="notif-holder">
+</div>
+
+<div class="no-next-song-holder" id="no-next-song-holder">
+  
+</div>
 
 
-<audio id = "audio-player" ontimeupdate="updateProgress()" onloadedmetadata="updateDuration()"></audio>
+
+
+<audio id = "audio-player" ontimeupdate="updateProgress()" onloadedmetadata="updateDuration()" crossorigin="anonymous"></audio>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 <script src = "{{ url_for('static', filename="js/main.js")}}"></script>
-<!--<script>
-  function sendTitleBarColor() {
-      let rootStyle = getComputedStyle(document.documentElement);
-      let primaryColor = rootStyle.getPropertyValue('--primary-bg-color').trim(); // Get CSS variable
+<script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src = "/_vercel/insights/script.js"></script>
 
-      if (window.pywebview && window.pywebview.api) {
-          window.pywebview.api.update_title_bar_color(primaryColor); // Send color to Python
-          console.log("Sent color to Python:", primaryColor);
-      } else {
-          console.error("PyWebview API not available. Retrying...");
-          setTimeout(sendTitleBarColor, 500); // Retry after 500ms
-      }
-  }
-
-  document.addEventListener("DOMContentLoaded", sendTitleBarColor);
-</script> -->
     {% if show_404 %}
       <script>
         displayError();

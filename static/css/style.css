@@ -1016,7 +1016,6 @@ i {
     padding: 0px 150px;
     box-sizing: border-box;
     text-align: justify;
-    overflow-y: auto;
     height: var(--queue-fav-height);
 }
 p{
@@ -1086,6 +1085,23 @@ a{
     font-size: 30px;
     font-weight: 500;
     color: var(--primary-text-color);
+}
+
+.song{
+    display: none;
+    position: absolute;
+    opacity: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: opacity .3s ease-in-out, display .3s ease-in-out;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    height: var(--queue-fav-height);
+}
+
+.song-bg{
+    
 }
 
 /*equaliser*/

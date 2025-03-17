@@ -31,6 +31,7 @@ let queue = document.getElementById("queue");
 let fav = document.getElementById("favourites");
 let themes = document.getElementById("themes");
 let about = document.getElementById("about");
+let song = document.getElementById("song");
 let error = document.getElementById("error");
 let feed_btn = document.getElementById("feed-btn");
 let song_count = document.getElementById("song-count");
@@ -1430,10 +1431,16 @@ function displayFeed() {
         about.style.display = "none";
     }, 300);
 
+    song.style.opacity = "0"; 
+    setTimeout(() => {
+        song.style.display = "none";
+    }, 300);
+
     error.style.opacity = "0"; 
     setTimeout(() => {
         error.style.display = "none";
     }, 300);
+
 }
 
 function displayQueue() {
@@ -1461,6 +1468,11 @@ function displayQueue() {
     about.style.opacity = "0"; 
     setTimeout(() => {
         about.style.display = "none";
+    }, 300);
+
+    song.style.opacity = "0"; 
+    setTimeout(() => {
+        song.style.display = "none";
     }, 300);
 
     error.style.opacity = "0"; 
@@ -1495,6 +1507,11 @@ function displayThemes() {
         about.style.display = "none";
     }, 300);
 
+    song.style.opacity = "0"; 
+    setTimeout(() => {
+        song.style.display = "none";
+    }, 300);
+
     error.style.opacity = "0"; 
     setTimeout(() => {
         error.style.display = "none";
@@ -1525,6 +1542,11 @@ function displayFavourites() {
     about.style.opacity = "0"; 
     setTimeout(() => {
         about.style.display = "none";
+    }, 300);
+
+    song.style.opacity = "0"; 
+    setTimeout(() => {
+        song.style.display = "none";
     }, 300);
 
     error.style.opacity = "0"; 
@@ -1559,10 +1581,54 @@ function displayAbout() {
         fav.style.display = "none";
     }, 300);
 
+    song.style.opacity = "0"; 
+    setTimeout(() => {
+        song.style.display = "none";
+    }, 300);
+
     error.style.opacity = "0"; 
     setTimeout(() => {
         error.style.display = "none";
     }, 300);
+}
+
+function displaySong() {
+
+    song.style.display = "flex"; 
+    setTimeout(() => {
+        song.style.opacity = "1";
+    }, 300);
+
+    feed.style.opacity = "0"; 
+    setTimeout(() => {
+        feed.style.display = "none";
+    }, 300);
+
+    queue.style.opacity = "0"; 
+    setTimeout(() => {
+        queue.style.display = "none";
+    }, 300);
+
+    themes.style.opacity = "0"; 
+    setTimeout(() => {
+        themes.style.display = "none";
+    }, 300);
+
+    fav.style.opacity = "0"; 
+    setTimeout(() => {
+        fav.style.display = "none";
+    }, 300);
+
+    error.style.opacity = "0"; 
+    setTimeout(() => {
+        error.style.display = "none";
+    }, 300);
+
+    about.style.opacity = "0"; 
+    setTimeout(() => {
+        about.style.display = "none";
+    }, 300);
+    history.pushState(null, "", "/");
 }
 
 function displayError() {
@@ -1590,6 +1656,11 @@ function displayError() {
     fav.style.opacity = "0"; 
     setTimeout(() => {
         fav.style.display = "none";
+    }, 300);
+
+    song.style.opacity = "0"; 
+    setTimeout(() => {
+        song.style.display = "none";
     }, 300);
 
     about.style.opacity = "0"; 

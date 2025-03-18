@@ -2052,7 +2052,7 @@ async function checkSara() {
     try {
         const rspData = await fetch("https://aac.saavncdn.com/060/05bb6ae7a01edcbd8e0d859d2fa1d83d_12.mp4");
         const contentType = rspData.headers.get("content-type");
-        isBlocked = !(rspData.ok && contentType.includes("video/mp4"));
+        isBlocked = !(rspData.ok && contentType.includes("audio/mp4"));
     }
     catch {
         isBlocked = true;

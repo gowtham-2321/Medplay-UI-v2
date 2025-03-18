@@ -1101,9 +1101,28 @@ a{
 }
 
 .song-bg{
-    
+    position: relative;
+    width: 100%;
+    height: 100%;
 }
 
+.song-bg::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url("/image/?url=https://cdn3.pixelcut.app/7/20/uncrop_hero_bdf08a8ca6.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 20px; 
+    filter: blur(10px);
+    /* Adds border radius to the blurred background */
+    z-index: 0; /* Pushes the blurred background behind */
+}
+.song-text{
+    position: relative;
+    z-index: 1;
+}
 /*equaliser*/
 .player-eq-btn {
     height: 20px;

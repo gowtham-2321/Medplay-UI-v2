@@ -913,6 +913,12 @@ function artUpdater() {
 }
 
 function playmySong(song) {
+    gtag('event', 'songPlayed', {
+        'event_category': 'playEvent',
+        'event_label': 'Play Button Clicked',
+        'song_id': song.id,  // Pass the purchase amount
+        'song_name': song.name
+      });
     currentSong = song;
     playerHeart();
     const player = document.getElementById("audio-player");

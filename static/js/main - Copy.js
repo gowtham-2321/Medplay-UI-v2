@@ -309,7 +309,7 @@ async function searchSongs(isNew, q) {
             songPageNo = 1;
             songList.innerHTML =``;
         }
-        const response = await fetch(`https://jiosaavn-api-privatecvc2.vercel.app/search/songs?query=${query}&limit=24&page=${songPageNo}`);
+        const response = await fetch(`https://api-medplay.vercel.app/api/search/songs?query=${query}&limit=24&page=${songPageNo}`);
         const data = await response.json();
         songs = data.data.results;
         console.log(songs);
@@ -362,7 +362,7 @@ async function searchAlbums(isNew, q) {
             albumPageNo = 1;
             album_list.innerHTML =``;
         }
-        const response = await fetch(`https://jiosaavn-api-privatecvc2.vercel.app/search/albums?query=${query}&limit=18&page=${albumPageNo}`);
+        const response = await fetch(`https://api-medplay.vercel.app/api/search/albums?query=${query}&limit=18&page=${albumPageNo}`);
         const data = await response.json();
         albums = data.data.results;
         console.log(albums);
@@ -396,7 +396,7 @@ async function searchAlbums(isNew, q) {
 function createAlbumCard(album, albumList) {
     const thsAlbum = document.createElement("div");
     thsAlbum.classList.add("album-card");
-    const imageUrl = `/image/?url=${encodeURIComponent(album.image[1].link || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+    const imageUrl = `/image/?url=${encodeURIComponent(album.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
     //name slicing
     let new_name = album.name;
     if (new_name.length > 30) {
@@ -436,16 +436,16 @@ async function albumSongPager(albumId) {
     `;
     const albumInfo = document.createElement("div");
     albumInfo.classList.add("album-info-card-holder");
-    const response = await fetch(`https://jiosaavn-api-privatecvc2.vercel.app/albums?id=${albumId}`);
+    const response = await fetch(`https://api-medplay.vercel.app/api/albums?id=${albumId}`);
     const respDat = await response.json();
     const data = respDat.data;  
-    const imageUrl = `/image/?url=${encodeURIComponent(data.image[2].link || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+    const imageUrl = `/image/?url=${encodeURIComponent(data.image[2].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
     console.log(data);
     currentViewingAlbum = data;
     albumInfo.innerHTML = `
     <img class="album-info-card-image" src="${imageUrl}">
     <div class="album-info-card">
-        <span class="album-page-artist-name">${data.primaryArtists}</span>
+        <span class="album-page-artist-name">${data.artists.primary[0].name}</span>
         <span class="album-name-album-card">${data.name}</span>
         <div class="album-card-play">
             <div class="album-play-icon">
@@ -490,10 +490,10 @@ async function albumSongPager(albumId) {
 
 function createAlbumSongCards(albumSongList) {
     currentViewingAlbumSongs.forEach(song => {
-        const songImageUrl = `/image/?url=${encodeURIComponent(song.image[1].link || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+        const songImageUrl = `/image/?url=${encodeURIComponent(song.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
         //name slicing
         let new_name = song.name;
-        let new_art_name = song.primaryArtists;
+        let new_art_name = song.artists.primary[0].name;
         
         let new_album_name = song.album.name;
         let new_duration = formatTime(song.duration);
@@ -587,10 +587,10 @@ function createAlbumSongCards(albumSongList) {
 function createSongCard(song, songList) {
     const card = document.createElement("div");
     card.classList.add("song-card");
-    const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].link || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+    const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
     //name slicing
     let new_name = song.name;
-    let new_art_name = song.primaryArtists;
+    let new_art_name = song.artists.primary[0].name;
     
     let new_album_name = song.album.name;
     let new_duration = formatTime(song.duration);
@@ -688,7 +688,7 @@ async function searchArtists(isNew, q) {
             artistPageNo = 1;
             artist_list.innerHTML =``;
         }
-        const response = await fetch(`https://jiosaavn-api-privatecvc2.vercel.app/search/artists?query=${query}&limit=10&page=${artistPageNo}`);
+        const response = await fetch(`https://api-medplay.vercel.app/api/search/artists?query=${query}&limit=10&page=${artistPageNo}`);
         const data = await response.json();
         artists = data.data.results;
         console.log("artists");
@@ -723,7 +723,7 @@ async function searchArtists(isNew, q) {
 function createArtistCard(artist, artistList) {
     const thsArtist = document.createElement("div");
     thsArtist.classList.add("artist-card");
-    const imageUrl = `/image/?url=${encodeURIComponent(artist.image[1].link || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+    const imageUrl = `/image/?url=${encodeURIComponent(artist.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
 
     let new_name = artist.name;
     if (new_name.length > 30) {
@@ -751,13 +751,13 @@ async function artistSongPager(artistId) {
     `;
     const artistInfo = document.createElement("div");
     artistInfo.classList.add("artist-info-card-holder");
-    const response = await fetch(`https://jiosaavn-api-privatecvc2.vercel.app/artists/${artistId}`);
+    const response = await fetch(`https://api-medplay.vercel.app/api/artists/${artistId}`);
     const respData = await response.json();
     const data = respData.data;
-    const songResponse = await fetch(`https://jiosaavn-api-privatecvc2.vercel.app/artists/${artistId}/songs`);
+    const songResponse = await fetch(`https://api-medplay.vercel.app/api/artists/${artistId}/songs`);
     const songRespData = await songResponse.json();
     const songsData = songRespData.data.songs;
-    const imageUrl = `/image/?url=${encodeURIComponent(data.image[2].link || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+    const imageUrl = `/image/?url=${encodeURIComponent(data.image[2].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
     console.log(data);
     artistInfo.innerHTML = `
     <img class="artist-info-card-image" src="${imageUrl}">
@@ -804,10 +804,10 @@ async function artistSongPager(artistId) {
 
 function createArtistSongCards(artistSongList) {
     currentViewingArtistSongs.forEach(song => {
-        const songImageUrl = `/image/?url=${encodeURIComponent(song.image[1].link || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+        const songImageUrl = `/image/?url=${encodeURIComponent(song.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
         //name slicing
         let new_name = song.name;
-        let new_art_name = song.primaryArtists;
+        let new_art_name = song.artists.primary[0].name;
         
         let new_album_name = song.album.name;
         let new_duration = formatTime(song.duration);
@@ -928,33 +928,33 @@ function playmySong(song) {
     const playerDownloadIcon = document.getElementById("player-download-icon")
     let icon = document.getElementById("play-icon");
     icon.classList.replace("fa-play", "fa-pause");
-    const artLink = `/image/?url=${encodeURIComponent(song.image[1].link || `{{ url_for('static', filename="img/plc.png")}}`)}`;
-    let URL = song.downloadUrl.find(link => link.quality === '320kbps').link || song.downloadUrl[0];
+    const artLink = `/image/?url=${encodeURIComponent(song.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+    let URL = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
     albumArt.src = artLink;
     //console.log(URL);
     let downloadUrl = null;
     if(isBlocked){
-        downloadUrl = `/stream/?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').link || song.downloadUrl[0])}`;
+        downloadUrl = `/stream/?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0])}`;
 
     } 
     else{
-        downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').link || song.downloadUrl[0];
+        downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
 
     }    //console.log(downloadUrl);
     player.src = downloadUrl || "";
     player.play();
     // name slicing
     let new_name = song.name;
-    // let new_art_name = song.primaryArtists;
+    let new_art_name = song.artists.primary[0].name;
     if (new_name.length > 21) {
         new_name = new_name.slice(0,18)+"...";
     }
-    // if (new_art_name.length > 25) {
-    //     new_art_name = new_art_name.slice(0,25)+"...";
-    // }
+    if (new_art_name.length > 25) {
+        new_art_name = new_art_name.slice(0,25)+"...";
+    }
     //slicing end
     nowPlaying.textContent = `${new_name || "Unknown Song"}`;
-    // nowArtist.textContent = `${new_art_name || "Unknown Artist"}`;    
+    nowArtist.textContent = `${new_art_name || "Unknown Artist"}`;    
     playerDownloadIcon.onclick = () => downloadSong(song);
 
     let playerHeartt = document.getElementById("player-heart");
@@ -1342,15 +1342,15 @@ async function downloadSong(song) {
     //showNotif(song.image[2].link, new_name);
     let downloadUrl = null;
     if(isBlocked){
-        downloadUrl = `/streamer/?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').link || song.downloadUrl[0])}`;
+        downloadUrl = `/streamer/?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0])}`;
 
     } 
     else{
-        downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').link || song.downloadUrl[0];
+        downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
 
     }
     const filename = `${song.name || "Unknown_Song"}`;
-    const imageUrl = `/image/?url=${encodeURIComponent(song.image[2].link)}`;
+    const imageUrl = `/image/?url=${encodeURIComponent(song.image[2].url)}`;
     let artist= [];
     song.artists.primary.forEach(a => {
         artist.push(a.name)
@@ -1679,18 +1679,18 @@ function updateQueueDisplay() {
         queueItem.classList.add("song-card");
         queueItem.classList.add("queue-Item");
 
-        const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].link || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+        const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
         //name slicing
         let new_name = song.name;
-        // let new_art_name = song.primaryArtists;
+        let new_art_name = song.artists.primary[0].name;
         let new_album_name = song.album.name;
         let new_duration = formatTime(song.duration);
         if (new_name.length > 45) {
             new_name = new_name.slice(0,45)+"...";
         }
-        // if (new_art_name.length > 35) {
-        //     new_art_name = new_art_name.slice(0,35)+"...";
-        // }
+        if (new_art_name.length > 35) {
+            new_art_name = new_art_name.slice(0,35)+"...";
+        }
         if (new_album_name.length > 35) {
             new_album_name = new_art_name.slice(0,35)+"...";
         }
@@ -1699,6 +1699,7 @@ function updateQueueDisplay() {
             <img class="song-card-art" src="${imageUrl}" alt="">
             <div class="responsive-song-card">
                 <span class="song-card-song-name">${new_name ||"Unkown Song"}</span>
+                <span class="song-card-artist-name">${new_art_name ||"Unkown Artist"}</span>
                 <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
                 <span class="song-card-timestamp">${new_duration || "00:00"}</span>
                 <div class="song-card-icons">
@@ -1793,18 +1794,18 @@ function getFavourites(){
             songCountFav = +songCountFav + +1;
 
             //console.log(favDuration);
-            const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].link || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+            const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
             //name slicing
             let new_name = song.name;
-            // let new_art_name = song.primaryArtists;
+            let new_art_name = song.artists.primary[0].name;
             let new_album_name = song.album.name;
             let new_duration = formatTime(song.duration);
             if (new_name.length > 45) {
                 new_name = new_name.slice(0,45)+"...";
             }
-            // if (new_art_name.length > 35) {
-            //     new_art_name = new_art_name.slice(0,35)+"...";
-            // }
+            if (new_art_name.length > 35) {
+                new_art_name = new_art_name.slice(0,35)+"...";
+            }
             if (new_album_name.length > 35) {
                 new_album_name = new_art_name.slice(0,35)+"...";
             }
@@ -1813,6 +1814,7 @@ function getFavourites(){
                 <img class="song-card-art" src="${imageUrl}" alt="">
                 <div class="responsive-song-card">
                     <span class="song-card-song-name">${new_name ||"Unkown Song"}</span>
+                    <span class="song-card-artist-name">${new_art_name ||"Unkown Artist"}</span>
                     <span class="song-card-album-name">${new_album_name || "Unkown Album"}</span>
                     <span class="song-card-timestamp">${new_duration || "00:00"}</span>
                     <div class="song-card-icons">
@@ -2305,13 +2307,13 @@ async function downloadSongsAsZip(songsList, zipName) {
 
         let downloadUrl = null;
         if(isBlocked){
-            downloadUrl = `/streamer/?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').link || song.downloadUrl[0])}`;
+            downloadUrl = `/streamer/?url=${encodeURIComponent(song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0])}`;
     
         } 
         else{
-            downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').link || song.downloadUrl[0];
+            downloadUrl = song.downloadUrl.find(link => link.quality === '320kbps').url || song.downloadUrl[0];
     
-        }        const imageUrl =`/image/?url=${encodeURIComponent(song.image[2].link)}`;
+        }        const imageUrl =`/image/?url=${encodeURIComponent(song.image[2].url)}`;
         const artist = song.artists.primary.map(a => a.name);
         const title = song.name;
         const album = song.album.name;
@@ -2468,7 +2470,7 @@ function downloadNotif(song){
 
     let downloadName = document.getElementById("download-name");
     let notifImage = document.getElementById("notif-image");
-    const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].link || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+    const imageUrl = `/image/?url=${encodeURIComponent(song.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
     notifImage.src = imageUrl;
     downloadName.innerHTML = song.name;
 }
@@ -2516,7 +2518,7 @@ function downloadAlbNotif(album){
     notifTitle.innerHTML = "Download Album";
 
     let downloadName = document.getElementById("download-name");
-    const imageUrl = `/image/?url=${encodeURIComponent(album.image[1].link || `{{ url_for('static', filename="img/plc.png")}}`)}`;
+    const imageUrl = `/image/?url=${encodeURIComponent(album.image[1].url || `{{ url_for('static', filename="img/plc.png")}}`)}`;
     notifImage.src = imageUrl;
     downloadName.innerHTML = `${album.name}-Album`;
 }

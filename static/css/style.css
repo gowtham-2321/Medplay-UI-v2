@@ -1231,6 +1231,7 @@ input[type="range"]::-moz-range-thumb {
     flex-direction: column;
     gap: 10px;
     opacity: 0;
+    z-index: 10;
     transition: display .3s ease-in-out, opacity .3s ease-in-out;
     -webkit-box-shadow: -1px 2px 148px -19px rgba(0,0,0,0.39);
     -moz-box-shadow: -1px 2px 148px -19px rgba(0,0,0,0.39);
@@ -1443,6 +1444,31 @@ svg path{
     justify-content: center;
 }
 
+.short-notif-technical{
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    height: fit-content;
+    width: fit-content;
+    padding: 5px 0px 5px 10px;
+    background: var(--secondary-bg-color);
+    color: var(--primary-text-color);
+    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    z-index: 0;
+    border: 2px solid var(--accent-color);
+}
+.short-notif-technical > span{
+    width: 300px;
+}
+
+.short-notif-technical > span >  i{
+    color: var(--accent-color);
+}
+
 @media only screen and (max-width: 700px){
 
         input[type="range"] {
@@ -1615,6 +1641,9 @@ svg path{
     }
     .dev-pfp{
         width: 100%;
+    }
+    .short-notif-technical{
+        display: none;
     }
 }
 

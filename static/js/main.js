@@ -1692,7 +1692,7 @@ function updateQueueDisplay() {
         //     new_art_name = new_art_name.slice(0,35)+"...";
         // }
         if (new_album_name.length > 35) {
-            new_album_name = new_art_name.slice(0,35)+"...";
+            new_album_name = new_album_name.slice(0,35)+"...";
         }
 
         queueItem.innerHTML = `
